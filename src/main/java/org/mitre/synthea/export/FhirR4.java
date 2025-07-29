@@ -867,7 +867,7 @@ public class FhirR4 {
       Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(from, rand);
       coding.setCode(mappedCode.getKey());
       coding.setDisplay(mappedCode.getValue());
-      coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
+      coding.setSystem(ExportHelper.getSystemURI(codeSystem));
       to.addCoding(coding);
     }
   }
