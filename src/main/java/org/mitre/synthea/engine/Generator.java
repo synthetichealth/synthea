@@ -106,7 +106,7 @@ public class Generator {
   public static class GeneratorOptions {
     public int population = Config.getAsInteger("generate.default_population", 1);
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
-    public int threadQueueSize = Config.getAsInteger("generate.thread_queue_size", -1);
+    public int threadQueueSize = Config.getAsInteger("generate.thread_max_queue_size", -1);
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = System.currentTimeMillis();
     /** End time of Synthea simulation. By default equal to the current system time. */
@@ -355,19 +355,7 @@ public class Generator {
       threadPool = new ThreadPoolExecutor(
           1, threadPoolSize, 50L, TimeUnit.MILLISECONDS,
           new ArrayBlockingQueue<>(this.options.threadQueueSize),
-          // rejection function, runs when the queue is full and a task cannot be accepted
-          (rTask, executor) -> {
-              try {
-                // the put function halts the thread until space is available in the queue
-                // functionally this means that once the queue is full new tasks will
-                // be put into the sequence as fast as current tasks are completed
-                // by worker threads
-                executor.getQueue().put(rTask);
-              } catch (InterruptedException e) {
-                  Thread.currentThread().interrupt();
-                  throw new RejectedExecutionException("Task interrupted while waiting for space in the queue", e);
-              }
-          }
+          new ThreadPoolExecutor.CallerRunsPolicy()
       );
     } else {
       // just use an unbounded, fixed pool
