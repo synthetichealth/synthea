@@ -968,19 +968,19 @@ public class Provider implements QuadTreeElement, Serializable {
 
     // Merge utilization tables
     if (this.utilization == null) {
-        this.utilization = other.utilization;
+      this.utilization = other.utilization;
     } else if (other.utilization != null) {
-        for (Table.Cell<Integer, String, AtomicInteger> cell : other.utilization.cellSet()) {
-            Integer year = cell.getRowKey();
-            String key = cell.getColumnKey();
-            AtomicInteger otherValue = cell.getValue();
+      for (Table.Cell<Integer, String, AtomicInteger> cell : other.utilization.cellSet()) {
+        Integer year = cell.getRowKey();
+        String key = cell.getColumnKey();
+        AtomicInteger otherValue = cell.getValue();
 
-            if (this.utilization.contains(year, key)) {
-                this.utilization.get(year, key).addAndGet(otherValue.get());
-            } else {
-                this.utilization.put(year, key, new AtomicInteger(otherValue.get()));
-            }
+        if (this.utilization.contains(year, key)) {
+          this.utilization.get(year, key).addAndGet(otherValue.get());
+        } else {
+          this.utilization.put(year, key, new AtomicInteger(otherValue.get()));
         }
+      }
     }
   }
 
