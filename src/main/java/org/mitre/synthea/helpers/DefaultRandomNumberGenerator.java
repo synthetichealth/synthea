@@ -11,9 +11,11 @@ import java.util.concurrent.atomic.AtomicLong;
  * or other sources of randomness for traceability.
  */
 public class DefaultRandomNumberGenerator implements RandomNumberGenerator, Serializable {
-
+  /** The starting value of the generator */
   private long seed;
+  /** Java's pseudorandom number generator */
   private Random random;
+  /** Thread safe counter for how many times this generator is called */
   private AtomicLong count;
 
   /**

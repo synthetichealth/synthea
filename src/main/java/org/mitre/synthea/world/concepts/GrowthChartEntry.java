@@ -16,8 +16,11 @@ public class GrowthChartEntry implements Serializable {
    */
   public static double MAX_PERCENTILE = 0.995;
 
+  /** The power in the Box-Cox transformation used for z-score calculations. */
   private double lboxCox;
+  /** The median value used for growth chart calculations. */
   private double median;
+  /** The generalized coefficient of variation used for z-score and percentile calculations. */
   private double scov;
 
   /**

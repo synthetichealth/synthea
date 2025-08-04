@@ -4,9 +4,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents mappings for race and ethnicity codes and displays based on CDC standards.
+ */
 public class RaceAndEthnicity {
+  /**
+   * A lookup map for CDC race LOINC codes.
+   */
   public static final Map<String, String> LOOK_UP_CDC_RACE = createCDCRaceLookup();
+
+  /**
+   * A lookup map for CDC ethnicity LOINC codes.
+   */
   public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_CODE = createCDCEthnicityLookup();
+
+  /**
+   * A lookup map for CDC ethnicity display names, with each one mapping to either
+   * "hispanic" or "non-hispanic".
+   */
   public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_DISPLAY =
       createCDCEthnicityDisplayLookup();
 

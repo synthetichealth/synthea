@@ -27,6 +27,7 @@ import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
  */
 public abstract class Transition implements Serializable {
 
+  /** Remarks associated with the transition. */
   protected List<String> remarks;
 
   /**
@@ -44,8 +45,13 @@ public abstract class Transition implements Serializable {
    * of the state to transition to.
    */
   public static class DirectTransition extends Transition {
+    /** The name of the state to transition to. */
     private String transition;
 
+    /**
+     * Represents a transition with a direct state name.
+     * @param transition The name of the state to transition to.
+     */
     public DirectTransition(String transition) {
       this.transition = transition;
     }
@@ -61,6 +67,7 @@ public abstract class Transition implements Serializable {
    * transitioned to.
    */
   private abstract static class TransitionOption implements Serializable {
+    /** The name of the destination state */
     protected String transition;
   }
 
@@ -70,13 +77,28 @@ public abstract class Transition implements Serializable {
    * attribute containing the distribution percentage.
    */
   public static final class DistributedTransitionOption extends TransitionOption {
+    /**
+     * The distribution for this transition. This may be a double, or a
+     * NamedDistribution.
+    */
     private Object distribution;
+    /** The numeric distribution value, if distribution is a double. */
     private Double numericDistribution;
+    /** The named distribution, if distribution is named */
     private NamedDistribution namedDistribution;
 
+    /**
+     * Represents a distributed transition option with a state and probability.
+     */
     public DistributedTransitionOption() {
     }
 
+    /**
+     * Represents a distributed transition option with a state and probability.
+     *
+     * @param transition The name of the state to transition to.
+     * @param probability The probability of transitioning to the state.
+     */
     public DistributedTransitionOption(String transition, double probability) {
       this.transition = transition;
       this.numericDistribution = probability;
@@ -99,8 +121,17 @@ public abstract class Transition implements Serializable {
    * effective distribution of 0.0).
    */
   public static class DistributedTransition extends Transition {
+    /**
+     * List of transitions to choose from, each with a distribution.
+     * The distribution values should sum up to 1.0.
+     */
     private List<DistributedTransitionOption> transitions;
 
+    /**
+     * Represents a distributed transition with multiple options.
+     *
+     * @param transitions The list of transition options.
+     */
     public DistributedTransition(List<DistributedTransitionOption> transitions) {
       this.transitions = transitions;
     }
@@ -118,9 +149,13 @@ public abstract class Transition implements Serializable {
    * more likely during and after the COVID-19 pandemic) and the type of insurance the person has.
    */
   public static class TypeOfCareTransition extends Transition {
+    /** Ambulatory care */
     private String ambulatory;
+    /** Telemedicine care */
     private String telemedicine;
+    /** Emergency care */
     private String emergency;
+    /** The telemedicine configuration */
     private TelemedicineConfig config;
 
     /**
@@ -189,9 +224,15 @@ public abstract class Transition implements Serializable {
     }
   }
 
+  /**
+   * Represents options for transitioning based on the type of care.
+   */
   public static final class TypeOfCareTransitionOptions implements Serializable {
+    /** Ambulatory care */
     private String ambulatory;
+    /** Telemedicine care */
     private String telemedicine;
+    /** Emergency care */
     private String emergency;
   }
 
@@ -200,7 +241,9 @@ public abstract class Transition implements Serializable {
    * compared with a table lookup to find its probability and attributes.
    */
   public static final class LookupTableTransitionOption extends TransitionOption {
+    /** The name of the lookup table to use for this transition */
     private String lookupTableName;
+    /** The default probability for this transition if no attributes match */
     private double defaultProbability;
   }
 
@@ -215,13 +258,17 @@ public abstract class Transition implements Serializable {
    */
   public static class LookupTableTransition extends Transition {
 
-    // Map of lookupTables
+    /** Map of lookupTables */
     private static HashMap<String, HashMap<LookupTableKey, List<DistributedTransitionOption>>>
         lookupTables = new HashMap<String, HashMap<LookupTableKey,
         List<DistributedTransitionOption>>>();
+    /** List of options for transitioning to */
     private final List<LookupTableTransitionOption> transitions;
+    /** List of attributes for this transition */
     private List<String> attributes;
+    /** Default transition options */
     private List<DistributedTransitionOption> defaultTransitions;
+    /** The name of the lookup table to use for this transition */
     private String lookupTableName;
 
     /**
@@ -278,6 +325,9 @@ public abstract class Transition implements Serializable {
       }
 
       // Retrieve CSV column headers.
+      if (lookupTable == null || lookupTable.isEmpty()) {
+        throw new RuntimeException("The lookup table is null or empty.");
+      }
       List<String> columnHeaders = new ArrayList<String>(lookupTable.get(0).keySet());
       // Parse the list of attributes.
       this.attributes = new ArrayList<String>(columnHeaders.subList(0,
@@ -389,20 +439,27 @@ public abstract class Transition implements Serializable {
     }
   }
 
+  /**
+   * Represents a key for lookup tables, containing attributes, age, and time information.
+   */
   public final class LookupTableKey implements Serializable {
+    /** Attributes for this key. */
     private final List<String> attributes;
     /** Age for this patient. May be null if lookup table does not use age. */
     private final Integer age;
     /** Age range for this row. Null if this is a person. */
     private final Range<Integer> ageRange;
-
+    /** Time in the simulation */
     private final Long time;
+    /** Time range for this row. */
     private final Range<Long> timeRange;
 
     /**
      * Create a symbolic lookup key for a given row that contains actual patient values.
+     *
      * @param attributes Patient attribute values.
      * @param age Patient age.
+     * @param time Patient time.
      */
     public LookupTableKey(List<String> attributes, Integer age, Long time) {
       this.attributes = attributes;
@@ -414,8 +471,11 @@ public abstract class Transition implements Serializable {
 
     /**
      * Create a symbolic lookup key for a given row that contains lookup values.
+     *
      * @param attributes Table attribute values.
      * @param range If the table contains an age column, range contains the age range
+     *     information for this key.
+     * @param timeRange If the table contains a time column, timeRange contains the time range
      *     information for this key.
      */
     public LookupTableKey(List<String> attributes, Range<Integer> range, Range<Long> timeRange) {
@@ -532,6 +592,9 @@ public abstract class Transition implements Serializable {
    * transitioned to.
    */
   public static final class ConditionalTransitionOption extends TransitionOption {
+    /**
+     * Conditional logic gating transition.
+     */
     private Logic condition;
   }
 
@@ -547,8 +610,16 @@ public abstract class Transition implements Serializable {
    * module will transition to the last transition defined.
    */
   public static class ConditionalTransition extends Transition {
+    /**
+     * List of transitions to choose from, each with a condition.
+     * The last transition may not have a condition, and will be used as a fallback.
+     */
     private List<ConditionalTransitionOption> transitions;
 
+    /**
+     * Represents a conditional transition with a list of options.
+     * @param transitions List of transitions to choose from, each with a condition.
+     */
     public ConditionalTransition(List<ConditionalTransitionOption> transitions) {
       this.transitions = transitions;
     }
@@ -572,7 +643,9 @@ public abstract class Transition implements Serializable {
    * distributions and transitions.
    */
   public static final class ComplexTransitionOption extends TransitionOption {
+    /** Conditional logic gating transition */
     private Logic condition;
+    /** List of transition options weighted by a percentage chance */
     private List<DistributedTransitionOption> distributions;
   }
 
@@ -592,8 +665,17 @@ public abstract class Transition implements Serializable {
    * defined.
    */
   public static class ComplexTransition extends Transition {
+    /**
+     * List of transitions to choose from, each with a condition or
+     * distributions.
+     */
     private List<ComplexTransitionOption> transitions;
 
+    /**
+     * Represents a complex transition with a list of options.
+     * @param transitions List of transitions to choose from, each with a condition or
+     *        distributions.
+     */
     public ComplexTransition(List<ComplexTransitionOption> transitions) {
       this.transitions = transitions;
     }
@@ -665,16 +747,26 @@ public abstract class Transition implements Serializable {
    * Helper class for distributions, which may either be a double, or a
    * NamedDistribution with an attribute to fetch the desired probability from and
    * a default.
-   */
+  */
   public static class NamedDistribution implements Serializable {
+    /** The attribute to fetch the distribution from, if applicable. */
     public String attribute;
+    /** The default distribution value to use if the attribute is not present. */
     public double defaultDistribution;
 
+    /**
+     * Constructor for NamedDistribution.
+     * @param definition the JSON definition of the named distribution
+     */
     public NamedDistribution(JsonObject definition) {
       this.attribute = definition.get("attribute").getAsString();
       this.defaultDistribution = definition.get("default").getAsDouble();
     }
 
+    /**
+     * Constructor for NamedDistribution.
+     * @param definition the map definition of the named distribution
+     */
     public NamedDistribution(Map<String, ?> definition) {
       this.attribute = (String) definition.get("attribute");
       this.defaultDistribution = (Double) definition.get("default");

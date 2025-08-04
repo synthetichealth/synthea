@@ -41,8 +41,8 @@ import org.mitre.synthea.world.geography.Location;
  * This exporter attempts to export synthetic patient data into
  * comma-separated value (CSV) files that align with the Veteran's
  * Health Administration (VHA) Corporate Data Warehouse (CDW).
- * <p></p>
- * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
+ *
+ * <p>https://www.data.va.gov/dataset/corporate-data-warehouse-cdw</p>
  */
 public class CDWExporter {
   /** Number of clinicians to generate. */

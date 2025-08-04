@@ -50,7 +50,9 @@ import org.mitre.synthea.world.agents.Person;
  * Provider specific attributes.
  */
 public class Attributes {
-
+  /**
+   * Inventory of a single attribute, including who reads it, who writes it, and example values.
+   */
   public class Inventory {
     /** Key: Module Name, Values: State names that read this attribute. */
     public Map<String,Set<String>> read;

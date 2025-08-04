@@ -19,12 +19,16 @@ import org.mitre.synthea.world.agents.Person;
  * the baby, and the newborn height and weight.
  */
 public class BirthStatistics {
+  /** The week of birth during pregnancy. */
   public static final String BIRTH_WEEK = "pregnancy_birth_week";
+  /** The date of birth during pregnancy. */
   public static final String BIRTH_DATE = "pregnancy_birth_date";
+  /** The weight of the baby at birth. */
   public static final String BIRTH_WEIGHT = "pregnancy_birth_weight";
+  /** The height of the baby at birth. */
   public static final String BIRTH_HEIGHT = "pregnancy_birth_height";
+  /** The sex of the baby at birth.*/
   public static final String BIRTH_SEX = "pregnancy_birth_sex";
-
   /** Default birth weight. */
   public static final double DEFAULT_WEIGHT = 3.5; // kilograms (kg)
   /** Default birth height. */
@@ -82,7 +86,6 @@ public class BirthStatistics {
   /**
    * Sets attributes on the mother on when her baby will be born,
    * the baby sex, and the birth height and weight.
-   * <p></p>
    * These attributes will be overridden on subsequent pregnancies.
    * @param mother The baby's mother.
    * @param time The time.

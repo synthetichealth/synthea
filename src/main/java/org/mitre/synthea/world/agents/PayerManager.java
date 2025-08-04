@@ -314,6 +314,7 @@ public class PayerManager {
 
   /**
    * Returns the List of all loaded payers.
+   * @return A list of all loaded payers.
    */
   public static List<Payer> getAllPayers() {
     return payers.values().stream().collect(Collectors.toList());
@@ -377,7 +378,7 @@ public class PayerManager {
 
   /**
    * Returns the no insurance plan.
-   * @return
+   * @return The no insurance plan.
    */
   public static InsurancePlan getNoInsurancePlan() {
     return noInsurance.getPlans().iterator().next();

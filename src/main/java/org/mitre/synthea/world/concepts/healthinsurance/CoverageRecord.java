@@ -18,9 +18,12 @@ import org.mitre.synthea.world.concepts.Claim;
 public class CoverageRecord implements Serializable {
   private static final long serialVersionUID = 771457063723016307L;
 
+  /** Person that this coverage record belongs to */
   @JSONSkip
   private Person person;
+  /** Unique set of plan records  */
   private Set<PlanRecord> planHistory;
+  /** The next enrollment period */
   private Long nextEnrollmentPeriod = null;
 
   /**
@@ -34,7 +37,8 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Get the plan history associated with this CoverageRecord.
-   * @return the play history.
+   *
+   * @return the plan history
    */
   public Set<PlanRecord> getPlanHistory() {
     return planHistory;
@@ -42,9 +46,10 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Sets the person's payer history at the given time to the given payers.
-   * @param time the current simulation time.
-   * @param newPlan the primary InsurancePlan.
-   * @param secondaryPlan the secondary InsurancePlan (i.e. Medicare Supplemental Insurance).
+   *
+   * @param time the current simulation time
+   * @param newPlan the primary insurance plan
+   * @param secondaryPlan the secondary insurance plan (e.g., Medicare Supplemental Insurance)
    */
   public void setPlanAtTime(long time, InsurancePlan newPlan, InsurancePlan secondaryPlan) {
     if (this.planHistory.isEmpty()) {
@@ -120,6 +125,8 @@ public class CoverageRecord implements Serializable {
   /**
    * Determines whether the person should enter an enrollment period and search for a new insurance
    * plan. If so, the next enrollment period will be accordingly updated.
+   * @param time The current time.
+   * @return true if the person should enter an enrollment period, false otherwise.
    */
   public boolean newEnrollmentPeriod(long time) {
     if (this.nextEnrollmentPeriod == null) {
@@ -199,6 +206,8 @@ public class CoverageRecord implements Serializable {
   /**
    * Pay monthly premiums to the payers at this time.
    * @param time  The time to pay the premiums.
+   * @param employerLevel  The employer contribution level.
+   * @param income  The income of the person.
    */
   public void payMonthlyPremiumsAtTime(long time, double employerLevel, int income) {
     this.getPlanRecordAtTime(time).payMonthlyPremiums(employerLevel, income);
@@ -206,6 +215,7 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Update the quality of life score for the most recent plan.
+   * @param qolsForYear  The quality of life score for the year.
    */
   public void updateLastPayerQols(double qolsForYear) {
     if (!this.planHistory.isEmpty()) {

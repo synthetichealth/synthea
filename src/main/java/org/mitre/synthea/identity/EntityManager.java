@@ -15,10 +15,18 @@ public class EntityManager {
   private List<Entity> records;
   private transient Map<String, Entity> entityLookup;
 
+  /**
+   * Get the list of Entities in the simulation.
+   * @return the list of Entities
+   */
   public List<Entity> getRecords() {
     return records;
   }
 
+  /**
+   * Set the list of Entities in the simulation.
+   * @param records the list of Entities to set
+   */
   public void setRecords(List<Entity> records) {
     this.records = records;
   }
@@ -35,6 +43,10 @@ public class EntityManager {
     return entityLookup.get(entityId);
   }
 
+  /**
+   * Get the total number of Entities in the simulation.
+   * @return the number of Entities
+   */
   public int getPopulationSize() {
     return records.size();
   }

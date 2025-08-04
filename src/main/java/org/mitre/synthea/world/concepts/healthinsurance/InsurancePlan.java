@@ -22,33 +22,46 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
  * A class that defines an insurance plan.
  */
 public class InsurancePlan implements Serializable {
-
+  /** Unique identifier for the insurance plan. */
   public final int id;
+  /** The payer associated with this insurance plan. */
   private final Payer payer;
+  /** The deductible amount for this insurance plan. */
   private final BigDecimal deductible;
+  /** The default copay amount for this insurance plan. */
   private final BigDecimal defaultCopay;
+  /** The default coinsurance rate for this insurance plan. */
   private final BigDecimal defaultCoinsurance;
+  /** The monthly premium for this insurance plan. */
   private final BigDecimal monthlyPremium;
+  /** The maximum out-of-pocket cost for this insurance plan. */
   private final BigDecimal maxOutOfPocket;
+  /** The priority level of this insurance plan. */
   private final int priority;
+  /** The set of services covered by this insurance plan. */
   private final Set<String> servicesCovered;
+  /** Indicates whether this insurance plan is a Medicare supplement plan. */
   private final boolean medicareSupplement;
+  /** Indicates whether this insurance plan is an Affordable Care Act plan. */
   private final boolean isACA;
+  /** Indicates whether this insurance plan has an income-based premium. */
   private final boolean incomeBasedPremium;
+  /** The insurance status associated with this insurance plan. */
   private final String insuranceStatus;
-  // Plan Eligibility.
+  /** The eligibility criteria for this insurance plan. */
   private final IPlanEligibility planEligibility;
-  // Start/end date of plan availablity.
+  /** Start/end date of plan availablity. */
   private final Range<Long> activeTimeRange;
 
   /**
-   * Insurance Plan Constructor.
-   * @param payer The plan's payer.
-   * @param servicesCovered The services covered.
-   * @param deductible  The deductible.
-   * @param defaultCoinsurance  The default coinsurance.
-   * @param defaultCopay  The default copay.
-   * @param monthlyPremium  The monthly premium.
+   * Constructor for InsurancePlan.
+   * @param id The unique identifier for the plan.
+   * @param payer The payer associated with the plan.
+   * @param servicesCovered The set of services covered by the plan.
+   * @param deductible The deductible.
+   * @param defaultCoinsurance The default coinsurance.
+   * @param defaultCopay The default copay.
+   * @param monthlyPremium The monthly premium.
    * @param maxOutOfPocket Max yearly out of pocket cost to patient.
    * @param medicareSupplement If this is a medicare supplement plan.
    * @param isACA If this is an Affordable Care Act plan.
@@ -109,6 +122,7 @@ public class InsurancePlan implements Serializable {
    *
    * @param entryType the entry type to calculate the copay for.
    * @param entryStart The start time of the entry.
+   * @return the copay amount for the entry type.
    */
   public BigDecimal determineCopay(String entryType, long entryStart) {
     BigDecimal copay = this.defaultCopay;
@@ -123,6 +137,7 @@ public class InsurancePlan implements Serializable {
    * Returns the monthly premium for this plan. If this is an income based premium, it will
    * use the income to calculate what the monthly premium should be.
    * @param income the income to base income-based premiums on.
+   * @return the monthly premium amount.
    */
   public BigDecimal getMonthlyPremium(int income) {
     if (this.incomeBasedPremium) {
@@ -133,14 +148,26 @@ public class InsurancePlan implements Serializable {
     return this.monthlyPremium;
   }
 
+  /**
+   * Returns the deductible amount for this plan.
+   * @return The deductible amount.
+   */
   public BigDecimal getDeductible() {
     return this.deductible;
   }
 
+  /**
+   * Returns the payer's coinsurance rate for this plan.
+   * @return The payer's coinsurance rate.
+   */
   public BigDecimal getPayerCoinsurance() {
     return this.defaultCoinsurance;
   }
 
+  /**
+   * Returns the patient's coinsurance rate for this plan.
+   * @return The patient's coinsurance rate.
+   */
   public BigDecimal getPatientCoinsurance() {
     BigDecimal coinsurance = BigDecimal.ONE.subtract(this.defaultCoinsurance);
     return coinsurance.compareTo(BigDecimal.ONE) == -1 ? coinsurance : BigDecimal.ZERO;
@@ -148,7 +175,9 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Pays the plan's premium to the Payer, increasing their revenue.
-   *
+   * @param employerLevel Number that represents whether an employer will
+   *        contribute towards the premium.
+   * @param income The income of the person.
    * @return the monthly premium amount.
    */
   public BigDecimal payMonthlyPremium(double employerLevel, int income) {
@@ -164,6 +193,10 @@ public class InsurancePlan implements Serializable {
     return premiumPrice;
   }
 
+  /**
+   * Returns the payer associated with this insurance plan.
+   * @return The payer.
+   */
   public Payer getPayer() {
     return this.payer;
   }
@@ -260,7 +293,8 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Returns the yearly cost of this plan.
-   * @return the yearly cost.
+   * @param income The income of the individual.
+   * @return The yearly cost of the plan.
    */
   public BigDecimal getYearlyCost(int income) {
     BigDecimal yearlyPremiumTotal = this.getMonthlyPremium(income)
@@ -282,7 +316,7 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Returns whether this plan is based on the no insurance payer.
-   * @return
+   * @return True if this plan is based on the no insurance payer, false otherwise.
    */
   public boolean isNoInsurance() {
     return this.payer.isNoInsurance();
@@ -306,6 +340,7 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Returns whether this plans is a medicare supplement plan.
+   * @return True if the plan is a Medicare Supplement Plan, false otherwise.
    */
   public boolean isMedicareSupplementPlan() {
     return this.medicareSupplement;
@@ -327,6 +362,10 @@ public class InsurancePlan implements Serializable {
     return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
   }
 
+  /**
+   * Returns the maximum out-of-pocket cost for this plan.
+   * @return The maximum out-of-pocket cost.
+   */
   public BigDecimal getMaxOop() {
     return this.maxOutOfPocket;
   }

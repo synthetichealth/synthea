@@ -58,13 +58,16 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Module implements Cloneable, Serializable {
 
+  /** Version of the Generic Module Framework (GMF). */
   public static final Double GMF_VERSION = 2.0;
 
+  /** Configuration for JSONPath operations. */
   private static final Configuration JSON_PATH_CONFIG = Configuration.builder()
       .jsonProvider(new GsonJsonProvider())
       .mappingProvider(new GsonMappingProvider())
       .build();
 
+  /** Static map of generic modules loaded once per process. */
   private static final Map<String, ModuleSupplier> modules = loadModules();
 
   private static Map<String, ModuleSupplier> loadModules() {
@@ -99,9 +102,9 @@ public class Module implements Cloneable, Serializable {
   /**
    * Get the paths to the modules directories, ensuring the right file system support is loaded if
    * we are running from a jar file.
-   * @return the path
-   * @throws URISyntaxException if something goes wrong
-   * @throws IOException if something goes wrong
+   * @return List of paths to module directories.
+   * @throws URISyntaxException if URI syntax is incorrect.
+   * @throws IOException if an I/O error occurs.
    */
   public static List<Path> getModulePaths() throws URISyntaxException, IOException {
     List<Path> paths = new ArrayList<Path>();
@@ -114,6 +117,10 @@ public class Module implements Cloneable, Serializable {
     return paths;
   }
 
+  /**
+   * Load module overrides from a configuration file.
+   * @return Properties object containing module overrides.
+   */
   private static Properties getModuleOverrides() {
     String moduleOverrideFile = Config.get("module_override");
     Properties overrides = null;
@@ -129,6 +136,15 @@ public class Module implements Cloneable, Serializable {
     return overrides;
   }
 
+  /**
+   * Walk through the module tree and load modules.
+   * @param modulesPath Path to the modules directory.
+   * @param retVal Map to store loaded modules.
+   * @param overrides Properties object containing module overrides.
+   * @param localFiles Whether to use local files.
+   * @return Number of submodules loaded.
+   * @throws Exception if an error occurs during module loading.
+   */
   private static int walkModuleTree(
           Path modulesPath,
           Map<String, ModuleSupplier> retVal,
@@ -195,6 +211,7 @@ public class Module implements Cloneable, Serializable {
    * @param overrides module overrides to apply
    * @param localFiles true if the file is external to the src/main/resources folder
    * @return the loaded Module
+   * @throws Exception when an error occurs loading the module
    */
   public static Module loadFile(Path path, boolean submodule, Properties overrides,
           boolean localFiles) throws Exception {
@@ -225,6 +242,10 @@ public class Module implements Cloneable, Serializable {
     return ctx.jsonString();
   }
 
+  /**
+   * Unused.
+   * @return An array of module names.
+   */
   public static String[] getModuleNames() {
     // This will include all known module names, which may be more than are actually loaded.
     return modules.keySet().toArray(new String[modules.size()]);
@@ -240,6 +261,7 @@ public class Module implements Cloneable, Serializable {
 
   /**
    * Get a list of top-level modules including core and submodules.
+   * @param pathPredicate A predicate to filter a module based on path.
    * @return a list of top-level modules, only including core modules and those allowed by the
    *     supplied predicate. Submodules are loaded, but not included.
    */
@@ -291,18 +313,27 @@ public class Module implements Cloneable, Serializable {
     return supplier == null ? null : supplier.get();
   }
 
+
+  /** Name of the module. */
   public String name;
+  /** Specialty associated with the module, if any. */
   public String specialty;
-  /** true if this is a submodule, false otherwise. */
+  /** True if this is a submodule, false otherwise. */
   public boolean submodule;
-  /** if a submodule, the original name of this submodule. Otherwise null. */
+  /** If a submodule, the original name of this submodule. Otherwise null. */
   public String submoduleName;
+  /** Version of the Generic Module Framework (GMF) used by this module. */
   public Double gmfVersion;
+  /** List of remarks or comments associated with this module. */
   public List<String> remarks;
+  /** Map of state names to State objects for this module. */
   private Map<String, State> states;
 
+  /**
+   * Protected no-args constructor only allowed to be used by subclasses.
+   */
   protected Module() {
-    // no-args constructor only allowed to be used by subclasses
+
   }
 
   /**
@@ -486,8 +517,13 @@ public class Module implements Cloneable, Serializable {
    */
   public static class ModuleSupplier implements Supplier<Module> {
 
+    /** Indicates whether the module is a core module. */
     public final boolean core;
+
+    /** Indicates whether the module is a submodule. */
     public final boolean submodule;
+
+    /** The file path of the module. */
     public final String path;
 
     private boolean loaded;

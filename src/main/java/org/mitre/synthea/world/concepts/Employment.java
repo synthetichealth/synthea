@@ -12,13 +12,22 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Employment implements Serializable {
 
-  // Minimum length a person can have an employment condition
+  /**
+  * Minimum length a person can have an employment condition
+  */
   public static long MIN_EMPLOYMENT_STATE_LENGTH = 6;
 
+  /** The chance that an employed person becomes unemployed */
   private double chanceOfUnemployment;
+  /** How long to wait before checking if the person should become unemployed */
   private long nextTimeToCheck;
+  /** Whether a person is unemployed or not */
   private boolean unemployed;
 
+  /**
+   * Constructor for Employment.
+   * @param chanceOfUnemployment the probability that a person will become unemployed
+   */
   public Employment(double chanceOfUnemployment) {
     this.chanceOfUnemployment = chanceOfUnemployment;
     this.unemployed = false;
