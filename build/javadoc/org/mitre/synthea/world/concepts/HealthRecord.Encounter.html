@@ -146,6 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.Encounter</span>
 extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+<div class="block">Represents a single encounter in a person's health record.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Encounter">Serialized Form</a></dd>
@@ -173,102 +174,142 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#allergies">allergies</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Allergies identified during the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#careplans">careplans</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Care plans initiated or updated during the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chronicMedsRenewed">chronicMedsRenewed</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Track if we renewed meds at this encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#claim">claim</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Claim associated with the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clinicalNote">clinicalNote</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Clinical note associated with the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clinician">clinician</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Clinician who performed the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#conditions">conditions</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Conditions diagnosed during the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#devices">devices</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Devices implanted or assigned during the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#discharge">discharge</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Discharge information for the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ended">ended</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates whether the encounter has ended.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#endedTime">endedTime</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Time when the encounter ended.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#imagingStudies">imagingStudies</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Imaging studies performed during the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Immunization.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Immunization</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#immunizations">immunizations</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Immunizations administered during the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#medications">medications</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Medications prescribed or administered during the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#observations">observations</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Observations recorded during the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#procedures">procedures</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Procedures performed during the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#provider">provider</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Provider responsible for the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reason">reason</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Reason for the encounter.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reports">reports</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Reports generated during the encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#supplies">supplies</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Supplies used during the encounter.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -397,6 +438,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>observations</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">Observations recorded during the encounter.</div>
 </li>
 </ul>
 <a id="reports">
@@ -406,6 +448,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>reports</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a>&gt; reports</pre>
+<div class="block">Reports generated during the encounter.</div>
 </li>
 </ul>
 <a id="conditions">
@@ -415,6 +458,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>conditions</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&gt; conditions</pre>
+<div class="block">Conditions diagnosed during the encounter.</div>
 </li>
 </ul>
 <a id="allergies">
@@ -424,6 +468,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>allergies</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a>&gt; allergies</pre>
+<div class="block">Allergies identified during the encounter.</div>
 </li>
 </ul>
 <a id="procedures">
@@ -433,6 +478,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>procedures</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a>&gt; procedures</pre>
+<div class="block">Procedures performed during the encounter.</div>
 </li>
 </ul>
 <a id="immunizations">
@@ -442,6 +488,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>immunizations</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Immunization.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Immunization</a>&gt; immunizations</pre>
+<div class="block">Immunizations administered during the encounter.</div>
 </li>
 </ul>
 <a id="medications">
@@ -451,6 +498,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>medications</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a>&gt; medications</pre>
+<div class="block">Medications prescribed or administered during the encounter.</div>
 </li>
 </ul>
 <a id="careplans">
@@ -460,6 +508,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>careplans</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a>&gt; careplans</pre>
+<div class="block">Care plans initiated or updated during the encounter.</div>
 </li>
 </ul>
 <a id="imagingStudies">
@@ -469,6 +518,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>imagingStudies</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy</a>&gt; imagingStudies</pre>
+<div class="block">Imaging studies performed during the encounter.</div>
 </li>
 </ul>
 <a id="devices">
@@ -478,6 +528,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>devices</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a>&gt; devices</pre>
+<div class="block">Devices implanted or assigned during the encounter.</div>
 </li>
 </ul>
 <a id="supplies">
@@ -487,6 +538,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>supplies</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a>&gt; supplies</pre>
+<div class="block">Supplies used during the encounter.</div>
 </li>
 </ul>
 <a id="claim">
@@ -496,6 +548,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>claim</h4>
 <pre>public&nbsp;<a href="Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a> claim</pre>
+<div class="block">Claim associated with the encounter.</div>
 </li>
 </ul>
 <a id="reason">
@@ -505,6 +558,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>reason</h4>
 <pre>public&nbsp;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> reason</pre>
+<div class="block">Reason for the encounter.</div>
 </li>
 </ul>
 <a id="discharge">
@@ -514,6 +568,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>discharge</h4>
 <pre>public&nbsp;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> discharge</pre>
+<div class="block">Discharge information for the encounter.</div>
 </li>
 </ul>
 <a id="provider">
@@ -523,6 +578,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>provider</h4>
 <pre>public&nbsp;<a href="../agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
+<div class="block">Provider responsible for the encounter.</div>
 </li>
 </ul>
 <a id="clinician">
@@ -532,6 +588,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>clinician</h4>
 <pre>public&nbsp;<a href="../agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a> clinician</pre>
+<div class="block">Clinician who performed the encounter.</div>
 </li>
 </ul>
 <a id="ended">
@@ -541,6 +598,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>ended</h4>
 <pre>public&nbsp;boolean ended</pre>
+<div class="block">Indicates whether the encounter has ended.</div>
 </li>
 </ul>
 <a id="endedTime">
@@ -550,6 +608,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>endedTime</h4>
 <pre>public&nbsp;long endedTime</pre>
+<div class="block">Time when the encounter ended.</div>
 </li>
 </ul>
 <a id="chronicMedsRenewed">
@@ -559,6 +618,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>chronicMedsRenewed</h4>
 <pre>public&nbsp;boolean chronicMedsRenewed</pre>
+<div class="block">Track if we renewed meds at this encounter. Used in State.java encounter state.</div>
 </li>
 </ul>
 <a id="clinicalNote">
@@ -568,6 +628,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>clinicalNote</h4>
 <pre>public&nbsp;java.lang.String clinicalNote</pre>
+<div class="block">Clinical note associated with the encounter.</div>
 </li>
 </ul>
 </li>
@@ -660,9 +721,9 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <div class="block">Find the first observation in the encounter with the given LOINC code.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>code</code> - The LOINC code to look for</dd>
+<dd><code>code</code> - The LOINC code to look for.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A single observation or null</dd>
+<dd>A single observation or null if none exists.</dd>
 </dl>
 </li>
 </ul>
@@ -676,7 +737,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <div class="block">Find the encounter that happened before this one.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The previous encounter or null if this is the first</dd>
+<dd>The previous encounter or null if this is the first.</dd>
 </dl>
 </li>
 </ul>

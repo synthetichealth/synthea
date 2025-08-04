@@ -201,13 +201,17 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVitalSignValue(org.mitre.synthea.world.concepts.VitalSign)">getVitalSignValue</a></span>&#8203;(<a href="../../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;parameter)</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVitalSignValue(org.mitre.synthea.world.concepts.VitalSign)">getVitalSignValue</a></span>&#8203;(org.mitre.synthea.world.concepts.VitalSign&nbsp;parameter)</code></th>
+<td class="colLast">
+<div class="block">Retrieves the value of a specified vital sign from the simulation results.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasExecuted()">hasExecuted</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Checks if the simulation has been executed.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -252,7 +256,8 @@ extends java.lang.Object</pre>
 <div class="block">Handles execution of a PhysiologySimulator.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>config</code> - simulation configuration</dd>
+<dd><code>config</code> - The simulation configuration.</dd>
+<dd><code>person</code> - The person for whom the simulation is being run.</dd>
 </dl>
 </li>
 </ul>
@@ -286,7 +291,14 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getVitalSignValue</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getVitalSignValue&#8203;(<a href="../../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;parameter)</pre>
+<pre class="methodSignature">public&nbsp;double&nbsp;getVitalSignValue&#8203;(org.mitre.synthea.world.concepts.VitalSign&nbsp;parameter)</pre>
+<div class="block">Retrieves the value of a specified vital sign from the simulation results.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>parameter</code> - The vital sign to retrieve.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value of the specified vital sign.</dd>
+</dl>
 </li>
 </ul>
 <a id="hasExecuted()">
@@ -296,6 +308,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>hasExecuted</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;hasExecuted()</pre>
+<div class="block">Checks if the simulation has been executed.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the simulation has been executed, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compareDefaultInputs()">

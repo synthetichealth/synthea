@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">LifecycleModule</span>
 extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></pre>
+<div class="block">LifecycleModule is responsible for managing the lifecycle of a Person.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.modules.LifecycleModule">Serialized Form</a></dd>
@@ -186,52 +187,73 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ADHERENCE_PROBABILITY">ADHERENCE_PROBABILITY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for a person's probability to follow doctor's orders and recommendations</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DAYS_UNTIL_DEATH">DAYS_UNTIL_DEATH</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for days until a person will die</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENABLE_DEATH_BY_LOSS_OF_CARE">ENABLE_DEATH_BY_LOSS_OF_CARE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enables death by loss of care.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENABLE_DEATH_BY_NATURAL_CAUSES">ENABLE_DEATH_BY_NATURAL_CAUSES</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enables death by natural causes.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENABLE_PHYSIOLOGY_GENERATORS">ENABLE_PHYSIOLOGY_GENERATORS</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enables physiology generators.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LOSS_OF_CARE">LOSS_OF_CARE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+ Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#QUIT_ALCOHOLISM_AGE">QUIT_ALCOHOLISM_AGE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the age at which a person quit alcoholism</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#QUIT_ALCOHOLISM_PROBABILITY">QUIT_ALCOHOLISM_PROBABILITY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the probability a person stops drinking per process call</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#QUIT_SMOKING_AGE">QUIT_SMOKING_AGE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the age at which the person stopped smoking</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#QUIT_SMOKING_PROBABILITY">QUIT_SMOKING_PROBABILITY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the probability a person quits smoking per process call</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -259,7 +281,9 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">LifecycleModule</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor for LifecycleModule.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -307,7 +331,10 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <td class="colFirst"><code>protected static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#death(org.mitre.synthea.world.agents.Person,long)">death</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
      long&nbsp;time)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Mark a person as dead if they are old enough or if they roll a random number
+ that is less than the likelihood of death for their age.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
@@ -352,7 +379,9 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected static double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#likelihoodOfDeath(int)">likelihoodOfDeath</a></span>&#8203;(int&nbsp;age)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Function that determines the probability of death based on age.</div>
+</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>static double</code></td>
@@ -445,6 +474,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>DAYS_UNTIL_DEATH</h4>
 <pre>public static final&nbsp;java.lang.String DAYS_UNTIL_DEATH</pre>
+<div class="block">Attribute key for days until a person will die</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.DAYS_UNTIL_DEATH">Constant Field Values</a></dd>
@@ -458,6 +488,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>QUIT_SMOKING_PROBABILITY</h4>
 <pre>public static final&nbsp;java.lang.String QUIT_SMOKING_PROBABILITY</pre>
+<div class="block">Attribute key for the probability a person quits smoking per process call</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.QUIT_SMOKING_PROBABILITY">Constant Field Values</a></dd>
@@ -471,6 +502,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>QUIT_SMOKING_AGE</h4>
 <pre>public static final&nbsp;java.lang.String QUIT_SMOKING_AGE</pre>
+<div class="block">Attribute key for the age at which the person stopped smoking</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.QUIT_SMOKING_AGE">Constant Field Values</a></dd>
@@ -484,6 +516,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>QUIT_ALCOHOLISM_PROBABILITY</h4>
 <pre>public static final&nbsp;java.lang.String QUIT_ALCOHOLISM_PROBABILITY</pre>
+<div class="block">Attribute key for the probability a person stops drinking per process call</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.QUIT_ALCOHOLISM_PROBABILITY">Constant Field Values</a></dd>
@@ -497,6 +530,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>QUIT_ALCOHOLISM_AGE</h4>
 <pre>public static final&nbsp;java.lang.String QUIT_ALCOHOLISM_AGE</pre>
+<div class="block">Attribute key for the age at which a person quit alcoholism</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.QUIT_ALCOHOLISM_AGE">Constant Field Values</a></dd>
@@ -510,6 +544,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ADHERENCE_PROBABILITY</h4>
 <pre>public static final&nbsp;java.lang.String ADHERENCE_PROBABILITY</pre>
+<div class="block">Attribute key for a person's probability to follow doctor's orders and recommendations</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.ADHERENCE_PROBABILITY">Constant Field Values</a></dd>
@@ -523,6 +558,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENABLE_DEATH_BY_NATURAL_CAUSES</h4>
 <pre>protected static&nbsp;boolean ENABLE_DEATH_BY_NATURAL_CAUSES</pre>
+<div class="block">Enables death by natural causes.</div>
 </li>
 </ul>
 <a id="ENABLE_DEATH_BY_LOSS_OF_CARE">
@@ -532,6 +568,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENABLE_DEATH_BY_LOSS_OF_CARE</h4>
 <pre>protected static&nbsp;boolean ENABLE_DEATH_BY_LOSS_OF_CARE</pre>
+<div class="block">Enables death by loss of care.</div>
 </li>
 </ul>
 <a id="ENABLE_PHYSIOLOGY_GENERATORS">
@@ -541,6 +578,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENABLE_PHYSIOLOGY_GENERATORS</h4>
 <pre>public static&nbsp;boolean ENABLE_PHYSIOLOGY_GENERATORS</pre>
+<div class="block">Enables physiology generators.</div>
 </li>
 </ul>
 <a id="LOSS_OF_CARE">
@@ -550,6 +588,8 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>LOSS_OF_CARE</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> LOSS_OF_CARE</pre>
+<div class="block">Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+ Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.</div>
 </li>
 </ul>
 </li>
@@ -569,6 +609,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>LifecycleModule</h4>
 <pre>public&nbsp;LifecycleModule()</pre>
+<div class="block">Constructor for LifecycleModule.</div>
 </li>
 </ul>
 </li>
@@ -706,6 +747,13 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <h4>death</h4>
 <pre class="methodSignature">protected static&nbsp;void&nbsp;death&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                             long&nbsp;time)</pre>
+<div class="block">Mark a person as dead if they are old enough or if they roll a random number
+ that is less than the likelihood of death for their age.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person to check for death.</dd>
+<dd><code>time</code> - the time of the simulation</dd>
+</dl>
 </li>
 </ul>
 <a id="likelihoodOfDeath(int)">
@@ -715,6 +763,13 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>likelihoodOfDeath</h4>
 <pre class="methodSignature">protected static&nbsp;double&nbsp;likelihoodOfDeath&#8203;(int&nbsp;age)</pre>
+<div class="block">Function that determines the probability of death based on age.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>age</code> - the age of the person in years.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the probability of death in the next year.</dd>
+</dl>
 </li>
 </ul>
 <a id="deathFromLossOfCare(org.mitre.synthea.world.agents.Person)">
@@ -729,6 +784,8 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - the person to check for loss of care death.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the person dies from loss of care, false otherwise.</dd>
 </dl>
 </li>
 </ul>

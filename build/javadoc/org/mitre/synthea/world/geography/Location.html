@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Location</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents a geographical location with associated data such as population.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.geography.Location">Serialized Form</a></dd>
@@ -165,12 +166,16 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#city">city</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The name of the city.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#state">state</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The name of the state.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -246,7 +251,9 @@ implements java.io.Serializable</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPopulation(java.lang.String)">getPopulation</a></span>&#8203;(java.lang.String&nbsp;cityName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the population of a specific city.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
@@ -353,6 +360,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>city</h4>
 <pre>public final&nbsp;java.lang.String city</pre>
+<div class="block">The name of the city.</div>
 </li>
 </ul>
 <a id="state">
@@ -362,6 +370,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>state</h4>
 <pre>public final&nbsp;java.lang.String state</pre>
+<div class="block">The name of the state.</div>
 </li>
 </ul>
 </li>
@@ -445,6 +454,13 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPopulation</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getPopulation&#8203;(java.lang.String&nbsp;cityName)</pre>
+<div class="block">Gets the population of a specific city.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>cityName</code> - The name of the city.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The population of the city.</dd>
+</dl>
 </li>
 </ul>
 <a id="randomCity(org.mitre.synthea.helpers.RandomNumberGenerator)">
@@ -608,9 +624,9 @@ implements java.io.Serializable</pre>
 <h4>loadCitiesByLanguage</h4>
 <pre class="methodSignature">protected static&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.util.List&lt;java.lang.String&gt;&gt;&nbsp;loadCitiesByLanguage&#8203;(java.lang.String&nbsp;resource)</pre>
 <div class="block">Load a resource which contains foreign places of birth based on ethnicity in json format:
- <p></p>
+ <p>
  {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
- <p></p>
+ </p>
  see src/main/resources/foreign_birthplace.json for a working example
  package protected for testing</div>
 <dl>

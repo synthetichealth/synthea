@@ -132,7 +132,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code>, <code><a href="../../export/rif/ConsolidatedClaimLines.html" title="class in org.mitre.synthea.export.rif">ConsolidatedClaimLines</a></code>, <code><a href="../../export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html" title="class in org.mitre.synthea.export.rif">ConsolidatedClaimLines.ConsolidatedClaimLine</a></code></dd>
+<dd><code><a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code></dd>
 </dl>
 <dl>
 <dt>Enclosing class:</dt>
@@ -141,6 +141,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public static class <span class="typeNameLabel">Claim.ClaimCost</span>
 extends java.lang.Object</pre>
+<div class="block">Represents the cost details of a claim.</div>
 </li>
 </ul>
 </div>
@@ -165,56 +166,56 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#adjustment">adjustment</a></span></code></th>
 <td class="colLast">
-<div class="block">amount the charge was decreased by payer adjustment.</div>
+<div class="block">Amount the charge was decreased by payer adjustment.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#coinsurancePaidByPayer">coinsurancePaidByPayer</a></span></code></th>
 <td class="colLast">
-<div class="block">coinsurance paid by payer.</div>
+<div class="block">Coinsurance paid by the payer.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#copayPaidByPatient">copayPaidByPatient</a></span></code></th>
 <td class="colLast">
-<div class="block">copay paid by patient.</div>
+<div class="block">Copay paid by the patient.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cost">cost</a></span></code></th>
 <td class="colLast">
-<div class="block">total cost of the entry.</div>
+<div class="block">Total cost of the entry.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deductiblePaidByPatient">deductiblePaidByPatient</a></span></code></th>
 <td class="colLast">
-<div class="block">deductible paid by patient.</div>
+<div class="block">Deductible paid by the patient.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#paidByPayer">paidByPayer</a></span></code></th>
 <td class="colLast">
-<div class="block">otherwise paid by payer.</div>
+<div class="block">Amount otherwise paid by the primary payer.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#paidBySecondaryPayer">paidBySecondaryPayer</a></span></code></th>
 <td class="colLast">
-<div class="block">otherwise paid by secondary payer.</div>
+<div class="block">Amount otherwise paid by the secondary payer.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#patientOutOfPocket">patientOutOfPocket</a></span></code></th>
 <td class="colLast">
-<div class="block">otherwise paid by patient out of pocket.</div>
+<div class="block">Amount otherwise paid by the patient out of pocket.</div>
 </td>
 </tr>
 </table>
@@ -282,22 +283,32 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCopayPaid()">getCopayPaid</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total copay paid by the patient.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoveredCost()">getCoveredCost</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total cost covered by the payer, which includes coinsurance and
+ any amounts paid by the secondary payer.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDeductiblePaid()">getDeductiblePaid</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total deductible paid by the patient.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPatientCost()">getPatientCost</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total cost paid by the patient, which includes
+ out-of-pocket expenses, copay, and deductible.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
@@ -345,7 +356,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>cost</h4>
 <pre>public&nbsp;java.math.BigDecimal cost</pre>
-<div class="block">total cost of the entry.</div>
+<div class="block">Total cost of the entry.</div>
 </li>
 </ul>
 <a id="copayPaidByPatient">
@@ -355,7 +366,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>copayPaidByPatient</h4>
 <pre>public&nbsp;java.math.BigDecimal copayPaidByPatient</pre>
-<div class="block">copay paid by patient.</div>
+<div class="block">Copay paid by the patient.</div>
 </li>
 </ul>
 <a id="deductiblePaidByPatient">
@@ -365,7 +376,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>deductiblePaidByPatient</h4>
 <pre>public&nbsp;java.math.BigDecimal deductiblePaidByPatient</pre>
-<div class="block">deductible paid by patient.</div>
+<div class="block">Deductible paid by the patient.</div>
 </li>
 </ul>
 <a id="adjustment">
@@ -375,7 +386,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>adjustment</h4>
 <pre>public&nbsp;java.math.BigDecimal adjustment</pre>
-<div class="block">amount the charge was decreased by payer adjustment.</div>
+<div class="block">Amount the charge was decreased by payer adjustment.</div>
 </li>
 </ul>
 <a id="coinsurancePaidByPayer">
@@ -385,7 +396,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>coinsurancePaidByPayer</h4>
 <pre>public&nbsp;java.math.BigDecimal coinsurancePaidByPayer</pre>
-<div class="block">coinsurance paid by payer.</div>
+<div class="block">Coinsurance paid by the payer.</div>
 </li>
 </ul>
 <a id="paidByPayer">
@@ -395,7 +406,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>paidByPayer</h4>
 <pre>public&nbsp;java.math.BigDecimal paidByPayer</pre>
-<div class="block">otherwise paid by payer.</div>
+<div class="block">Amount otherwise paid by the primary payer.</div>
 </li>
 </ul>
 <a id="paidBySecondaryPayer">
@@ -405,7 +416,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>paidBySecondaryPayer</h4>
 <pre>public&nbsp;java.math.BigDecimal paidBySecondaryPayer</pre>
-<div class="block">otherwise paid by secondary payer.</div>
+<div class="block">Amount otherwise paid by the secondary payer.</div>
 </li>
 </ul>
 <a id="patientOutOfPocket">
@@ -415,7 +426,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>patientOutOfPocket</h4>
 <pre>public&nbsp;java.math.BigDecimal patientOutOfPocket</pre>
-<div class="block">otherwise paid by patient out of pocket.</div>
+<div class="block">Amount otherwise paid by the patient out of pocket.</div>
 </li>
 </ul>
 </li>
@@ -510,6 +521,10 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalClaimCost()</pre>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the
  encounter.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total claim cost</dd>
+</dl>
 </li>
 </ul>
 <a id="getCoveredCost()">
@@ -519,6 +534,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getCoveredCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getCoveredCost()</pre>
+<div class="block">Returns the total cost covered by the payer, which includes coinsurance and
+ any amounts paid by the secondary payer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the cost covered by the payer.</dd>
+</dl>
 </li>
 </ul>
 <a id="getDeductiblePaid()">
@@ -528,6 +549,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getDeductiblePaid</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getDeductiblePaid()</pre>
+<div class="block">Returns the total deductible paid by the patient.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the deductible paid by the patient.</dd>
+</dl>
 </li>
 </ul>
 <a id="getCopayPaid()">
@@ -537,6 +563,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getCopayPaid</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getCopayPaid()</pre>
+<div class="block">Returns the total copay paid by the patient.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the copay paid by the patient.</dd>
+</dl>
 </li>
 </ul>
 <a id="getPatientCost()">
@@ -546,6 +577,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getPatientCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getPatientCost()</pre>
+<div class="block">Returns the total cost paid by the patient, which includes
+ out-of-pocket expenses, copay, and deductible.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total cost paid by the patient.</dd>
+</dl>
 </li>
 </ul>
 </li>

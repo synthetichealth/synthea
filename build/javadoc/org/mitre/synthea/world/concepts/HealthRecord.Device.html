@@ -175,37 +175,51 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deviceIdentifier">deviceIdentifier</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Mandatory fixed portion of UDI</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#expirationTime">expirationTime</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">time of expiry of this device (if applicable)</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lotNumber">lotNumber</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Lot number of manufacture</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#manufacturer">manufacturer</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">manufacturer of the device</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#manufactureTime">manufactureTime</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">the time the device was manufactured</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#model">model</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">model of the device</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serialNumber">serialNumber</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Serial number assigned by the manufacturer</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -241,7 +255,9 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,java.lang.String)">Device</a></span>&#8203;(long&nbsp;start,
       java.lang.String&nbsp;type)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor for device</div>
+</td>
 </tr>
 </table>
 </li>
@@ -306,6 +322,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>manufacturer</h4>
 <pre>public&nbsp;java.lang.String manufacturer</pre>
+<div class="block">manufacturer of the device</div>
 </li>
 </ul>
 <a id="model">
@@ -315,6 +332,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>model</h4>
 <pre>public&nbsp;java.lang.String model</pre>
+<div class="block">model of the device</div>
 </li>
 </ul>
 <a id="udi">
@@ -334,6 +352,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>manufactureTime</h4>
 <pre>public&nbsp;long manufactureTime</pre>
+<div class="block">the time the device was manufactured</div>
 </li>
 </ul>
 <a id="expirationTime">
@@ -343,6 +362,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>expirationTime</h4>
 <pre>public&nbsp;long expirationTime</pre>
+<div class="block">time of expiry of this device (if applicable)</div>
 </li>
 </ul>
 <a id="deviceIdentifier">
@@ -352,6 +372,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>deviceIdentifier</h4>
 <pre>public&nbsp;java.lang.String deviceIdentifier</pre>
+<div class="block">Mandatory fixed portion of UDI</div>
 </li>
 </ul>
 <a id="lotNumber">
@@ -361,6 +382,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>lotNumber</h4>
 <pre>public&nbsp;java.lang.String lotNumber</pre>
+<div class="block">Lot number of manufacture</div>
 </li>
 </ul>
 <a id="serialNumber">
@@ -370,6 +392,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>serialNumber</h4>
 <pre>public&nbsp;java.lang.String serialNumber</pre>
+<div class="block">Serial number assigned by the manufacturer</div>
 </li>
 </ul>
 </li>
@@ -390,6 +413,12 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <h4>Device</h4>
 <pre>public&nbsp;Device&#8203;(long&nbsp;start,
               java.lang.String&nbsp;type)</pre>
+<div class="block">Constructor for device</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start</code> - the time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+</dl>
 </li>
 </ul>
 </li>

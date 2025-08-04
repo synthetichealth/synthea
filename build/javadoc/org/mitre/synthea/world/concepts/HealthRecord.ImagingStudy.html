@@ -140,6 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.ImagingStudy</span>
 extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+<div class="block">ImagingStudy represents a collection of images</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy">Serialized Form</a></dd>
@@ -201,12 +202,16 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#dicomUid">dicomUid</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A randomly assigned DICOM UID</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.ImagingStudy.Series.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy.Series</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#series">series</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The series of images associated with this study</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -288,6 +293,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>dicomUid</h4>
 <pre>public&nbsp;java.lang.String dicomUid</pre>
+<div class="block">A randomly assigned DICOM UID</div>
 </li>
 </ul>
 <a id="series">
@@ -297,6 +303,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>series</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.ImagingStudy.Series.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy.Series</a>&gt; series</pre>
+<div class="block">The series of images associated with this study</div>
 </li>
 </ul>
 </li>
@@ -319,6 +326,12 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
                     long&nbsp;time,
                     java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for ImagingStudy HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person for whom this imaging study is being created</dd>
+<dd><code>time</code> - the time of the imaging study</dd>
+<dd><code>type</code> - the type of the imaging study</dd>
+</dl>
 </li>
 </ul>
 </li>

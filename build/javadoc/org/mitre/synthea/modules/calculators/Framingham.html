@@ -133,6 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">Framingham</span>
 extends java.lang.Object</pre>
+<div class="block">Calculates cardiovascular risk using the Framingham Heart Study.</div>
 </li>
 </ul>
 </div>
@@ -156,7 +157,9 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TEN_YEARS_IN_MS">TEN_YEARS_IN_MS</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The number of milliseconds in 10 years.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -274,6 +277,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>TEN_YEARS_IN_MS</h4>
 <pre>public static final&nbsp;long TEN_YEARS_IN_MS</pre>
+<div class="block">The number of milliseconds in 10 years.</div>
 </li>
 </ul>
 </li>
@@ -360,6 +364,10 @@ extends java.lang.Object</pre>
                                               boolean&nbsp;perTimestep)</pre>
 <div class="block">Calculate 10 year risk of atrial fibrillation.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - The patient</dd>
+<dd><code>time</code> - Time to calculate risk as of</dd>
+<dd><code>perTimestep</code> - Whether to return the risk per timestep</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>risk</dd>
 </dl>
@@ -376,6 +384,10 @@ extends java.lang.Object</pre>
                                   boolean&nbsp;perTimestep)</pre>
 <div class="block">Calculate 10 year stroke risk.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - The patient</dd>
+<dd><code>time</code> - Time to calculate risk as of</dd>
+<dd><code>perTimestep</code> - Whether to return the risk per timestep</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>risk</dd>
 </dl>

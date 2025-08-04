@@ -141,6 +141,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Claim.ClaimEntry</span>
 extends <a href="Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a>
 implements java.io.Serializable</pre>
+<div class="block">Represents a specific entry in a claim, such as an encounter or medication.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.Claim.ClaimEntry">Serialized Form</a></dd>
@@ -168,7 +169,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code><a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#entry">entry</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The health record entry associated with this claim entry.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -196,7 +199,9 @@ implements java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.concepts.HealthRecord.Entry)">ClaimEntry</a></span>&#8203;(<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create a new ClaimEntry for the given health record entry.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -246,6 +251,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>entry</h4>
 <pre>public&nbsp;<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> entry</pre>
+<div class="block">The health record entry associated with this claim entry.</div>
 </li>
 </ul>
 </li>
@@ -265,6 +271,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>ClaimEntry</h4>
 <pre>public&nbsp;ClaimEntry&#8203;(<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</pre>
+<div class="block">Create a new ClaimEntry for the given health record entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>entry</code> - the health record entry</dd>
+</dl>
 </li>
 </ul>
 </li>

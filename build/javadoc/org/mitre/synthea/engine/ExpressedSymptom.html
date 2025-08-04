@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedSymptom</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">Represents an expressed symptom with associated sources and their details.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedSymptom">Serialized Form</a></dd>
@@ -165,12 +166,17 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Contains basic information regarding an expressed symptom, such as the cause,
+ value, and the time it was set.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Encapsulates module-based information regarding an expressed symptom.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -191,7 +197,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String)">ExpressedSymptom</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create a new ExpressedSymptom instance with the given name.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -215,7 +223,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addressSource(java.lang.String)">addressSource</a></span>&#8203;(java.lang.String&nbsp;source)</code></th>
 <td class="colLast">
-<div class="block">Method for addressing a given source.</div>
+<div class="block">Address a given source.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -228,34 +236,36 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSources()">getSources</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the sources of the symptom.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourceWithHighValue()">getSourceWithHighValue</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Method for retrieving the source with the high value not yet addressed.</div>
+<div class="block">Retrieve the source with the highest value not yet addressed.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSymptom()">getSymptom</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Method for retrieving the value associated to a given symptom.</div>
+<div class="block">Retrieve the value associated with a given symptom.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSymptomLastUpdatedTime(java.lang.String)">getSymptomLastUpdatedTime</a></span>&#8203;(java.lang.String&nbsp;module)</code></th>
 <td class="colLast">
-<div class="block">Method for retrieving the last time the symptom has been updated from a given module.</div>
+<div class="block">Retrieve the last time the symptom was updated from a given module.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.Integer</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getValueFromSource(java.lang.String)">getValueFromSource</a></span>&#8203;(java.lang.String&nbsp;source)</code></th>
 <td class="colLast">
-<div class="block">Method for retrieving the value associated to a given source.</div>
+<div class="block">Retrieve the value associated with a given source.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -266,7 +276,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
      int&nbsp;value,
      java.lang.Boolean&nbsp;addressed)</code></th>
 <td class="colLast">
-<div class="block">this method updates the data structure wit a symptom being onset from a module.</div>
+<div class="block">Update the data structure with a symptom being onset from a module.</div>
 </td>
 </tr>
 </table>
@@ -300,6 +310,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>ExpressedSymptom</h4>
 <pre>public&nbsp;ExpressedSymptom&#8203;(java.lang.String&nbsp;name)</pre>
+<div class="block">Create a new ExpressedSymptom instance with the given name.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - the name of the symptom</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -323,6 +338,8 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a cloned instance of ExpressedSymptom</dd>
 </dl>
 </li>
 </ul>
@@ -333,6 +350,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSources</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a>&gt;&nbsp;getSources()</pre>
+<div class="block">Get the sources of the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of sources to SymptomSource</dd>
+</dl>
 </li>
 </ul>
 <a id="onSet(java.lang.String,java.lang.String,long,int,java.lang.Boolean)">
@@ -346,7 +368,15 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                   long&nbsp;time,
                   int&nbsp;value,
                   java.lang.Boolean&nbsp;addressed)</pre>
-<div class="block">this method updates the data structure wit a symptom being onset from a module.</div>
+<div class="block">Update the data structure with a symptom being onset from a module.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module setting the symptom</dd>
+<dd><code>cause</code> - the cause of the symptom</dd>
+<dd><code>time</code> - the time the symptom was set</dd>
+<dd><code>value</code> - the value of the symptom</dd>
+<dd><code>addressed</code> - whether the symptom is addressed</dd>
+</dl>
 </li>
 </ul>
 <a id="getSymptom()">
@@ -356,8 +386,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSymptom</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;getSymptom()</pre>
-<div class="block">Method for retrieving the value associated to a given symptom.
- This correspond to the maximum value across all potential causes.</div>
+<div class="block">Retrieve the value associated with a given symptom.
+ This corresponds to the maximum value across all potential causes.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the maximum value of the symptom</dd>
+</dl>
 </li>
 </ul>
 <a id="getSourceWithHighValue()">
@@ -367,7 +401,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSourceWithHighValue</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getSourceWithHighValue()</pre>
-<div class="block">Method for retrieving the source with the high value not yet addressed.</div>
+<div class="block">Retrieve the source with the highest value not yet addressed.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the source with the highest value</dd>
+</dl>
 </li>
 </ul>
 <a id="getValueFromSource(java.lang.String)">
@@ -377,7 +415,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getValueFromSource</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Integer&nbsp;getValueFromSource&#8203;(java.lang.String&nbsp;source)</pre>
-<div class="block">Method for retrieving the value associated to a given source.</div>
+<div class="block">Retrieve the value associated with a given source.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the source of the symptom</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the value of the symptom from the source</dd>
+</dl>
 </li>
 </ul>
 <a id="addressSource(java.lang.String)">
@@ -387,7 +431,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>addressSource</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;addressSource&#8203;(java.lang.String&nbsp;source)</pre>
-<div class="block">Method for addressing a given source.</div>
+<div class="block">Address a given source.
+ Resolves the source if it exists in the symptom's sources.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the source to address</dd>
+</dl>
 </li>
 </ul>
 <a id="getSymptomLastUpdatedTime(java.lang.String)">
@@ -397,7 +446,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSymptomLastUpdatedTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getSymptomLastUpdatedTime&#8203;(java.lang.String&nbsp;module)</pre>
-<div class="block">Method for retrieving the last time the symptom has been updated from a given module.</div>
+<div class="block">Retrieve the last time the symptom was updated from a given module.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module of the symptom</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last update time of the symptom</dd>
+</dl>
 </li>
 </ul>
 </li>

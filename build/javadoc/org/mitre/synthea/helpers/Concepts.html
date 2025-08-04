@@ -287,6 +287,8 @@ extends java.lang.Object</pre>
                                                             throws java.lang.Exception</pre>
 <div class="block">Get the list of all concepts in Synthea, as a list of CSV strings.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>onlyMissingCosts</code> - whether to include only concepts without specified costs</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>list of CSV strings</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -324,6 +326,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>concepts</code> - Table of concepts to add to</dd>
 <dd><code>state</code> - State to parse for concepts and codes</dd>
+<dd><code>module</code> - Name of the module the state belongs to</dd>
 </dl>
 </li>
 </ul>
@@ -341,6 +344,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>concepts</code> - Table of concepts to add to</dd>
 <dd><code>codes</code> - Collection of codes to add</dd>
+<dd><code>module</code> - Name of the module the codes belong to</dd>
 </dl>
 </li>
 </ul>

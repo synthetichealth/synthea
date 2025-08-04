@@ -176,42 +176,58 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#codes">codes</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">List of associated codes for the entry.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fullUrl">fullUrl</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Cached full URL used in FHIR exporters.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name">name</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Name of the entry.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#note">note</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Note associated with the entry.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#start">start</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Start time of the entry.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop">stop</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Stop time of the entry.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#type">type</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Type of the entry.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uuid">uuid</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Unique identifier for the entry.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -315,6 +331,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>uuid</h4>
 <pre>public final&nbsp;java.util.UUID uuid</pre>
+<div class="block">Unique identifier for the entry.</div>
 </li>
 </ul>
 <a id="fullUrl">
@@ -324,6 +341,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>fullUrl</h4>
 <pre>public&nbsp;java.lang.String fullUrl</pre>
+<div class="block">Cached full URL used in FHIR exporters.</div>
 </li>
 </ul>
 <a id="name">
@@ -333,6 +351,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>name</h4>
 <pre>public&nbsp;java.lang.String name</pre>
+<div class="block">Name of the entry.</div>
 </li>
 </ul>
 <a id="start">
@@ -342,6 +361,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>start</h4>
 <pre>public&nbsp;long start</pre>
+<div class="block">Start time of the entry.</div>
 </li>
 </ul>
 <a id="stop">
@@ -351,6 +371,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>stop</h4>
 <pre>public&nbsp;long stop</pre>
+<div class="block">Stop time of the entry.</div>
 </li>
 </ul>
 <a id="type">
@@ -360,6 +381,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>type</h4>
 <pre>public&nbsp;java.lang.String type</pre>
+<div class="block">Type of the entry.</div>
 </li>
 </ul>
 <a id="codes">
@@ -369,6 +391,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>codes</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">List of associated codes for the entry.</div>
 </li>
 </ul>
 <a id="note">
@@ -378,6 +401,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>note</h4>
 <pre>public&nbsp;java.lang.String note</pre>
+<div class="block">Note associated with the entry.</div>
 </li>
 </ul>
 </li>
@@ -399,6 +423,11 @@ implements java.io.Serializable</pre>
 <pre>public&nbsp;Entry&#8203;(long&nbsp;start,
              java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start</code> - the start time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -419,6 +448,10 @@ implements java.io.Serializable</pre>
 <h4>getCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getCost()</pre>
 <div class="block">Returns the base cost of the entry.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the cost of the entry</dd>
+</dl>
 </li>
 </ul>
 <a id="containsCode(java.lang.String,java.lang.String)">
@@ -465,6 +498,8 @@ implements java.io.Serializable</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>string representation of the entry</dd>
 </dl>
 </li>
 </ul>

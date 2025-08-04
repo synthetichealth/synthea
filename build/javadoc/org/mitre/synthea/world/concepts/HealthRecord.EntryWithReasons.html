@@ -150,6 +150,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract class <span class="typeNameLabel">HealthRecord.EntryWithReasons</span>
 extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+<div class="block">An Entry with a list of reason codes</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">Serialized Form</a></dd>
@@ -177,7 +178,9 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reasons">reasons</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A list of reason codes associated with the entry.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -281,6 +284,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>reasons</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; reasons</pre>
+<div class="block">A list of reason codes associated with the entry.</div>
 </li>
 </ul>
 </li>
@@ -302,6 +306,11 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <pre>public&nbsp;EntryWithReasons&#8203;(long&nbsp;time,
                         java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for HealthRecord EntryWithReasons.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+</dl>
 </li>
 </ul>
 </li>

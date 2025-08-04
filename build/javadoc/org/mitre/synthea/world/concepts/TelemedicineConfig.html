@@ -194,17 +194,23 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AMBULATORY">AMBULATORY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Ambulatory type of care</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EMERGENCY">EMERGENCY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Emergency type of care</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TELEMEDICINE">TELEMEDICINE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Telemedicine type of care</div>
+</td>
 </tr>
 </table>
 </li>
@@ -249,38 +255,55 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>static <a href="TelemedicineConfig.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fromJSON()">fromJSON</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Create an instance of TelemedicineConfig by reading it in from the JSON file in resources.</div>
+<div class="block">Create an instance of TelemedicineConfig by reading it in from
+ the JSON file in resources.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHighEmergencyUseInsuranceNames()">getHighEmergencyUseInsuranceNames</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the list of insurance names with high emergency department utilization.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPreTelemedHighEmergency()">getPreTelemedHighEmergency</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the distribution of emergency care types before
+ telemedicine for high emergency use insurance.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPreTelemedTypicalEmergency()">getPreTelemedTypicalEmergency</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the distribution of emergency care types before telemedicine for
+ typical emergency use insurance.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTelemedHighEmergency()">getTelemedHighEmergency</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the distribution of emergency care types during
+ telemedicine for high emergency use insurance.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTelemedicineStartTime()">getTelemedicineStartTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the time in the simulation that transitions to telemedicine should start.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTelemedTypicalEmergency()">getTelemedTypicalEmergency</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the distribution of emergency care types during
+ telemedicine for typical emergency use insurance.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -313,6 +336,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>AMBULATORY</h4>
 <pre>public static final&nbsp;java.lang.String AMBULATORY</pre>
+<div class="block">Ambulatory type of care</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.concepts.TelemedicineConfig.AMBULATORY">Constant Field Values</a></dd>
@@ -326,6 +350,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>EMERGENCY</h4>
 <pre>public static final&nbsp;java.lang.String EMERGENCY</pre>
+<div class="block">Emergency type of care</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.concepts.TelemedicineConfig.EMERGENCY">Constant Field Values</a></dd>
@@ -339,6 +364,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>TELEMEDICINE</h4>
 <pre>public static final&nbsp;java.lang.String TELEMEDICINE</pre>
+<div class="block">Telemedicine type of care</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.concepts.TelemedicineConfig.TELEMEDICINE">Constant Field Values</a></dd>
@@ -381,6 +407,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTelemedicineStartTime</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getTelemedicineStartTime()</pre>
+<div class="block">Returns the time in the simulation that transitions to telemedicine should start.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The telemedicine start time.</dd>
+</dl>
 </li>
 </ul>
 <a id="getHighEmergencyUseInsuranceNames()">
@@ -390,6 +421,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getHighEmergencyUseInsuranceNames</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;getHighEmergencyUseInsuranceNames()</pre>
+<div class="block">Returns the list of insurance names with high emergency department utilization.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>List of insurance names.</dd>
+</dl>
 </li>
 </ul>
 <a id="getPreTelemedHighEmergency()">
@@ -399,6 +435,12 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPreTelemedHighEmergency</h4>
 <pre class="methodSignature">public&nbsp;org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;&nbsp;getPreTelemedHighEmergency()</pre>
+<div class="block">Returns the distribution of emergency care types before
+ telemedicine for high emergency use insurance.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Distribution of emergency care types.</dd>
+</dl>
 </li>
 </ul>
 <a id="getPreTelemedTypicalEmergency()">
@@ -408,6 +450,12 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPreTelemedTypicalEmergency</h4>
 <pre class="methodSignature">public&nbsp;org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;&nbsp;getPreTelemedTypicalEmergency()</pre>
+<div class="block">Returns the distribution of emergency care types before telemedicine for
+ typical emergency use insurance.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Distribution of emergency care types.</dd>
+</dl>
 </li>
 </ul>
 <a id="getTelemedHighEmergency()">
@@ -417,6 +465,12 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTelemedHighEmergency</h4>
 <pre class="methodSignature">public&nbsp;org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;&nbsp;getTelemedHighEmergency()</pre>
+<div class="block">Returns the distribution of emergency care types during
+ telemedicine for high emergency use insurance.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Distribution of emergency care types.</dd>
+</dl>
 </li>
 </ul>
 <a id="getTelemedTypicalEmergency()">
@@ -426,6 +480,12 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTelemedTypicalEmergency</h4>
 <pre class="methodSignature">public&nbsp;org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt;&nbsp;getTelemedTypicalEmergency()</pre>
+<div class="block">Returns the distribution of emergency care types during
+ telemedicine for typical emergency use insurance.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Distribution of emergency care types.</dd>
+</dl>
 </li>
 </ul>
 <a id="fromJSON()">
@@ -435,10 +495,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>fromJSON</h4>
 <pre class="methodSignature">public static&nbsp;<a href="TelemedicineConfig.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig</a>&nbsp;fromJSON()</pre>
-<div class="block">Create an instance of TelemedicineConfig by reading it in from the JSON file in resources.</div>
+<div class="block">Create an instance of TelemedicineConfig by reading it in from
+ the JSON file in resources.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A fully populated TelemedicineConfig object</dd>
+<dd>A fully populated TelemedicineConfig object.</dd>
 </dl>
 </li>
 </ul>

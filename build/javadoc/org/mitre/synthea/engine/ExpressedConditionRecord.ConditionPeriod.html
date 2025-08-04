@@ -142,6 +142,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedConditionRecord.ConditionPeriod</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">this class contains basic info regarding an expressed conditions.
+ such as the onset time and end time</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedConditionRecord.ConditionPeriod">Serialized Form</a></dd>
@@ -167,12 +169,16 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.Long)">ConditionPeriod</a></span>&#8203;(java.lang.Long&nbsp;onsetTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a ConditionPeriod with the specified onset time.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.Long,java.lang.Long)">ConditionPeriod</a></span>&#8203;(java.lang.Long&nbsp;onsetTime,
                java.lang.Long&nbsp;endTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a ConditionPeriod with the specified onset and end times.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -195,22 +201,30 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a clone of this ConditionPeriod.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEndTime()">getEndTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the end time of the condition.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOnsetTime()">getOnsetTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the onset time of the condition.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setEndTime(java.lang.Long)">setEndTime</a></span>&#8203;(java.lang.Long&nbsp;endTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the end time of the condition.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -243,6 +257,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>ConditionPeriod</h4>
 <pre>public&nbsp;ConditionPeriod&#8203;(java.lang.Long&nbsp;onsetTime)</pre>
+<div class="block">Constructs a ConditionPeriod with the specified onset time.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>onsetTime</code> - the time the condition started</dd>
+</dl>
 </li>
 </ul>
 <a id="&lt;init&gt;(java.lang.Long,java.lang.Long)">
@@ -253,6 +272,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>ConditionPeriod</h4>
 <pre>public&nbsp;ConditionPeriod&#8203;(java.lang.Long&nbsp;onsetTime,
                        java.lang.Long&nbsp;endTime)</pre>
+<div class="block">Constructs a ConditionPeriod with the specified onset and end times.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>onsetTime</code> - the time the condition started</dd>
+<dd><code>endTime</code> - the time the condition ended</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -272,9 +297,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a>&nbsp;clone()</pre>
+<div class="block">Creates a clone of this ConditionPeriod.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a clone of this ConditionPeriod</dd>
 </dl>
 </li>
 </ul>
@@ -285,6 +313,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getEndTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getEndTime()</pre>
+<div class="block">Gets the end time of the condition.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the end time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="setEndTime(java.lang.Long)">
@@ -294,6 +327,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>setEndTime</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setEndTime&#8203;(java.lang.Long&nbsp;endTime)</pre>
+<div class="block">Sets the end time of the condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>endTime</code> - the end time to set</dd>
+</dl>
 </li>
 </ul>
 <a id="getOnsetTime()">
@@ -303,6 +341,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getOnsetTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getOnsetTime()</pre>
+<div class="block">Gets the onset time of the condition.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the onset time of the condition</dd>
+</dl>
 </li>
 </ul>
 </li>

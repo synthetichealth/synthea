@@ -145,6 +145,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.CarePlan</span>
 extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></pre>
+<div class="block">CarePlan is a plan for care that may include multiple activities and goals.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.CarePlan">Serialized Form</a></dd>
@@ -172,17 +173,23 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <tr class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#activities">activities</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The set of activities included in the care plan.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;com.google.gson.JsonObject&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#goals">goals</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The set of goals included in the care plan.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopReason">stopReason</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The reason for stopping the care plan.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -277,6 +284,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>activities</h4>
 <pre>public&nbsp;java.util.Set&lt;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; activities</pre>
+<div class="block">The set of activities included in the care plan.</div>
 </li>
 </ul>
 <a id="goals">
@@ -286,6 +294,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>goals</h4>
 <pre>public transient&nbsp;java.util.Set&lt;com.google.gson.JsonObject&gt; goals</pre>
+<div class="block">The set of goals included in the care plan.</div>
 </li>
 </ul>
 <a id="stopReason">
@@ -295,6 +304,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>stopReason</h4>
 <pre>public&nbsp;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> stopReason</pre>
+<div class="block">The reason for stopping the care plan.</div>
 </li>
 </ul>
 </li>
@@ -316,6 +326,11 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <pre>public&nbsp;CarePlan&#8203;(long&nbsp;time,
                 java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for CarePlan HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the care plan.</dd>
+<dd><code>type</code> - the type of the care plan.</dd>
+</dl>
 </li>
 </ul>
 </li>

@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthInsuranceModule</span>
 extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></pre>
+<div class="block">HealthInsuranceModule represents health insurance coverage for a Person.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.modules.HealthInsuranceModule">Serialized Form</a></dd>
@@ -186,17 +187,24 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <tr class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mandateOccupation">mandateOccupation</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents the proportion of the population required to have health insurance
+ coverage due to an occupation-related mandate.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mandateTime">mandateTime</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The year at which the mandate went into effect</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#povertyLevel">povertyLevel</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The poverty level used in the simulation to determine socioeconomic factors.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -308,6 +316,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>mandateTime</h4>
 <pre>public static&nbsp;long mandateTime</pre>
+<div class="block">The year at which the mandate went into effect</div>
 </li>
 </ul>
 <a id="mandateOccupation">
@@ -317,6 +326,9 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>mandateOccupation</h4>
 <pre>public static&nbsp;double mandateOccupation</pre>
+<div class="block">Represents the proportion of the population required to have health insurance
+ coverage due to an occupation-related mandate. This value is read from the
+ configuration file and defaults to 0.2 (20%) if not specified.</div>
 </li>
 </ul>
 <a id="povertyLevel">
@@ -326,6 +338,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>povertyLevel</h4>
 <pre>public static&nbsp;double povertyLevel</pre>
+<div class="block">The poverty level used in the simulation to determine socioeconomic factors.</div>
 </li>
 </ul>
 </li>

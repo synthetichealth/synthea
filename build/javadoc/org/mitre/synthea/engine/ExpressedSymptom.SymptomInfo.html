@@ -142,6 +142,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedSymptom.SymptomInfo</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">Contains basic information regarding an expressed symptom, such as the cause,
+ value, and the time it was set.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedSymptom.SymptomInfo">Serialized Form</a></dd>
@@ -170,7 +172,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
            java.lang.Integer&nbsp;value,
            java.lang.Long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Create a new instance for the supplied cause, value and time.</div>
+<div class="block">Create a new instance for the supplied cause, value, and time.</div>
 </td>
 </tr>
 </table>
@@ -194,22 +196,30 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create a clone of this SymptomInfo instance.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCause()">getCause</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the cause of the symptom.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTime()">getTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the time the symptom was set.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Integer</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getValue()">getValue</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the value associated with the symptom.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -244,7 +254,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <pre>public&nbsp;SymptomInfo&#8203;(java.lang.String&nbsp;cause,
                    java.lang.Integer&nbsp;value,
                    java.lang.Long&nbsp;time)</pre>
-<div class="block">Create a new instance for the supplied cause, value and time.</div>
+<div class="block">Create a new instance for the supplied cause, value, and time.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>cause</code> - the cause of the symptom</dd>
+<dd><code>value</code> - the value associated with the symptom</dd>
+<dd><code>time</code> - the time the symptom was set</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -264,9 +280,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a>&nbsp;clone()</pre>
+<div class="block">Create a clone of this SymptomInfo instance.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a cloned instance of SymptomInfo</dd>
 </dl>
 </li>
 </ul>
@@ -277,6 +296,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getCause</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCause()</pre>
+<div class="block">Get the cause of the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the cause of the symptom</dd>
+</dl>
 </li>
 </ul>
 <a id="getValue()">
@@ -286,6 +310,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getValue</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Integer&nbsp;getValue()</pre>
+<div class="block">Get the value associated with the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the value of the symptom</dd>
+</dl>
 </li>
 </ul>
 <a id="getTime()">
@@ -295,6 +324,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getTime()</pre>
+<div class="block">Get the time the symptom was set.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the time the symptom was set</dd>
+</dl>
 </li>
 </ul>
 </li>

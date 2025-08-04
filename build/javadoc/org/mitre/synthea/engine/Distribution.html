@@ -138,8 +138,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Distribution</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
-<div class="block">Representation of different types of distributions that can be used to represent
- random variables used in Synthea States.</div>
+<div class="block">Represents different types of distributions that can be used to model
+ random variables in Synthea States.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.Distribution">Serialized Form</a></dd>
@@ -167,7 +167,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enum representing the types of distributions supported.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -190,17 +192,23 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code><a href="Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kind">kind</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The type of distribution.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.HashMap&lt;java.lang.String,&#8203;java.lang.Double&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parameters">parameters</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Parameters defining the distribution (e.g., mean, standard deviation).</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#round">round</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Whether the generated value should be rounded to the nearest integer.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -287,6 +295,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>kind</h4>
 <pre>public&nbsp;<a href="Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a> kind</pre>
+<div class="block">The type of distribution.</div>
 </li>
 </ul>
 <a id="round">
@@ -296,6 +305,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>round</h4>
 <pre>public&nbsp;java.lang.Boolean round</pre>
+<div class="block">Whether the generated value should be rounded to the nearest integer.</div>
 </li>
 </ul>
 <a id="parameters">
@@ -305,6 +315,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>parameters</h4>
 <pre>public&nbsp;java.util.HashMap&lt;java.lang.String,&#8203;java.lang.Double&gt; parameters</pre>
+<div class="block">Parameters defining the distribution (e.g., mean, standard deviation).</div>
 </li>
 </ul>
 </li>
@@ -346,9 +357,9 @@ implements java.io.Serializable</pre>
 <div class="block">Generate a sample from the random variable.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - The place to obtain a repeatable source of randomness</dd>
+<dd><code>person</code> - the person object to obtain a repeatable source of randomness</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The value</dd>
+<dd>the generated value</dd>
 </dl>
 </li>
 </ul>

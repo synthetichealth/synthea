@@ -235,13 +235,17 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#diagnose(org.mitre.synthea.world.agents.Person,long)">diagnose</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
         long&nbsp;time)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Diagnoses the person with the condition or allergy that has onset.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateOnsetInfo(org.mitre.synthea.world.agents.Person,long)">updateOnsetInfo</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                long&nbsp;time)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Updates the onset condition record for the person.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -301,6 +305,13 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <h4>updateOnsetInfo</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;updateOnsetInfo&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                long&nbsp;time)</pre>
+<div class="block">Updates the onset condition record for the person.
+ This method is called when the state is processed.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person to update</dd>
+<dd><code>time</code> - the date within the simulated world</dd>
+</dl>
 </li>
 </ul>
 <a id="diagnose(org.mitre.synthea.world.agents.Person,long)">
@@ -311,6 +322,12 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <h4>diagnose</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;diagnose&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                      long&nbsp;time)</pre>
+<div class="block">Diagnoses the person with the condition or allergy that has onset.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person being diagnosed</dd>
+<dd><code>time</code> - the date within the simulated world</dd>
+</dl>
 </li>
 </ul>
 </li>

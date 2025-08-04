@@ -151,6 +151,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.Medication</span>
 extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></pre>
+<div class="block">Medication is a prescription or administration of a medication.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Medication">Serialized Form</a></dd>
@@ -178,27 +179,37 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#administration">administration</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Whether the medication is being administered</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chronic">chronic</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Whether the medication is being taken chronically</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#claim">claim</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The claim associated with this medication</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>com.google.gson.JsonObject</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#prescriptionDetails">prescriptionDetails</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Details about the prescription</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopReason">stopReason</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The reason to stop giving the medication</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -308,6 +319,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>stopReason</h4>
 <pre>public&nbsp;<a href="HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> stopReason</pre>
+<div class="block">The reason to stop giving the medication</div>
 </li>
 </ul>
 <a id="prescriptionDetails">
@@ -317,6 +329,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>prescriptionDetails</h4>
 <pre>public transient&nbsp;com.google.gson.JsonObject prescriptionDetails</pre>
+<div class="block">Details about the prescription</div>
 </li>
 </ul>
 <a id="claim">
@@ -326,6 +339,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>claim</h4>
 <pre>public&nbsp;<a href="Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a> claim</pre>
+<div class="block">The claim associated with this medication</div>
 </li>
 </ul>
 <a id="administration">
@@ -335,6 +349,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>administration</h4>
 <pre>public&nbsp;boolean administration</pre>
+<div class="block">Whether the medication is being administered</div>
 </li>
 </ul>
 <a id="chronic">
@@ -344,6 +359,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>chronic</h4>
 <pre>public&nbsp;boolean chronic</pre>
+<div class="block">Whether the medication is being taken chronically</div>
 </li>
 </ul>
 </li>
@@ -365,6 +381,11 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <pre>public&nbsp;Medication&#8203;(long&nbsp;time,
                   java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for Medication HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+</dl>
 </li>
 </ul>
 </li>

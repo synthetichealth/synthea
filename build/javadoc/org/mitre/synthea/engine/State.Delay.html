@@ -262,14 +262,18 @@ extends <a href="State.Delayable.html" title="class in org.mitre.synthea.engine"
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#endOfDelay(long,org.mitre.synthea.world.agents.Person)">endOfDelay</a></span>&#8203;(long&nbsp;time,
           <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Determines the end of the delay for this state.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">initialize</a></span>&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
           java.lang.String&nbsp;name,
           com.google.gson.JsonObject&nbsp;definition)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes the state with the given module, name, and definition.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -345,9 +349,15 @@ extends <a href="State.Delayable.html" title="class in org.mitre.synthea.engine"
 <pre class="methodSignature">protected&nbsp;void&nbsp;initialize&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
                           java.lang.String&nbsp;name,
                           com.google.gson.JsonObject&nbsp;definition)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="State.html#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">State</a></code></span></div>
+<div class="block">Initializes the state with the given module, name, and definition.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="State.html#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">initialize</a></code>&nbsp;in class&nbsp;<code><a href="State.html" title="class in org.mitre.synthea.engine">State</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module associated with this state</dd>
+<dd><code>name</code> - the name of the state</dd>
+<dd><code>definition</code> - the JSON definition of the state</dd>
 </dl>
 </li>
 </ul>
@@ -380,9 +390,16 @@ extends <a href="State.Delayable.html" title="class in org.mitre.synthea.engine"
 <h4>endOfDelay</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;endOfDelay&#8203;(long&nbsp;time,
                        <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="State.Delayable.html#endOfDelay(long,org.mitre.synthea.world.agents.Person)">State.Delayable</a></code></span></div>
+<div class="block">Determines the end of the delay for this state.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="State.Delayable.html#endOfDelay(long,org.mitre.synthea.world.agents.Person)">endOfDelay</a></code>&nbsp;in class&nbsp;<code><a href="State.Delayable.html" title="class in org.mitre.synthea.engine">State.Delayable</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the current time</dd>
+<dd><code>person</code> - the person being simulated</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the time the delay ends</dd>
 </dl>
 </li>
 </ul>

@@ -1,12 +1,6 @@
 unnamed package
 org.mitre.synthea.editors
 org.mitre.synthea.engine
-org.mitre.synthea.export
-org.mitre.synthea.export.flexporter
-org.mitre.synthea.export.rif
-org.mitre.synthea.export.rif.enrollment
-org.mitre.synthea.export.rif.identifiers
-org.mitre.synthea.export.rif.tools
 org.mitre.synthea.helpers
 org.mitre.synthea.helpers.physiology
 org.mitre.synthea.identity

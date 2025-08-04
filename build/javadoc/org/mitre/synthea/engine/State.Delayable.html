@@ -150,6 +150,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract static class <span class="typeNameLabel">State.Delayable</span>
 extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a></pre>
+<div class="block">Represents a state that can be delayed.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.State.Delayable">Serialized Form</a></dd>
@@ -194,7 +195,11 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next">next</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">next is "transient" in the sense that it represents object state
+ as opposed to the other fields which represent object definition
+ hence it is unset in clone()</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -254,7 +259,9 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <td class="colFirst"><code>abstract long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#endOfDelay(long,org.mitre.synthea.world.agents.Person)">endOfDelay</a></span>&#8203;(long&nbsp;time,
           <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Determines the end of the delay for this state.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -310,6 +317,9 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <li class="blockList">
 <h4>next</h4>
 <pre>public&nbsp;java.lang.Long next</pre>
+<div class="block">next is "transient" in the sense that it represents object state
+ as opposed to the other fields which represent object definition
+ hence it is unset in clone()</div>
 </li>
 </ul>
 </li>
@@ -370,6 +380,14 @@ extends <a href="State.html" title="class in org.mitre.synthea.engine">State</a>
 <h4>endOfDelay</h4>
 <pre class="methodSignature">public abstract&nbsp;long&nbsp;endOfDelay&#8203;(long&nbsp;time,
                                 <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Determines the end of the delay for this state.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the current time</dd>
+<dd><code>person</code> - the person being simulated</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the time the delay ends</dd>
+</dl>
 </li>
 </ul>
 <a id="processOnce(org.mitre.synthea.world.agents.Person,long)">

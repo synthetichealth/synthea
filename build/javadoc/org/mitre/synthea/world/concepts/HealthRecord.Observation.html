@@ -140,6 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.Observation</span>
 extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+<div class="block">An Observation for the patient record</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Observation">Serialized Form</a></dd>
@@ -167,27 +168,37 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#category">category</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The category this observation falls under, bound by a valueset</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#observations">observations</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">List of sub-observations</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#report">report</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The report this observation is part of, if any</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unit">unit</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The unit of the value</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#value">value</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The value of this observation</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -269,6 +280,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>value</h4>
 <pre>public&nbsp;java.lang.Object value</pre>
+<div class="block">The value of this observation</div>
 </li>
 </ul>
 <a id="category">
@@ -278,6 +290,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>category</h4>
 <pre>public&nbsp;java.lang.String category</pre>
+<div class="block">The category this observation falls under, bound by a valueset</div>
 </li>
 </ul>
 <a id="unit">
@@ -287,6 +300,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>unit</h4>
 <pre>public&nbsp;java.lang.String unit</pre>
+<div class="block">The unit of the value</div>
 </li>
 </ul>
 <a id="observations">
@@ -296,6 +310,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>observations</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">List of sub-observations</div>
 </li>
 </ul>
 <a id="report">
@@ -305,6 +320,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>report</h4>
 <pre>public&nbsp;<a href="HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a> report</pre>
+<div class="block">The report this observation is part of, if any</div>
 </li>
 </ul>
 </li>
@@ -327,6 +343,12 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
                    java.lang.String&nbsp;type,
                    java.lang.Object&nbsp;value)</pre>
 <div class="block">Constructor for Observation HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+<dd><code>value</code> - the value of the observation</dd>
+</dl>
 </li>
 </ul>
 </li>

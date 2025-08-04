@@ -138,6 +138,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedConditionRecord</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">Represents a record of conditions expressed by a person, including onset and end times,
+ and associated symptoms.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedConditionRecord">Serialized Form</a></dd>
@@ -165,12 +167,16 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">this class contains basic info regarding an expressed conditions.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ExpressedConditionRecord.ConditionWithSymptoms.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionWithSymptoms</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents a condition with its associated symptoms.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
@@ -183,7 +189,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a></span></code></th>
 <td class="colLast">
-<div class="block">A condition with a set of onset and end time entries.</div>
+<div class="block">Represents a condition with a set of onset and end time entries.</div>
 </td>
 </tr>
 </table>
@@ -205,7 +211,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.agents.Person)">ExpressedConditionRecord</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create a new instance of ExpressedConditionRecord.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -269,7 +277,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedConditionRecord.ModuleConditions.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ModuleConditions</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSources()">getSources</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the sources of conditions expressed by the person.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -323,6 +333,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>ExpressedConditionRecord</h4>
 <pre>public&nbsp;ExpressedConditionRecord&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Create a new instance of ExpressedConditionRecord.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person associated with this record</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -356,6 +371,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSources</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedConditionRecord.ModuleConditions.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ModuleConditions</a>&gt;&nbsp;getSources()</pre>
+<div class="block">Get the sources of conditions expressed by the person.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of module names to their associated conditions</dd>
+</dl>
 </li>
 </ul>
 <a id="onConditionOnset(java.lang.String,java.lang.String,java.lang.String,long)">
@@ -370,6 +390,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                              long&nbsp;time)</pre>
 <div class="block">Method that is used to update the onsetConditions field when
  a ConditionOnset state is processed.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module name</dd>
+<dd><code>state</code> - the state name</dd>
+<dd><code>condition</code> - the condition name</dd>
+<dd><code>time</code> - the time the condition started</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionLastOnsetTimeFromModule(java.lang.String,java.lang.String)">
@@ -382,6 +409,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                                                           java.lang.String&nbsp;condition)</pre>
 <div class="block">Method that is used to retrieve the last time a condition
  has been onset from a given module.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module name</dd>
+<dd><code>condition</code> - the condition name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last onset time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionLastEndTimeFromModule(java.lang.String,java.lang.String)">
@@ -394,6 +428,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                                                         java.lang.String&nbsp;condition)</pre>
 <div class="block">Method that is used to retrieve the last time a ConditionEnd state
  has been processed for a given condition from a given module.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module name</dd>
+<dd><code>condition</code> - the condition name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last end time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionFromState(java.lang.String,java.lang.String)">
@@ -406,6 +447,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                                               java.lang.String&nbsp;state)</pre>
 <div class="block">Method for retrieving the condition name from a state name.
  Useful when dealing with ConditionEnd.conditionOnSet attribute.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module name</dd>
+<dd><code>state</code> - the state name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the condition name associated with the state</dd>
+</dl>
 </li>
 </ul>
 <a id="onConditionEnd(java.lang.String,java.lang.String,long)">
@@ -419,6 +467,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                            long&nbsp;time)</pre>
 <div class="block">Method that is used to update the onsetConditions field when
  a ConditionEnd state is processed.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module name</dd>
+<dd><code>condition</code> - the condition name</dd>
+<dd><code>time</code> - the time the condition ended</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionSymptoms()">
@@ -433,6 +487,10 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
  The returned data is a map of [time: List of ConditionWithSymtoms].
  It captures the conditions a person has suffered from together
  with the related symptoms at different age/time.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of time to a list of conditions with symptoms</dd>
+</dl>
 </li>
 </ul>
 </li>

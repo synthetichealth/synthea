@@ -133,6 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract class <span class="typeNameLabel">Config</span>
 extends java.lang.Object</pre>
+<div class="block">Utility class for managing configuration properties in Synthea.
+ Provides methods to load, retrieve, and manipulate configuration values.</div>
 </li>
 </ul>
 </div>
@@ -267,7 +269,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.io.InputStream)">load</a></span>&#8203;(java.io.InputStream&nbsp;stream)</code></th>
 <td class="colLast">
-<div class="block">Load properties from an input stream.</div>
+<div class="block">Load properties from an input stream (e.g., when running inside a JAR).</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
@@ -339,9 +341,11 @@ extends java.lang.Object</pre>
                         java.io.IOException</pre>
 <div class="block">Load properties from a file.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>propsFile</code> - the file containing properties to load</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.FileNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.FileNotFoundException</code> - if the file is not found</dd>
+<dd><code>java.io.IOException</code> - if an error occurs while reading the file</dd>
 </dl>
 </li>
 </ul>
@@ -353,10 +357,12 @@ extends java.lang.Object</pre>
 <h4>load</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;load&#8203;(java.io.InputStream&nbsp;stream)
                  throws java.io.IOException</pre>
-<div class="block">Load properties from an input stream. (ex, when running inside a JAR)</div>
+<div class="block">Load properties from an input stream (e.g., when running inside a JAR).</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>stream</code> - the input stream containing properties to load</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if an error occurs while reading the stream</dd>
 </dl>
 </li>
 </ul>
@@ -406,7 +412,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - property name</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or null if not found</dd>
+<dd>value for the property as a double, or null if not found</dd>
 </dl>
 </li>
 </ul>
@@ -424,7 +430,7 @@ extends java.lang.Object</pre>
 <dd><code>key</code> - property name</dd>
 <dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or defaultValue if not found</dd>
+<dd>value for the property as a double, or defaultValue if not found</dd>
 </dl>
 </li>
 </ul>
@@ -440,7 +446,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - property name</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or null if not found</dd>
+<dd>value for the property as a boolean, or null if not found</dd>
 </dl>
 </li>
 </ul>
@@ -458,7 +464,7 @@ extends java.lang.Object</pre>
 <dd><code>key</code> - property name</dd>
 <dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or defaultValue if not found</dd>
+<dd>value for the property as a boolean, or defaultValue if not found</dd>
 </dl>
 </li>
 </ul>
@@ -474,7 +480,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - property name</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or null if not found</dd>
+<dd>value for the property as an int, or null if not found</dd>
 </dl>
 </li>
 </ul>
@@ -492,7 +498,7 @@ extends java.lang.Object</pre>
 <dd><code>key</code> - property name</dd>
 <dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or defaultValue if not found</dd>
+<dd>value for the property as an int, or defaultValue if not found</dd>
 </dl>
 </li>
 </ul>
@@ -508,7 +514,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - property name</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or null if not found</dd>
+<dd>value for the property as a long, or null if not found</dd>
 </dl>
 </li>
 </ul>
@@ -526,7 +532,7 @@ extends java.lang.Object</pre>
 <dd><code>key</code> - property name</dd>
 <dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>value for the property, or defaultValue if not found</dd>
+<dd>value for the property as a long, or defaultValue if not found</dd>
 </dl>
 </li>
 </ul>

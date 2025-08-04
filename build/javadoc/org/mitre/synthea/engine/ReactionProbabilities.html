@@ -167,7 +167,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents the severity level and its associated probability for a reaction.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -189,7 +191,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.concepts.HealthRecord.Code,java.util.List)">ReactionProbabilities</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;code,
                      java.util.List&lt;<a href="ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a>&gt;&nbsp;possibleReactions)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a ReactionProbabilities object with a reaction code and possible severities.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -227,22 +231,31 @@ implements java.io.Serializable</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReaction()">getReaction</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the reaction code.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPopulated()">isPopulated</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Checks if the ReactionProbabilities object has any possible severities defined.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setReaction(org.mitre.synthea.world.concepts.HealthRecord.Code)">setReaction</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;reaction)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the reaction code.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#validate()">validate</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Validates the reaction probabilities to ensure that the sum of all
+ probabilities is less than or equal to 1.0.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -276,6 +289,12 @@ implements java.io.Serializable</pre>
 <h4>ReactionProbabilities</h4>
 <pre>public&nbsp;ReactionProbabilities&#8203;(<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;code,
                              java.util.List&lt;<a href="ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a>&gt;&nbsp;possibleReactions)</pre>
+<div class="block">Constructs a ReactionProbabilities object with a reaction code and possible severities.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>code</code> - The reaction code.</dd>
+<dd><code>possibleReactions</code> - The list of possible severities and their probabilities.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -295,6 +314,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getReaction</h4>
 <pre class="methodSignature">public&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;getReaction()</pre>
+<div class="block">Gets the reaction code.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The reaction code.</dd>
+</dl>
 </li>
 </ul>
 <a id="setReaction(org.mitre.synthea.world.concepts.HealthRecord.Code)">
@@ -304,6 +328,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setReaction</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setReaction&#8203;(<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;reaction)</pre>
+<div class="block">Sets the reaction code.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>reaction</code> - The reaction code.</dd>
+</dl>
 </li>
 </ul>
 <a id="isPopulated()">
@@ -313,6 +342,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>isPopulated</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isPopulated()</pre>
+<div class="block">Checks if the ReactionProbabilities object has any possible severities defined.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if there are possible severities, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="buildReactionDistributions()">
@@ -333,6 +367,12 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>validate</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;validate()</pre>
+<div class="block">Validates the reaction probabilities to ensure that the sum of all
+ probabilities is less than or equal to 1.0.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the reaction probabilities are valid, false otherwise</dd>
+</dl>
 </li>
 </ul>
 <a id="generateSeverity(org.mitre.synthea.world.agents.Person)">

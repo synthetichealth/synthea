@@ -137,6 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public static class <span class="typeNameLabel">ConsolidatedServicePeriods.ConsolidatedServicePeriod</span>
 extends java.lang.Object</pre>
+<div class="block">Represents a single consolidated service period.</div>
 </li>
 </ul>
 </div>
@@ -190,27 +191,37 @@ extends java.lang.Object</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEncounters()">getEncounters</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the list of encounters in this service period.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProvider()">getProvider</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the provider associated with this service period.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStart()">getStart</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the start time of this service period.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStop()">getStop</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the stop time of this service period.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalCost()">getTotalCost</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the total cost of this service period.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -255,7 +266,7 @@ extends java.lang.Object</pre>
 <div class="block">Create a new instance initialized with the time bounds and costs of the supplied encounter.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - used to initialize the service period</dd>
+<dd><code>encounter</code> - the encounter used to initialize the service period</dd>
 </dl>
 </li>
 </ul>
@@ -281,9 +292,10 @@ extends java.lang.Object</pre>
  interval) with this period.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - the encounter</dd>
-<dd><code>maxSeparationTime</code> - maxx allowed separation in milliseconds</dd>
+<dd><code>encounter</code> - the encounter to check</dd>
+<dd><code>maxSeparationTime</code> - the maximum allowed separation in milliseconds</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the encounter is contiguous with this period, false otherwise</dd>
 </dl>
 </li>
 </ul>
@@ -297,7 +309,7 @@ extends java.lang.Object</pre>
 <div class="block">Extend the current period to encapsulate the time bounds and costs of the supplied encounter.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - the encounter</dd>
+<dd><code>encounter</code> - the encounter to add to this service period</dd>
 </dl>
 </li>
 </ul>
@@ -308,6 +320,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getEncounters</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&gt;&nbsp;getEncounters()</pre>
+<div class="block">Get the list of encounters in this service period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of encounters</dd>
+</dl>
 </li>
 </ul>
 <a id="getStart()">
@@ -317,6 +334,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getStart</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getStart()</pre>
+<div class="block">Get the start time of this service period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the start time in milliseconds</dd>
+</dl>
 </li>
 </ul>
 <a id="getStop()">
@@ -326,6 +348,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getStop</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getStop()</pre>
+<div class="block">Get the stop time of this service period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the stop time in milliseconds</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalCost()">
@@ -335,6 +362,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTotalCost</h4>
 <pre class="methodSignature">public&nbsp;<a href="../world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a>&nbsp;getTotalCost()</pre>
+<div class="block">Get the total cost of this service period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total cost</dd>
+</dl>
 </li>
 </ul>
 <a id="getProvider()">
@@ -344,6 +376,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getProvider</h4>
 <pre class="methodSignature">public&nbsp;<a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;getProvider()</pre>
+<div class="block">Get the provider associated with this service period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the provider</dd>
+</dl>
 </li>
 </ul>
 </li>

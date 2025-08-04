@@ -133,6 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">Utilities</span>
 extends java.lang.Object</pre>
+<div class="block">A utility class providing various helper methods for time conversions, comparisons,
+ file reading, and resource parsing.</div>
 </li>
 </ul>
 </div>
@@ -544,6 +546,12 @@ extends java.lang.Object</pre>
 <h4>convertCalendarYearsToTime</h4>
 <pre class="methodSignature">public static&nbsp;long&nbsp;convertCalendarYearsToTime&#8203;(int&nbsp;years)</pre>
 <div class="block">Convert a calendar year (e.g. 2020) to a Unix timestamp</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>years</code> - The number of calendar years to convert.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The equivalent time in milliseconds.</dd>
+</dl>
 </li>
 </ul>
 <a id="getYear(long)">
@@ -554,6 +562,12 @@ extends java.lang.Object</pre>
 <h4>getYear</h4>
 <pre class="methodSignature">public static&nbsp;int&nbsp;getYear&#8203;(long&nbsp;time)</pre>
 <div class="block">Get the year of a Unix timestamp.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - The simulation timestamp.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The year extracted from the timestamp.</dd>
+</dl>
 </li>
 </ul>
 <a id="getMonth(long)">
@@ -564,6 +578,12 @@ extends java.lang.Object</pre>
 <h4>getMonth</h4>
 <pre class="methodSignature">public static&nbsp;int&nbsp;getMonth&#8203;(long&nbsp;time)</pre>
 <div class="block">Get the month of a Unix timestamp.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - The simulation timestamp.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The month extracted from the timestamp.</dd>
+</dl>
 </li>
 </ul>
 <a id="localDateToTimestamp(java.time.LocalDate)">
@@ -593,6 +613,12 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;java.time.LocalDate&nbsp;timestampToLocalDate&#8203;(long&nbsp;timestamp)</pre>
 <div class="block">Convert the given Unix timestamp into a LocalDate.
  The timestamp is assumed to be interpreted in the UTC time zone.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>timestamp</code> - The simulation timestamp.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The equivalent LocalDate.</dd>
+</dl>
 </li>
 </ul>
 <a id="getAnniversary(long,int)">
@@ -638,6 +664,13 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;double&nbsp;convertRiskToTimestep&#8203;(double&nbsp;risk,
                                            double&nbsp;originalPeriodInMS)</pre>
 <div class="block">Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>risk</code> - The risk value to convert.</dd>
+<dd><code>originalPeriodInMS</code> - The original period in milliseconds.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The equivalent timestep in milliseconds.</dd>
+</dl>
 </li>
 </ul>
 <a id="convertRiskToTimestep(double,double,double)">
@@ -650,6 +683,14 @@ extends java.lang.Object</pre>
                                            double&nbsp;originalPeriodInMS,
                                            double&nbsp;newTimeStepInMS)</pre>
 <div class="block">Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>risk</code> - The risk value to convert.</dd>
+<dd><code>originalPeriodInMS</code> - The original period in milliseconds.</dd>
+<dd><code>newTimeStepInMS</code> - The new timestep in milliseconds.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The equivalent timestep in milliseconds.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(java.lang.Object,java.lang.Object,java.lang.String)">
@@ -665,6 +706,14 @@ extends java.lang.Object</pre>
  Numbers are converted to double prior to comparison.
  Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
  Only lhs is checked for is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side object.</dd>
+<dd><code>rhs</code> - The right-hand side object.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(java.lang.Double,java.lang.Double,java.lang.String)">
@@ -679,6 +728,14 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Doubles.
  Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
  Only lhs is checked for is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side Double value.</dd>
+<dd><code>rhs</code> - The right-hand side Double value.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(java.lang.Boolean,java.lang.Boolean,java.lang.String)">
@@ -693,6 +750,14 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Booleans.
  Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
  Only lhs is checked for is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side Boolean value.</dd>
+<dd><code>rhs</code> - The right-hand side Boolean value.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(java.lang.String,java.lang.String,java.lang.String)">
@@ -707,6 +772,14 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Strings.
  Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
  Only lhs is checked for is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side String value.</dd>
+<dd><code>rhs</code> - The right-hand side String value.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(java.lang.Integer,java.lang.Integer,java.lang.String)">
@@ -721,6 +794,14 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Integers.
  Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
  Only lhs is checked for is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side Integer value.</dd>
+<dd><code>rhs</code> - The right-hand side Integer value.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="compare(org.mitre.synthea.world.concepts.HealthRecord.Code,org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String)">
@@ -735,6 +816,14 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Codes.
  Supported operators are: !=, is nil, is not nil. Only lhs is checked for
  is nil and is not nil.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lhs</code> - The left-hand side Code object.</dd>
+<dd><code>rhs</code> - The right-hand side Code object.</dd>
+<dd><code>operator</code> - The comparison operator.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the comparison is valid, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="parseDateRange(java.lang.String)">
@@ -880,6 +969,11 @@ extends java.lang.Object</pre>
  Optionally add series and/or instance numbers to the UID to enhance its uniqueness.
  Pass 0 for the series/instance number to omit it from the UID.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>random</code> - The random number generator.</dd>
+<dd><code>time</code> - The simulation time.</dd>
+<dd><code>seriesNo</code> - The series number.</dd>
+<dd><code>instanceNo</code> - The instance number.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a String DICOM UID</dd>
 </dl>
@@ -917,7 +1011,7 @@ extends java.lang.Object</pre>
 <dd><code>action</code> - Action to apply for every module. Function signature is
         (topLevelModulesFolderPath, currentModulePath) -&gt; {...}</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurs while walking the directory structure.</dd>
 </dl>
 </li>
 </ul>
@@ -934,10 +1028,11 @@ extends java.lang.Object</pre>
  function for every module underneath.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>modulesPath</code> - The starting path of the modules.</dd>
 <dd><code>action</code> - Action to apply for every module. Function signature is
         (currentModulePath) -&gt; {...}</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurs while walking the directory structure.</dd>
 </dl>
 </li>
 </ul>
@@ -973,9 +1068,9 @@ extends java.lang.Object</pre>
  path refers to an internal location.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>uri</code> - URI to be accessed</dd>
+<dd><code>uri</code> - URI to be accessed.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if an error occurs while enabling reading from the JAR file.</dd>
 </dl>
 </li>
 </ul>

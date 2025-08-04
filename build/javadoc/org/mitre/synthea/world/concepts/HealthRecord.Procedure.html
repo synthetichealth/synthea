@@ -145,6 +145,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.Procedure</span>
 extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></pre>
+<div class="block">Represents a procedure performed on a patient.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Procedure">Serialized Form</a></dd>
@@ -172,12 +173,16 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <tr class="altColor">
 <td class="colFirst"><code><a href="../agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clinician">clinician</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The clinician who performed the procedure.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#provider">provider</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The provider responsible for the procedure.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -272,6 +277,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>provider</h4>
 <pre>public&nbsp;<a href="../agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
+<div class="block">The provider responsible for the procedure.</div>
 </li>
 </ul>
 <a id="clinician">
@@ -281,6 +287,7 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <li class="blockList">
 <h4>clinician</h4>
 <pre>public&nbsp;<a href="../agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a> clinician</pre>
+<div class="block">The clinician who performed the procedure.</div>
 </li>
 </ul>
 </li>
@@ -302,6 +309,11 @@ extends <a href="HealthRecord.EntryWithReasons.html" title="class in org.mitre.s
 <pre>public&nbsp;Procedure&#8203;(long&nbsp;time,
                  java.lang.String&nbsp;type)</pre>
 <div class="block">Constructor for Procedure HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the procedure.</dd>
+<dd><code>type</code> - the type of the procedure.</dd>
+</dl>
 </li>
 </ul>
 </li>

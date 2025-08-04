@@ -145,8 +145,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public static class <span class="typeNameLabel">ChartRenderer.MultiTableChartConfig</span>
-extends <a href="ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a>
-implements java.io.Serializable</pre>
+extends <a href="ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a></pre>
 <div class="block">POJO configuration for a chart with data from a MultiTable.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -196,42 +195,58 @@ implements java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAxisParamX()">getAxisParamX</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the parameter to render on the x-axis.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEndTime()">getEndTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the simulation time in seconds to end charting points.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="ChartRenderer.MultiTableSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableSeriesConfig</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSeries()">getSeries</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the list of series configurations for this chart.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStartTime()">getStartTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the simulation time in seconds to start charting points.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAxisParamX(java.lang.String)">setAxisParamX</a></span>&#8203;(java.lang.String&nbsp;axisParamX)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the parameter for the x-axis.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setEndTime(double)">setEndTime</a></span>&#8203;(double&nbsp;endTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the simulation time to end charting points.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSeries(java.util.List)">setSeries</a></span>&#8203;(java.util.List&lt;<a href="ChartRenderer.MultiTableSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableSeriesConfig</a>&gt;&nbsp;series)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the list of series configurations for this chart.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStartTime(double)">setStartTime</a></span>&#8203;(double&nbsp;startTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the simulation time to start charting points.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -290,6 +305,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getAxisParamX</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getAxisParamX()</pre>
+<div class="block">Gets the parameter to render on the x-axis.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the parameter to render on the x-axis.</dd>
+</dl>
 </li>
 </ul>
 <a id="setAxisParamX(java.lang.String)">
@@ -299,6 +319,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setAxisParamX</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setAxisParamX&#8203;(java.lang.String&nbsp;axisParamX)</pre>
+<div class="block">Sets the parameter for the x-axis.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>axisParamX</code> - the parameter to set for the x-axis.</dd>
+</dl>
 </li>
 </ul>
 <a id="getStartTime()">
@@ -308,6 +333,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getStartTime</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getStartTime()</pre>
+<div class="block">Gets the simulation time in seconds to start charting points.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the simulation time in seconds to start charting points.</dd>
+</dl>
 </li>
 </ul>
 <a id="setStartTime(double)">
@@ -317,6 +347,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setStartTime</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setStartTime&#8203;(double&nbsp;startTime)</pre>
+<div class="block">Sets the simulation time to start charting points.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>startTime</code> - the simulation time to set for starting charting points.</dd>
+</dl>
 </li>
 </ul>
 <a id="getEndTime()">
@@ -326,6 +361,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getEndTime</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getEndTime()</pre>
+<div class="block">Gets the simulation time in seconds to end charting points.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the simulation time in seconds to end charting points.</dd>
+</dl>
 </li>
 </ul>
 <a id="setEndTime(double)">
@@ -335,6 +375,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setEndTime</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setEndTime&#8203;(double&nbsp;endTime)</pre>
+<div class="block">Sets the simulation time to end charting points.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>endTime</code> - the simulation time to set for ending charting points.</dd>
+</dl>
 </li>
 </ul>
 <a id="getSeries()">
@@ -344,6 +389,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSeries</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="ChartRenderer.MultiTableSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableSeriesConfig</a>&gt;&nbsp;getSeries()</pre>
+<div class="block">Gets the list of series configurations for this chart.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of series configurations for this chart.</dd>
+</dl>
 </li>
 </ul>
 <a id="setSeries(java.util.List)">
@@ -353,6 +403,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setSeries</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setSeries&#8203;(java.util.List&lt;<a href="ChartRenderer.MultiTableSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableSeriesConfig</a>&gt;&nbsp;series)</pre>
+<div class="block">Sets the list of series configurations for this chart.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>series</code> - the list of series configurations to set for this chart.</dd>
+</dl>
 </li>
 </ul>
 </li>

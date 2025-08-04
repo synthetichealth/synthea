@@ -143,8 +143,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public static class <span class="typeNameLabel">Components.RangeWithUnit&lt;R extends java.lang.Number&gt;</span>
-extends <a href="Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a>&lt;R&gt;
-implements java.io.Serializable</pre>
+extends <a href="Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a>&lt;R&gt;</pre>
 <div class="block">Variant of the Range class, where a unit is required.
  Defining this in a separate class makes it easier to define
  where units are and are not required.</div>
@@ -176,7 +175,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unit">unit</a></span></code></th>
 <td class="colLast">
-<div class="block">Unit for the range.</div>
+<div class="block">Unit for the range (e.g., "years" if the range represents an amount of time).</div>
 </td>
 </tr>
 </table>
@@ -248,7 +247,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>unit</h4>
 <pre>public&nbsp;java.lang.String unit</pre>
-<div class="block">Unit for the range. Ex, "years" if the range represents an amount of time.</div>
+<div class="block">Unit for the range (e.g., "years" if the range represents an amount of time).</div>
 </li>
 </ul>
 </li>

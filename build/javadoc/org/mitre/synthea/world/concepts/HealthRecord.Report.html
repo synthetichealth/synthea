@@ -140,6 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">HealthRecord.Report</span>
 extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+<div class="block">Report is a collection of observations that are grouped together</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Report">Serialized Form</a></dd>
@@ -167,7 +168,9 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#observations">observations</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The observations which comprise this report</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -249,6 +252,7 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
 <li class="blockList">
 <h4>observations</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">The observations which comprise this report</div>
 </li>
 </ul>
 </li>
@@ -271,6 +275,12 @@ extends <a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.worl
               java.lang.String&nbsp;type,
               java.util.List&lt;<a href="HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt;&nbsp;observations)</pre>
 <div class="block">Constructor for Report HealthRecord Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time of the entry</dd>
+<dd><code>type</code> - the type of the entry</dd>
+<dd><code>observations</code> - the list of observations associated with this report</dd>
+</dl>
 </li>
 </ul>
 </li>

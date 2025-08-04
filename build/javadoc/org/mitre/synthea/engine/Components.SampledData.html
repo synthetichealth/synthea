@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public static class <span class="typeNameLabel">Components.SampledData</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents sampled data with attributes and series.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.Components.SampledData">Serialized Form</a></dd>
@@ -169,37 +170,51 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#attributes">attributes</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Person attributes containing TimeSeriesData objects.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decimalFormat">decimalFormat</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Format for the output decimal numbers.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#factor">factor</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Multiply data by this before adding to origin.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lowerLimit">lowerLimit</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Lower limit of detection.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#originValue">originValue</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Zero value.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#series">series</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">List of actual series data collections.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#upperLimit">upperLimit</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Upper limit of detection.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -220,7 +235,9 @@ implements java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">SampledData</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Default constructor for SampledData.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.engine.Components.SampledData)">SampledData</a></span>&#8203;(<a href="Components.SampledData.html" title="class in org.mitre.synthea.engine">Components.SampledData</a>&nbsp;other)</code></th>
@@ -285,6 +302,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>originValue</h4>
 <pre>public&nbsp;double originValue</pre>
+<div class="block">Zero value.</div>
 </li>
 </ul>
 <a id="factor">
@@ -294,6 +312,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>factor</h4>
 <pre>public&nbsp;java.lang.Double factor</pre>
+<div class="block">Multiply data by this before adding to origin.</div>
 </li>
 </ul>
 <a id="lowerLimit">
@@ -303,6 +322,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>lowerLimit</h4>
 <pre>public&nbsp;java.lang.Double lowerLimit</pre>
+<div class="block">Lower limit of detection.</div>
 </li>
 </ul>
 <a id="upperLimit">
@@ -312,6 +332,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>upperLimit</h4>
 <pre>public&nbsp;java.lang.Double upperLimit</pre>
+<div class="block">Upper limit of detection.</div>
 </li>
 </ul>
 <a id="attributes">
@@ -321,6 +342,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>attributes</h4>
 <pre>public&nbsp;java.util.List&lt;java.lang.String&gt; attributes</pre>
+<div class="block">Person attributes containing TimeSeriesData objects.</div>
 </li>
 </ul>
 <a id="series">
@@ -330,6 +352,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>series</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="../helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a>&gt; series</pre>
+<div class="block">List of actual series data collections.</div>
 </li>
 </ul>
 <a id="decimalFormat">
@@ -339,6 +362,8 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>decimalFormat</h4>
 <pre>public&nbsp;java.lang.String decimalFormat</pre>
+<div class="block">Format for the output decimal numbers.
+ See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html</div>
 </li>
 </ul>
 </li>
@@ -358,6 +383,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>SampledData</h4>
 <pre>public&nbsp;SampledData()</pre>
+<div class="block">Default constructor for SampledData.</div>
 </li>
 </ul>
 <a id="&lt;init&gt;(org.mitre.synthea.engine.Components.SampledData)">

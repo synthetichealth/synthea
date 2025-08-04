@@ -142,6 +142,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">EncounterModule</span>
 extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></pre>
+<div class="block">Module for managing patient encounters, including wellness visits,
+ symptom-driven visits, and emergency care.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.modules.EncounterModule">Serialized Form</a></dd>
@@ -186,52 +188,72 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ACTIVE_EMERGENCY_ENCOUNTER">ACTIVE_EMERGENCY_ENCOUNTER</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for active emergency encounters.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ACTIVE_URGENT_CARE_ENCOUNTER">ACTIVE_URGENT_CARE_ENCOUNTER</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for active urgent care encounters.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ACTIVE_WELLNESS_ENCOUNTER">ACTIVE_WELLNESS_ENCOUNTER</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for active wellness encounters.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EMERGENCY_SYMPTOM_THRESHOLD">EMERGENCY_SYMPTOM_THRESHOLD</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Threshold for symptoms to trigger an emergency room visit.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENCOUNTER_CHECKUP">ENCOUNTER_CHECKUP</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Code for a check-up encounter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENCOUNTER_EMERGENCY">ENCOUNTER_EMERGENCY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Code for an emergency room admission.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENCOUNTER_URGENTCARE">ENCOUNTER_URGENTCARE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Code for an urgent care clinic visit.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GENERAL_EXAM">GENERAL_EXAM</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Code for a general examination.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LAST_VISIT_SYMPTOM_TOTAL">LAST_VISIT_SYMPTOM_TOTAL</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the last visit symptom total.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NAME">NAME</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Module name.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
@@ -244,12 +266,16 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#URGENT_CARE_SYMPTOM_THRESHOLD">URGENT_CARE_SYMPTOM_THRESHOLD</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Threshold for symptoms to trigger an urgent care visit</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#WELL_CHILD_VISIT">WELL_CHILD_VISIT</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Code for a well-child visit.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -277,7 +303,9 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">EncounterModule</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor for the EncounterModule.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -301,7 +329,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <td class="colFirst"><code><a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Clone this module.</div>
+<div class="block">Clone the module.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -402,6 +430,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ACTIVE_WELLNESS_ENCOUNTER</h4>
 <pre>public static final&nbsp;java.lang.String ACTIVE_WELLNESS_ENCOUNTER</pre>
+<div class="block">Attribute key for active wellness encounters.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.ACTIVE_WELLNESS_ENCOUNTER">Constant Field Values</a></dd>
@@ -415,6 +444,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ACTIVE_URGENT_CARE_ENCOUNTER</h4>
 <pre>public static final&nbsp;java.lang.String ACTIVE_URGENT_CARE_ENCOUNTER</pre>
+<div class="block">Attribute key for active urgent care encounters.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.ACTIVE_URGENT_CARE_ENCOUNTER">Constant Field Values</a></dd>
@@ -428,6 +458,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ACTIVE_EMERGENCY_ENCOUNTER</h4>
 <pre>public static final&nbsp;java.lang.String ACTIVE_EMERGENCY_ENCOUNTER</pre>
+<div class="block">Attribute key for active emergency encounters.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.ACTIVE_EMERGENCY_ENCOUNTER">Constant Field Values</a></dd>
@@ -441,6 +472,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>NAME</h4>
 <pre>public static final&nbsp;java.lang.String NAME</pre>
+<div class="block">Module name.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.NAME">Constant Field Values</a></dd>
@@ -473,6 +505,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>URGENT_CARE_SYMPTOM_THRESHOLD</h4>
 <pre>public static final&nbsp;int URGENT_CARE_SYMPTOM_THRESHOLD</pre>
+<div class="block">Threshold for symptoms to trigger an urgent care visit</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.URGENT_CARE_SYMPTOM_THRESHOLD">Constant Field Values</a></dd>
@@ -486,6 +519,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>EMERGENCY_SYMPTOM_THRESHOLD</h4>
 <pre>public static final&nbsp;int EMERGENCY_SYMPTOM_THRESHOLD</pre>
+<div class="block">Threshold for symptoms to trigger an emergency room visit.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD">Constant Field Values</a></dd>
@@ -499,6 +533,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>LAST_VISIT_SYMPTOM_TOTAL</h4>
 <pre>public static final&nbsp;java.lang.String LAST_VISIT_SYMPTOM_TOTAL</pre>
+<div class="block">Attribute key for the last visit symptom total.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.EncounterModule.LAST_VISIT_SYMPTOM_TOTAL">Constant Field Values</a></dd>
@@ -512,6 +547,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENCOUNTER_CHECKUP</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> ENCOUNTER_CHECKUP</pre>
+<div class="block">Code for a check-up encounter.</div>
 </li>
 </ul>
 <a id="ENCOUNTER_EMERGENCY">
@@ -521,6 +557,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENCOUNTER_EMERGENCY</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> ENCOUNTER_EMERGENCY</pre>
+<div class="block">Code for an emergency room admission.</div>
 </li>
 </ul>
 <a id="WELL_CHILD_VISIT">
@@ -530,6 +567,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>WELL_CHILD_VISIT</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> WELL_CHILD_VISIT</pre>
+<div class="block">Code for a well-child visit.</div>
 </li>
 </ul>
 <a id="GENERAL_EXAM">
@@ -539,6 +577,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>GENERAL_EXAM</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> GENERAL_EXAM</pre>
+<div class="block">Code for a general examination.</div>
 </li>
 </ul>
 <a id="ENCOUNTER_URGENTCARE">
@@ -548,6 +587,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>ENCOUNTER_URGENTCARE</h4>
 <pre>public static final&nbsp;<a href="../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> ENCOUNTER_URGENTCARE</pre>
+<div class="block">Code for an urgent care clinic visit.</div>
 </li>
 </ul>
 </li>
@@ -567,6 +607,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>EncounterModule</h4>
 <pre>public&nbsp;EncounterModule()</pre>
+<div class="block">Constructor for the EncounterModule.</div>
 </li>
 </ul>
 </li>
@@ -586,11 +627,12 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;clone()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../engine/Module.html#clone()">Module</a></code></span></div>
-<div class="block">Clone this module. Never provide the original.</div>
+<div class="block">Clone the module.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../engine/Module.html#clone()">clone</a></code>&nbsp;in class&nbsp;<code><a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a clone of the module</dd>
 </dl>
 </li>
 </ul>
@@ -688,6 +730,11 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <pre class="methodSignature">public&nbsp;void&nbsp;endEncounterModuleEncounters&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                          long&nbsp;time)</pre>
 <div class="block">End a wellness encounter if currently active.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - The patient.</dd>
+<dd><code>time</code> - The time of the encounter end.</dd>
+</dl>
 </li>
 </ul>
 <a id="getAllCodes()">

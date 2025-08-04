@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">CardiovascularDiseaseModule</span>
 extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></pre>
+<div class="block">Module for simulating cardiovascular disease risks and outcomes.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.modules.CardiovascularDiseaseModule">Serialized Form</a></dd>
@@ -201,7 +202,9 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">CardiovascularDiseaseModule</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor for the Cardiovascular Disease Module.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -225,7 +228,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <td class="colFirst"><code><a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Clone this module.</div>
+<div class="block">Clone the module.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -248,7 +251,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#process(org.mitre.synthea.world.agents.Person,long)">process</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
        long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
+<div class="block">Process the module for a person at a given time.</div>
 </td>
 </tr>
 </table>
@@ -289,6 +292,7 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>CardiovascularDiseaseModule</h4>
 <pre>public&nbsp;CardiovascularDiseaseModule()</pre>
+<div class="block">Constructor for the Cardiovascular Disease Module.</div>
 </li>
 </ul>
 </li>
@@ -308,11 +312,12 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;clone()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../engine/Module.html#clone()">Module</a></code></span></div>
-<div class="block">Clone this module. Never provide the original.</div>
+<div class="block">Clone the module.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../engine/Module.html#clone()">clone</a></code>&nbsp;in class&nbsp;<code><a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a clone of the module.</dd>
 </dl>
 </li>
 </ul>
@@ -324,17 +329,15 @@ extends <a href="../engine/Module.html" title="class in org.mitre.synthea.engine
 <h4>process</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;process&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                        long&nbsp;time)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../engine/Module.html#process(org.mitre.synthea.world.agents.Person,long)">Module</a></code></span></div>
-<div class="block">Process this Module with the given Person at the specified time within the simulation.
- Processing will complete if the person dies.</div>
+<div class="block">Process the module for a person at a given time.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../engine/Module.html#process(org.mitre.synthea.world.agents.Person,long)">process</a></code>&nbsp;in class&nbsp;<code><a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - : the person being simulated</dd>
-<dd><code>time</code> - : the date within the simulated world</dd>
+<dd><code>person</code> - The person to process.</dd>
+<dd><code>time</code> - The current time in the simulation.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>completed : whether or not this Module completed.</dd>
+<dd>true if the module has finished processing, false otherwise.</dd>
 </dl>
 </li>
 </ul>

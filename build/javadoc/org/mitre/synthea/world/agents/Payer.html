@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Payer</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents a payer organization that provides insurance plans.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.agents.Payer">Serialized Form</a></dd>
@@ -165,7 +166,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uuid">uuid</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Universally unique identifier for the payer.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -229,7 +232,9 @@ implements java.io.Serializable</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addPlan(org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan)">addPlan</a></span>&#8203;(<a href="../concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&nbsp;newPlan)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Adds a new insurance plan to the payer.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -411,7 +416,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResourceID()">getResourceID</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns the payer's unique ID.</div>
+<div class="block">Gets the resource ID of the payer.</div>
 </td>
 </tr>
 <tr id="i29" class="rowColor">
@@ -457,7 +462,9 @@ implements java.io.Serializable</pre>
 <tr id="i35" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGovernmentPayer()">isGovernmentPayer</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Checks if the payer is a government payer.</div>
+</td>
 </tr>
 <tr id="i36" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -504,6 +511,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>uuid</h4>
 <pre>public final&nbsp;java.lang.String uuid</pre>
+<div class="block">Universally unique identifier for the payer.</div>
 </li>
 </ul>
 </li>
@@ -553,6 +561,25 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>addPlan</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;addPlan&#8203;(<a href="../concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&nbsp;newPlan)</pre>
+<div class="block">Adds a new insurance plan to the payer.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>newPlan</code> - The insurance plan to add.</dd>
+</dl>
+</li>
+</ul>
+<a id="isGovernmentPayer()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isGovernmentPayer</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isGovernmentPayer()</pre>
+<div class="block">Checks if the payer is a government payer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the payer is a government payer, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="getResourceID()">
@@ -562,7 +589,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getResourceID</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getResourceID()</pre>
-<div class="block">Returns the payer's unique ID.</div>
+<div class="block">Gets the resource ID of the payer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The resource ID of the payer.</dd>
+</dl>
 </li>
 </ul>
 <a id="getName()">
@@ -996,15 +1027,6 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
-<a id="isGovernmentPayer()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isGovernmentPayer</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isGovernmentPayer()</pre>
-</li>
-</ul>
 <a id="addRevenue(java.math.BigDecimal)">
 <!--   -->
 </a>
@@ -1042,6 +1064,11 @@ implements java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;addAttribute&#8203;(java.lang.String&nbsp;key,
                          java.lang.String&nbsp;value)</pre>
 <div class="block">Add additional attributes to Payer.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The attribute value.</dd>
+</dl>
 </li>
 </ul>
 <a id="isNoInsurance()">

@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedSymptom.SymptomSource</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">Encapsulates module-based information regarding an expressed symptom.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedSymptom.SymptomSource">Serialized Form</a></dd>
@@ -192,7 +193,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#activate()">activate</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Activate the symptom, marking it as unresolved.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -208,7 +211,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <td class="colFirst"><code><a href="ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Create shallow copy of this instance.</div>
+<div class="block">Create a shallow copy of this instance.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -221,29 +224,37 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastUpdateTime()">getLastUpdateTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the last update time of the symptom.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSource()">getSource</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the source of the symptom.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.Long,&#8203;<a href="ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTimeInfos()">getTimeInfos</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the times for this symptom.</div>
+<div class="block">Get the times and associated information for this symptom.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isResolved()">isResolved</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Check if the symptom is resolved.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolve()">resolve</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Mark the symptom as resolved.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -277,6 +288,10 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>SymptomSource</h4>
 <pre>public&nbsp;SymptomSource&#8203;(java.lang.String&nbsp;source)</pre>
 <div class="block">Create a new instance for the supplied module source.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the module source of the symptom</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -296,10 +311,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a>&nbsp;clone()</pre>
-<div class="block">Create shallow copy of this instance.</div>
+<div class="block">Create a shallow copy of this instance.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a cloned instance of SymptomSource</dd>
 </dl>
 </li>
 </ul>
@@ -310,6 +327,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>isResolved</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isResolved()</pre>
+<div class="block">Check if the symptom is resolved.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if resolved, false otherwise</dd>
+</dl>
 </li>
 </ul>
 <a id="resolve()">
@@ -319,6 +341,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>resolve</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;resolve()</pre>
+<div class="block">Mark the symptom as resolved.</div>
 </li>
 </ul>
 <a id="activate()">
@@ -328,6 +351,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>activate</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;activate()</pre>
+<div class="block">Activate the symptom, marking it as unresolved.</div>
 </li>
 </ul>
 <a id="getLastUpdateTime()">
@@ -337,6 +361,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getLastUpdateTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getLastUpdateTime()</pre>
+<div class="block">Get the last update time of the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last update time</dd>
+</dl>
 </li>
 </ul>
 <a id="getSource()">
@@ -346,6 +375,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSource</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getSource()</pre>
+<div class="block">Get the source of the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the source of the symptom</dd>
+</dl>
 </li>
 </ul>
 <a id="addInfo(java.lang.String,long,int,java.lang.Boolean)">
@@ -359,6 +393,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
                     int&nbsp;value,
                     java.lang.Boolean&nbsp;addressed)</pre>
 <div class="block">Record a new symptom.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>cause</code> - the cause of the symptom</dd>
+<dd><code>time</code> - the time the symptom was recorded</dd>
+<dd><code>value</code> - the value of the symptom</dd>
+<dd><code>addressed</code> - whether the symptom is addressed</dd>
+</dl>
 </li>
 </ul>
 <a id="getCurrentValue()">
@@ -369,6 +410,10 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>getCurrentValue</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Integer&nbsp;getCurrentValue()</pre>
 <div class="block">Get the current value of the symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current value of the symptom</dd>
+</dl>
 </li>
 </ul>
 <a id="getTimeInfos()">
@@ -378,7 +423,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTimeInfos</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.Long,&#8203;<a href="ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a>&gt;&nbsp;getTimeInfos()</pre>
-<div class="block">Get the times for this symptom.</div>
+<div class="block">Get the times and associated information for this symptom.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of times to SymptomInfo</dd>
+</dl>
 </li>
 </ul>
 </li>

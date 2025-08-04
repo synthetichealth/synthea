@@ -170,7 +170,9 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <tr class="altColor">
 <td class="colFirst"><code>static java.nio.file.Path</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GENERATORS_PATH">GENERATORS_PATH</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Path to the directory containing physiology generator configurations.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -199,7 +201,7 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig,org.mitre.synthea.helpers.physiology.SimRunner,org.mitre.synthea.world.concepts.VitalSign,org.mitre.synthea.world.agents.Person,double)">PhysiologyValueGenerator</a></span>&#8203;(<a href="physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a>&nbsp;config,
                         <a href="physiology/SimRunner.html" title="class in org.mitre.synthea.helpers.physiology">SimRunner</a>&nbsp;runner,
-                        <a href="../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
+                        org.mitre.synthea.world.concepts.VitalSign&nbsp;vitalSign,
                         <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                         double&nbsp;outputVariance)</code></th>
 <td class="colLast">
@@ -264,7 +266,7 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></code></td>
+<td class="colFirst"><code>org.mitre.synthea.world.concepts.VitalSign</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVitalSign()">getVitalSign</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the VitalSign this generator targets.</div>
@@ -288,7 +290,9 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGeneratorsPath(java.nio.file.Path)">setGeneratorsPath</a></span>&#8203;(java.nio.file.Path&nbsp;newPath)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the path to the generators directory.</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -333,6 +337,7 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <li class="blockList">
 <h4>GENERATORS_PATH</h4>
 <pre>public static&nbsp;java.nio.file.Path GENERATORS_PATH</pre>
+<div class="block">Path to the directory containing physiology generator configurations.</div>
 </li>
 </ul>
 </li>
@@ -353,14 +358,18 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <h4>PhysiologyValueGenerator</h4>
 <pre>public&nbsp;PhysiologyValueGenerator&#8203;(<a href="physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a>&nbsp;config,
                                 <a href="physiology/SimRunner.html" title="class in org.mitre.synthea.helpers.physiology">SimRunner</a>&nbsp;runner,
-                                <a href="../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
+                                org.mitre.synthea.world.concepts.VitalSign&nbsp;vitalSign,
                                 <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                 double&nbsp;outputVariance)</pre>
 <div class="block">A generator of VitalSign values from a physiology simulation.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>config</code> - physiology configuration file</dd>
+<dd><code>runner</code> - SimRunner to execute the physiology model</dd>
 <dd><code>person</code> - Person instance to generate VitalSigns for</dd>
+<dd><code>vitalSign</code> - VitalSign to generate</dd>
+<dd><code>outputVariance</code> - amount of variance to apply to the output values, represented as a
+                      multiplier that amplifies a random number</dd>
 </dl>
 </li>
 </ul>
@@ -381,6 +390,11 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <li class="blockList">
 <h4>setGeneratorsPath</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;setGeneratorsPath&#8203;(java.nio.file.Path&nbsp;newPath)</pre>
+<div class="block">Sets the path to the generators directory.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>newPath</code> - The new path to the generators directory.</dd>
+</dl>
 </li>
 </ul>
 <a id="loadAll(org.mitre.synthea.world.agents.Person)">
@@ -392,6 +406,8 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <pre class="methodSignature">public static&nbsp;java.util.List&lt;<a href="PhysiologyValueGenerator.html" title="class in org.mitre.synthea.helpers">PhysiologyValueGenerator</a>&gt;&nbsp;loadAll&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
 <div class="block">Returns a List of all PhysiologyValueGenerators defined in the configuration directory.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - Person to generate values for</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>List of PhysiologyValueGenerator</dd>
 </dl>
@@ -491,7 +507,7 @@ extends <a href="ValueGenerator.html" title="class in org.mitre.synthea.helpers"
 <ul class="blockList">
 <li class="blockList">
 <h4>getVitalSign</h4>
-<pre class="methodSignature">public&nbsp;<a href="../world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;getVitalSign()</pre>
+<pre class="methodSignature">public&nbsp;org.mitre.synthea.world.concepts.VitalSign&nbsp;getVitalSign()</pre>
 <div class="block">Returns the VitalSign this generator targets.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

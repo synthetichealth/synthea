@@ -236,7 +236,9 @@ implements com.google.gson.TypeAdapterFactory</pre>
 <td class="colFirst"><code>&lt;R&gt;&nbsp;com.google.gson.TypeAdapter&lt;R&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#create(com.google.gson.Gson,com.google.gson.reflect.TypeToken)">create</a></span>&#8203;(com.google.gson.Gson&nbsp;gson,
       com.google.gson.reflect.TypeToken&lt;R&gt;&nbsp;type)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a type adapter for the specified type.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="InnerClassTypeAdapterFactory.html" title="class in org.mitre.synthea.helpers">InnerClassTypeAdapterFactory</a>&lt;T&gt;</code></td>
@@ -281,6 +283,15 @@ implements com.google.gson.TypeAdapterFactory</pre>
                                                      java.lang.String&nbsp;typeFieldName)</pre>
 <div class="block">Creates a new runtime type adapter using for <code>baseType</code> using <code>
  typeFieldName</code> as the type field name. Type field names are case sensitive.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - The type of the base class.</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>baseType</code> - the base type.</dd>
+<dd><code>typeFieldName</code> - the name of the type field.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a new InnerClassTypeAdapterFactory instance.</dd>
+</dl>
 </li>
 </ul>
 <a id="create(com.google.gson.Gson,com.google.gson.reflect.TypeToken)">
@@ -291,9 +302,15 @@ implements com.google.gson.TypeAdapterFactory</pre>
 <h4>create</h4>
 <pre class="methodSignature">public&nbsp;&lt;R&gt;&nbsp;com.google.gson.TypeAdapter&lt;R&gt;&nbsp;create&#8203;(com.google.gson.Gson&nbsp;gson,
                                                  com.google.gson.reflect.TypeToken&lt;R&gt;&nbsp;type)</pre>
+<div class="block">Creates a type adapter for the specified type.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>create</code>&nbsp;in interface&nbsp;<code>com.google.gson.TypeAdapterFactory</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>gson</code> - the Gson instance.</dd>
+<dd><code>type</code> - the type token.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a type adapter for the specified type.</dd>
 </dl>
 </li>
 </ul>

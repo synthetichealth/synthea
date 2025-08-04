@@ -142,7 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">ExpressedConditionRecord.OnsetCondition</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
-<div class="block">A condition with a set of onset and end time entries.</div>
+<div class="block">Represents a condition with a set of onset and end time entries.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.ExpressedConditionRecord.OnsetCondition">Serialized Form</a></dd>
@@ -168,7 +168,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String)">OnsetCondition</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs an OnsetCondition with the specified name.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -191,45 +193,51 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addNewEntry(long)">addNewEntry</a></span>&#8203;(long&nbsp;onsetTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Adds a new onset entry.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Create a shallow copy of this object.</div>
+<div class="block">Creates a shallow copy of this object.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#endLastEntry(long)">endLastEntry</a></span>&#8203;(long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Set the end time the last entry.</div>
+<div class="block">Sets the end time for the last entry.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastEndTime()">getLastEndTime</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the last recorded end time.</div>
+<div class="block">Gets the last recorded end time.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastOnsetTime()">getLastOnsetTime</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the last recorded onset time.</div>
+<div class="block">Gets the last recorded onset time.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getName()">getName</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the name of the condition.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTimeInfos()">getTimeInfos</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the list of time periods for the condition.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -262,6 +270,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>OnsetCondition</h4>
 <pre>public&nbsp;OnsetCondition&#8203;(java.lang.String&nbsp;name)</pre>
+<div class="block">Constructs an OnsetCondition with the specified name.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - the name of the condition</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -281,10 +294,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a>&nbsp;clone()</pre>
-<div class="block">Create a shallow copy of this object.</div>
+<div class="block">Creates a shallow copy of this object.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a clone of this OnsetCondition</dd>
 </dl>
 </li>
 </ul>
@@ -295,6 +310,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getName</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getName()</pre>
+<div class="block">Gets the name of the condition.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the name of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getTimeInfos()">
@@ -304,6 +324,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTimeInfos</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a>&gt;&nbsp;getTimeInfos()</pre>
+<div class="block">Gets the list of time periods for the condition.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of time periods for the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getLastOnsetTime()">
@@ -313,7 +338,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getLastOnsetTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getLastOnsetTime()</pre>
-<div class="block">Get the last recorded onset time.</div>
+<div class="block">Gets the last recorded onset time.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last recorded onset time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getLastEndTime()">
@@ -323,7 +352,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getLastEndTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getLastEndTime()</pre>
-<div class="block">Get the last recorded end time.</div>
+<div class="block">Gets the last recorded end time.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last recorded end time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="addNewEntry(long)">
@@ -333,6 +366,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>addNewEntry</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;addNewEntry&#8203;(long&nbsp;onsetTime)</pre>
+<div class="block">Adds a new onset entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>onsetTime</code> - the time to add as a new onset entry</dd>
+</dl>
 </li>
 </ul>
 <a id="endLastEntry(long)">
@@ -342,7 +380,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>endLastEntry</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;endLastEntry&#8203;(long&nbsp;time)</pre>
-<div class="block">Set the end time the last entry.</div>
+<div class="block">Sets the end time for the last entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the time to set as the end time for the last entry</dd>
+</dl>
 </li>
 </ul>
 </li>

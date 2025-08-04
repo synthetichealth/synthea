@@ -192,14 +192,14 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCount()">getCount</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return how many times this RNG was called.</div>
+<div class="block">Returns the number of times this random number generator has been called.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSeed()">getSeed</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return the seed.</div>
+<div class="block">Returns the seed value used by this random number generator.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -213,15 +213,14 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randBoolean()">randBoolean</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns a random boolean.</div>
+<div class="block">Returns a random boolean value.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randGaussian()">randGaussian</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns a double between from a normal distribution
- with mean of 0 and standard deviation of 1.</div>
+<div class="block">Returns a double from a normal distribution with a mean of 0 and a standard deviation of 1.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -235,21 +234,21 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randInt(int)">randInt</a></span>&#8203;(int&nbsp;bound)</code></th>
 <td class="colLast">
-<div class="block">Returns a random integer in the given bound.</div>
+<div class="block">Returns a random integer within the given bound.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randLong()">randLong</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return a random long.</div>
+<div class="block">Returns a random long value.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randUUID()">randUUID</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return a random UUID.</div>
+<div class="block">Returns a random UUID.</div>
 </td>
 </tr>
 </table>
@@ -315,10 +314,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>getSeed</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getSeed()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#getSeed()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Return the seed.</div>
+<div class="block">Returns the seed value used by this random number generator.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#getSeed()">getSeed</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the seed value</dd>
 </dl>
 </li>
 </ul>
@@ -334,6 +335,8 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#rand()">rand</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double in the range [0.0, 1.0)</dd>
 </dl>
 </li>
 </ul>
@@ -345,10 +348,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>randBoolean</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;randBoolean()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#randBoolean()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Returns a random boolean.</div>
+<div class="block">Returns a random boolean value.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randBoolean()">randBoolean</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random boolean</dd>
 </dl>
 </li>
 </ul>
@@ -360,11 +365,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>randGaussian</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;randGaussian()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#randGaussian()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Returns a double between from a normal distribution
- with mean of 0 and standard deviation of 1.</div>
+<div class="block">Returns a double from a normal distribution with a mean of 0 and a standard deviation of 1.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randGaussian()">randGaussian</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double from a standard normal distribution</dd>
 </dl>
 </li>
 </ul>
@@ -380,6 +386,8 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randInt()">randInt</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random integer</dd>
 </dl>
 </li>
 </ul>
@@ -391,10 +399,14 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>randInt</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;randInt&#8203;(int&nbsp;bound)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#randInt(int)">RandomNumberGenerator</a></code></span></div>
-<div class="block">Returns a random integer in the given bound.</div>
+<div class="block">Returns a random integer within the given bound.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randInt(int)">randInt</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bound</code> - the upper bound (exclusive) for the random integer</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random integer between 0 (inclusive) and bound (exclusive)</dd>
 </dl>
 </li>
 </ul>
@@ -406,10 +418,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>randLong</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;randLong()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#randLong()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Return a random long.</div>
+<div class="block">Returns a random long value.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randLong()">randLong</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random long</dd>
 </dl>
 </li>
 </ul>
@@ -421,10 +435,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>randUUID</h4>
 <pre class="methodSignature">public&nbsp;java.util.UUID&nbsp;randUUID()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#randUUID()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Return a random UUID.</div>
+<div class="block">Returns a random UUID.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#randUUID()">randUUID</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random UUID</dd>
 </dl>
 </li>
 </ul>
@@ -436,10 +452,12 @@ implements <a href="RandomNumberGenerator.html" title="interface in org.mitre.sy
 <h4>getCount</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getCount()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="RandomNumberGenerator.html#getCount()">RandomNumberGenerator</a></code></span></div>
-<div class="block">Return how many times this RNG was called.</div>
+<div class="block">Returns the number of times this random number generator has been called.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="RandomNumberGenerator.html#getCount()">getCount</a></code>&nbsp;in interface&nbsp;<code><a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the count of random number generation calls</dd>
 </dl>
 </li>
 </ul>

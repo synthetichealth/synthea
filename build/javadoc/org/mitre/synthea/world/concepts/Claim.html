@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Claim</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents a claim for healthcare services, including costs and payer details.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.Claim">Serialized Form</a></dd>
@@ -165,12 +166,16 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents the cost details of a claim.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents a specific entry in a claim, such as an encounter or medication.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -193,32 +198,44 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#items">items</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Additional items in the claim.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mainEntry">mainEntry</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The main entry of the claim.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#person">person</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The person associated with this claim.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#totals">totals</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Totals for the claim.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uuid">uuid</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Unique identifier for the claim.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ZERO_CENTS">ZERO_CENTS</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constant representing zero cost in cents.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -266,7 +283,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addLineItem(org.mitre.synthea.world.concepts.HealthRecord.Entry)">addLineItem</a></span>&#8203;(<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code></th>
 <td class="colLast">
-<div class="block">Adds non-explicit costs to the Claim.</div>
+<div class="block">Adds non-explicit costs to the Claim (e.g., procedures, immunizations).</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -280,40 +297,42 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#coveredByMedicare()">coveredByMedicare</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns whether this Claim was covered by Medicare as the primary payer.</div>
+<div class="block">Checks if this claim was covered by Medicare as the primary payer.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPayer()">getPayer</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the primary payer of this claim.</div>
+<div class="block">Returns the plan record associated with this claim.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPlanRecordMemberId()">getPlanRecordMemberId</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the plan record associated with this claim.</div>
+<div class="block">Returns the member ID of the plan record associated with this claim.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSecondaryPayer()">getSecondaryPayer</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return the secondary payer of this claim.</div>
+<div class="block">Returns the secondary payer of this claim, if applicable.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalAdjustment()">getTotalAdjustment</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total adjustment amount for this claim, which is the amount</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalClaimCost()">getTotalClaimCost</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
+<div class="block">Returns the unique identifier for this claim.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
@@ -327,30 +346,36 @@ implements java.io.Serializable</pre>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalCopayPaid()">getTotalCopayPaid</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total copay paid by the patient for this claim.</div>
+</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalCoveredCost()">getTotalCoveredCost</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns the total cost that the Payer covered for this claim.</div>
+<div class="block">Returns the total cost covered by the payer for this claim.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalDeductiblePaid()">getTotalDeductiblePaid</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total cost of the claim, including all associated items.</div>
+</td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalPaidBySecondaryPayer()">getTotalPaidBySecondaryPayer</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the total amount paid by the patient, which includes</div>
+</td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalPatientCost()">getTotalPatientCost</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
+<div class="block">Returns the total cost to the patient, which includes copay, coinsurance, and deductible.</div>
 </td>
 </tr>
 </table>
@@ -384,6 +409,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>ZERO_CENTS</h4>
 <pre>public static final&nbsp;java.math.BigDecimal ZERO_CENTS</pre>
+<div class="block">Constant representing zero cost in cents.</div>
 </li>
 </ul>
 <a id="person">
@@ -393,6 +419,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>person</h4>
 <pre>public final&nbsp;<a href="../agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">The person associated with this claim.</div>
 </li>
 </ul>
 <a id="mainEntry">
@@ -402,6 +429,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>mainEntry</h4>
 <pre>public final&nbsp;<a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a> mainEntry</pre>
+<div class="block">The main entry of the claim.</div>
 </li>
 </ul>
 <a id="items">
@@ -411,6 +439,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>items</h4>
 <pre>public final&nbsp;java.util.List&lt;<a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&gt; items</pre>
+<div class="block">Additional items in the claim.</div>
 </li>
 </ul>
 <a id="totals">
@@ -420,6 +449,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>totals</h4>
 <pre>public&nbsp;<a href="Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a> totals</pre>
+<div class="block">Totals for the claim.</div>
 </li>
 </ul>
 <a id="uuid">
@@ -429,6 +459,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>uuid</h4>
 <pre>public final&nbsp;java.util.UUID uuid</pre>
+<div class="block">Unique identifier for the claim.</div>
 </li>
 </ul>
 </li>
@@ -450,6 +481,11 @@ implements java.io.Serializable</pre>
 <pre>public&nbsp;Claim&#8203;(<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry,
              <a href="../agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
 <div class="block">Constructor of a Claim for an Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>entry</code> - the health record entry</dd>
+<dd><code>person</code> - the person associated with the claim</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -469,7 +505,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>addLineItem</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;addLineItem&#8203;(<a href="HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</pre>
-<div class="block">Adds non-explicit costs to the Claim. (Procedures/Immunizations/etc).</div>
+<div class="block">Adds non-explicit costs to the Claim (e.g., procedures, immunizations).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>entry</code> - the health record entry to add as a line item</dd>
+</dl>
 </li>
 </ul>
 <a id="assignCosts()">
@@ -489,7 +529,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalClaimCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalClaimCost()</pre>
-<div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
+<div class="block">Returns the unique identifier for this claim.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total cost of the claim, including all associated items</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalCoveredCost()">
@@ -499,7 +543,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalCoveredCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalCoveredCost()</pre>
-<div class="block">Returns the total cost that the Payer covered for this claim.</div>
+<div class="block">Returns the total cost covered by the payer for this claim.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total cost covered by the payer for this claim</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalDeductiblePaid()">
@@ -509,6 +557,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalDeductiblePaid</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalDeductiblePaid()</pre>
+<div class="block">Returns the total cost of the claim, including all associated items.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total deductible paid by the patient</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalCopayPaid()">
@@ -518,6 +571,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalCopayPaid</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalCopayPaid()</pre>
+<div class="block">Returns the total copay paid by the patient for this claim.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total copay paid by the patient</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalPaidBySecondaryPayer()">
@@ -527,6 +585,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalPaidBySecondaryPayer</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalPaidBySecondaryPayer()</pre>
+<div class="block">Returns the total amount paid by the patient, which includes</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total amount paid by the secondary payer</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalAdjustment()">
@@ -536,6 +599,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalAdjustment</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalAdjustment()</pre>
+<div class="block">Returns the total adjustment amount for this claim, which is the amount</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total adjustment amount</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalCoinsurancePaid()">
@@ -560,7 +628,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTotalPatientCost</h4>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getTotalPatientCost()</pre>
-<div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
+<div class="block">Returns the total cost to the patient, which includes copay, coinsurance, and deductible.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the total cost to the patient, including copay, coinsurance, and deductible</dd>
+</dl>
 </li>
 </ul>
 <a id="coveredByMedicare()">
@@ -570,7 +642,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>coveredByMedicare</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;coveredByMedicare()</pre>
-<div class="block">Returns whether this Claim was covered by Medicare as the primary payer.</div>
+<div class="block">Checks if this claim was covered by Medicare as the primary payer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether this Claim was covered by Medicare as the primary payer</dd>
+</dl>
 </li>
 </ul>
 <a id="getPlanRecordMemberId()">
@@ -580,7 +656,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPlanRecordMemberId</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getPlanRecordMemberId()</pre>
-<div class="block">Get the plan record associated with this claim.</div>
+<div class="block">Returns the member ID of the plan record associated with this claim.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the member ID.</dd>
+</dl>
 </li>
 </ul>
 <a id="getPayer()">
@@ -590,7 +670,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPayer</h4>
 <pre class="methodSignature">public&nbsp;<a href="../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;getPayer()</pre>
-<div class="block">Get the primary payer of this claim.</div>
+<div class="block">Returns the plan record associated with this claim.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the primary payer of this claim</dd>
+</dl>
 </li>
 </ul>
 <a id="getSecondaryPayer()">
@@ -600,7 +684,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getSecondaryPayer</h4>
 <pre class="methodSignature">public&nbsp;<a href="../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;getSecondaryPayer()</pre>
-<div class="block">Return the secondary payer of this claim.</div>
+<div class="block">Returns the secondary payer of this claim, if applicable.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the secondary payer of this claim</dd>
+</dl>
 </li>
 </ul>
 </li>

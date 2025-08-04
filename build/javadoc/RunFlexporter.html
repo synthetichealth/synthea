@@ -235,7 +235,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>main</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;main&#8203;(java.lang.String[]&nbsp;args)
-                 throws java.lang.Exception</pre>
+                 throws java.io.IOException</pre>
 <div class="block">Main method. Invoke the flexporter with given arguments:
   -fm {Flexporter Mapping file path}
   -s {Source FHIR file path}
@@ -244,7 +244,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>args</code> - Command line args as described above</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.io.IOException</code> - If a required file is not found</dd>
 </dl>
 </li>
 </ul>

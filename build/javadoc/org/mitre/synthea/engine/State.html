@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public abstract class <span class="typeNameLabel">State</span>
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
+<div class="block">Represents a state in the simulation, which can be extended to define specific behaviors.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.State">Serialized Form</a></dd>
@@ -248,7 +249,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="State.Delayable.html" title="class in org.mitre.synthea.engine">State.Delayable</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents a state that can be delayed.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
@@ -314,7 +317,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="State.LegacyStateWithUnitlessRV.html" title="class in org.mitre.synthea.engine">State.LegacyStateWithUnitlessRV</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents a legacy state with unitless random variables.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
@@ -394,7 +399,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="State.TelemedicinePossibility.html" title="enum in org.mitre.synthea.engine">State.TelemedicinePossibility</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enum for telemedicine encounter possibilities</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
@@ -438,37 +445,51 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ENABLE_PHYSIOLOGY_STATE">ENABLE_PHYSIOLOGY_STATE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates whether the physiology state is enabled.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#entered">entered</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The time the state was entered.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#entry">entry</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The entry associated with this state.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exited">exited</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The time the state was exited.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#module">module</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The module associated with this state.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name">name</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The name of the state.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remarks">remarks</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Remarks associated with this state.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -529,14 +550,18 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="Transition.html" title="class in org.mitre.synthea.engine">Transition</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransition()">getTransition</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the transition associated with this state.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">initialize</a></span>&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
           java.lang.String&nbsp;name,
           com.google.gson.JsonObject&nbsp;definition)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes the state with the given module, name, and definition.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>abstract boolean</code></td>
@@ -564,7 +589,9 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transition(org.mitre.synthea.world.agents.Person,long)">transition</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
           long&nbsp;time)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Follows the transition for this state.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -597,6 +624,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>module</h4>
 <pre>public&nbsp;<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a> module</pre>
+<div class="block">The module associated with this state.</div>
 </li>
 </ul>
 <a id="name">
@@ -606,6 +634,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>name</h4>
 <pre>public&nbsp;java.lang.String name</pre>
+<div class="block">The name of the state.</div>
 </li>
 </ul>
 <a id="entered">
@@ -615,6 +644,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>entered</h4>
 <pre>public&nbsp;java.lang.Long entered</pre>
+<div class="block">The time the state was entered.</div>
 </li>
 </ul>
 <a id="entry">
@@ -624,6 +654,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>entry</h4>
 <pre>public&nbsp;<a href="../world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> entry</pre>
+<div class="block">The entry associated with this state.</div>
 </li>
 </ul>
 <a id="exited">
@@ -633,6 +664,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>exited</h4>
 <pre>public&nbsp;java.lang.Long exited</pre>
+<div class="block">The time the state was exited.</div>
 </li>
 </ul>
 <a id="remarks">
@@ -642,6 +674,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>remarks</h4>
 <pre>public&nbsp;java.util.List&lt;java.lang.String&gt; remarks</pre>
+<div class="block">Remarks associated with this state.</div>
 </li>
 </ul>
 <a id="ENABLE_PHYSIOLOGY_STATE">
@@ -651,6 +684,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>ENABLE_PHYSIOLOGY_STATE</h4>
 <pre>public static&nbsp;boolean ENABLE_PHYSIOLOGY_STATE</pre>
+<div class="block">Indicates whether the physiology state is enabled.</div>
 </li>
 </ul>
 </li>
@@ -691,6 +725,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <pre class="methodSignature">protected&nbsp;void&nbsp;initialize&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
                           java.lang.String&nbsp;name,
                           com.google.gson.JsonObject&nbsp;definition)</pre>
+<div class="block">Initializes the state with the given module, name, and definition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module associated with this state</dd>
+<dd><code>name</code> - the name of the state</dd>
+<dd><code>definition</code> - the JSON definition of the state</dd>
+</dl>
 </li>
 </ul>
 <a id="build(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">
@@ -745,6 +786,14 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>transition</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;transition&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                    long&nbsp;time)</pre>
+<div class="block">Follows the transition for this state.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person being simulated</dd>
+<dd><code>time</code> - the current time</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the next state</dd>
+</dl>
 </li>
 </ul>
 <a id="getTransition()">
@@ -754,6 +803,11 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getTransition</h4>
 <pre class="methodSignature">public&nbsp;<a href="Transition.html" title="class in org.mitre.synthea.engine">Transition</a>&nbsp;getTransition()</pre>
+<div class="block">Gets the transition associated with this state.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the transition</dd>
+</dl>
 </li>
 </ul>
 <a id="process(org.mitre.synthea.world.agents.Person,long)">

@@ -128,6 +128,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">RandomNumberGenerator</span></pre>
+<div class="block">RandomNumberGenerator provides methods for generating random numbers
+ with various distributions and ranges.</div>
 </li>
 </ul>
 </div>
@@ -152,14 +154,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCount()">getCount</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return how many times this RNG was called.</div>
+<div class="block">Returns the number of times this random number generator has been called.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSeed()">getSeed</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return the seed.</div>
+<div class="block">Returns the seed value used by this random number generator.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -190,7 +192,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
     double&nbsp;high,
     java.lang.Integer&nbsp;decimals)</code></th>
 <td class="colLast">
-<div class="block">Returns a random double in the given range with no more that the specified
+<div class="block">Returns a random double in the given range with no more than the specified
  number of decimal places.</div>
 </td>
 </tr>
@@ -213,15 +215,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randBoolean()">randBoolean</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns a random boolean.</div>
+<div class="block">Returns a random boolean value.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randGaussian()">randGaussian</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Returns a double between from a normal distribution
- with mean of 0 and standard deviation of 1.</div>
+<div class="block">Returns a double from a normal distribution with a mean of 0 and a standard deviation of 1.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -235,21 +236,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randInt(int)">randInt</a></span>&#8203;(int&nbsp;bound)</code></th>
 <td class="colLast">
-<div class="block">Returns a random integer in the given bound.</div>
+<div class="block">Returns a random integer within the given bound.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randLong()">randLong</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return a random long.</div>
+<div class="block">Returns a random long value.</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randUUID()">randUUID</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return a random UUID.</div>
+<div class="block">Returns a random UUID.</div>
 </td>
 </tr>
 </table>
@@ -277,6 +278,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>rand</h4>
 <pre class="methodSignature">double&nbsp;rand()</pre>
 <div class="block">Returns a double between 0-1 from a uniform distribution.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double in the range [0.0, 1.0)</dd>
+</dl>
 </li>
 </ul>
 <a id="rand(double,double)">
@@ -288,6 +293,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature">default&nbsp;double&nbsp;rand&#8203;(double&nbsp;low,
                     double&nbsp;high)</pre>
 <div class="block">Returns a random double in the given range.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>low</code> - the lower bound of the range</dd>
+<dd><code>high</code> - the upper bound of the range</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double between low and high</dd>
+</dl>
 </li>
 </ul>
 <a id="rand(double,double,java.lang.Integer)">
@@ -299,8 +311,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature">default&nbsp;double&nbsp;rand&#8203;(double&nbsp;low,
                     double&nbsp;high,
                     java.lang.Integer&nbsp;decimals)</pre>
-<div class="block">Returns a random double in the given range with no more that the specified
+<div class="block">Returns a random double in the given range with no more than the specified
  number of decimal places.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>low</code> - the lower bound of the range</dd>
+<dd><code>high</code> - the upper bound of the range</dd>
+<dd><code>decimals</code> - the number of decimal places to round to, or null for no rounding</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double between low and high, rounded to the specified number of decimal places</dd>
+</dl>
 </li>
 </ul>
 <a id="rand(double[])">
@@ -360,7 +380,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>randBoolean</h4>
 <pre class="methodSignature">boolean&nbsp;randBoolean()</pre>
-<div class="block">Returns a random boolean.</div>
+<div class="block">Returns a random boolean value.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random boolean</dd>
+</dl>
 </li>
 </ul>
 <a id="randGaussian()">
@@ -370,8 +394,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>randGaussian</h4>
 <pre class="methodSignature">double&nbsp;randGaussian()</pre>
-<div class="block">Returns a double between from a normal distribution
- with mean of 0 and standard deviation of 1.</div>
+<div class="block">Returns a double from a normal distribution with a mean of 0 and a standard deviation of 1.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random double from a standard normal distribution</dd>
+</dl>
 </li>
 </ul>
 <a id="randInt()">
@@ -382,6 +409,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>randInt</h4>
 <pre class="methodSignature">int&nbsp;randInt()</pre>
 <div class="block">Returns a random integer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random integer</dd>
+</dl>
 </li>
 </ul>
 <a id="randInt(int)">
@@ -391,7 +422,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>randInt</h4>
 <pre class="methodSignature">int&nbsp;randInt&#8203;(int&nbsp;bound)</pre>
-<div class="block">Returns a random integer in the given bound.</div>
+<div class="block">Returns a random integer within the given bound.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bound</code> - the upper bound (exclusive) for the random integer</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random integer between 0 (inclusive) and bound (exclusive)</dd>
+</dl>
 </li>
 </ul>
 <a id="randLong()">
@@ -401,7 +438,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>randLong</h4>
 <pre class="methodSignature">long&nbsp;randLong()</pre>
-<div class="block">Return a random long.</div>
+<div class="block">Returns a random long value.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random long</dd>
+</dl>
 </li>
 </ul>
 <a id="randUUID()">
@@ -411,7 +452,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>randUUID</h4>
 <pre class="methodSignature">java.util.UUID&nbsp;randUUID()</pre>
-<div class="block">Return a random UUID.</div>
+<div class="block">Returns a random UUID.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a random UUID</dd>
+</dl>
 </li>
 </ul>
 <a id="getCount()">
@@ -421,7 +466,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getCount</h4>
 <pre class="methodSignature">long&nbsp;getCount()</pre>
-<div class="block">Return how many times this RNG was called.</div>
+<div class="block">Returns the number of times this random number generator has been called.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the count of random number generation calls</dd>
+</dl>
 </li>
 </ul>
 <a id="getSeed()">
@@ -431,7 +480,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getSeed</h4>
 <pre class="methodSignature">long&nbsp;getSeed()</pre>
-<div class="block">Return the seed.</div>
+<div class="block">Returns the seed value used by this random number generator.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the seed value</dd>
+</dl>
 </li>
 </ul>
 </li>

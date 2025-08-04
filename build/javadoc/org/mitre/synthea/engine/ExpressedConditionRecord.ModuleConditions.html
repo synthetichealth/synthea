@@ -202,35 +202,35 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#endCondition(java.lang.String,long)">endCondition</a></span>&#8203;(java.lang.String&nbsp;condition,
             long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Record the end of a condition.</div>
+<div class="block">Records the end of a condition.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConditionFromState(java.lang.String)">getConditionFromState</a></span>&#8203;(java.lang.String&nbsp;state)</code></th>
 <td class="colLast">
-<div class="block">Get the condition for the supplied state.</div>
+<div class="block">Gets the condition name associated with a state.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConditionLastEndTime(java.lang.String)">getConditionLastEndTime</a></span>&#8203;(java.lang.String&nbsp;condition)</code></th>
 <td class="colLast">
-<div class="block">Get the last recorded end time.</div>
+<div class="block">Gets the last recorded end time of a condition.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConditionLastOnsetTime(java.lang.String)">getConditionLastOnsetTime</a></span>&#8203;(java.lang.String&nbsp;condition)</code></th>
 <td class="colLast">
-<div class="block">Get the last recorded onset time.</div>
+<div class="block">Gets the last recorded onset time of a condition.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOnsetConditions()">getOnsetConditions</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the recorded conditions and onset/end information.</div>
+<div class="block">Gets the recorded conditions and onset/end information.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -239,7 +239,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
               java.lang.String&nbsp;state,
               long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Record the onset of a condition.</div>
+<div class="block">Records the onset of a condition.</div>
 </td>
 </tr>
 </table>
@@ -274,6 +274,10 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>ModuleConditions</h4>
 <pre>public&nbsp;ModuleConditions&#8203;(java.lang.String&nbsp;source)</pre>
 <div class="block">Create new instance for the specified module name.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the name of the module that is recording conditions</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -297,6 +301,8 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>clone</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a shallow copy of this instance</dd>
 </dl>
 </li>
 </ul>
@@ -309,7 +315,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;onsetCondition&#8203;(java.lang.String&nbsp;condition,
                            java.lang.String&nbsp;state,
                            long&nbsp;time)</pre>
-<div class="block">Record the onset of a condition.</div>
+<div class="block">Records the onset of a condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>condition</code> - the name of the condition</dd>
+<dd><code>state</code> - the state associated with the condition</dd>
+<dd><code>time</code> - the time the condition started</dd>
+</dl>
 </li>
 </ul>
 <a id="endCondition(java.lang.String,long)">
@@ -320,7 +332,12 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <h4>endCondition</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;endCondition&#8203;(java.lang.String&nbsp;condition,
                          long&nbsp;time)</pre>
-<div class="block">Record the end of a condition.</div>
+<div class="block">Records the end of a condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>condition</code> - the name of the condition</dd>
+<dd><code>time</code> - the time the condition ended</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionLastOnsetTime(java.lang.String)">
@@ -330,7 +347,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getConditionLastOnsetTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getConditionLastOnsetTime&#8203;(java.lang.String&nbsp;condition)</pre>
-<div class="block">Get the last recorded onset time.</div>
+<div class="block">Gets the last recorded onset time of a condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>condition</code> - the name of the condition</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last recorded onset time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionLastEndTime(java.lang.String)">
@@ -340,7 +363,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getConditionLastEndTime</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Long&nbsp;getConditionLastEndTime&#8203;(java.lang.String&nbsp;condition)</pre>
-<div class="block">Get the last recorded end time.</div>
+<div class="block">Gets the last recorded end time of a condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>condition</code> - the name of the condition</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the last recorded end time of the condition</dd>
+</dl>
 </li>
 </ul>
 <a id="getConditionFromState(java.lang.String)">
@@ -350,7 +379,13 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getConditionFromState</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getConditionFromState&#8203;(java.lang.String&nbsp;state)</pre>
-<div class="block">Get the condition for the supplied state.</div>
+<div class="block">Gets the condition name associated with a state.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>state</code> - the state name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the condition associated with the state</dd>
+</dl>
 </li>
 </ul>
 <a id="getOnsetConditions()">
@@ -360,10 +395,10 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <li class="blockList">
 <h4>getOnsetConditions</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;<a href="ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a>&gt;&nbsp;getOnsetConditions()</pre>
-<div class="block">Get the recorded conditions and onset/end information.</div>
+<div class="block">Gets the recorded conditions and onset/end information.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a map of condition name to onset/end records.</dd>
+<dd>a map of condition names to their onset and end records</dd>
 </dl>
 </li>
 </ul>

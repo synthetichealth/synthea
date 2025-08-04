@@ -155,7 +155,9 @@ extends ca.uhn.fhir.rest.client.api.IRestfulClient</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#expand(org.hl7.fhir.r4.model.UriType,org.hl7.fhir.r4.model.IntegerType,org.hl7.fhir.r4.model.IntegerType)">expand</a></span>&#8203;(org.hl7.fhir.r4.model.UriType&nbsp;url,
       org.hl7.fhir.r4.model.IntegerType&nbsp;count,
       org.hl7.fhir.r4.model.IntegerType&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Expands a ValueSet based on the provided parameters.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -190,6 +192,15 @@ extends ca.uhn.fhir.rest.client.api.IRestfulClient</pre>
 <pre class="methodSignature">org.hl7.fhir.r4.model.ValueSet&nbsp;expand&#8203;(org.hl7.fhir.r4.model.UriType&nbsp;url,
                                       org.hl7.fhir.r4.model.IntegerType&nbsp;count,
                                       org.hl7.fhir.r4.model.IntegerType&nbsp;offset)</pre>
+<div class="block">Expands a ValueSet based on the provided parameters.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>url</code> - the URI of the ValueSet to expand</dd>
+<dd><code>count</code> - the maximum number of items to include in the expansion</dd>
+<dd><code>offset</code> - the starting point for the expansion</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the expanded ValueSet</dd>
+</dl>
 </li>
 </ul>
 </li>

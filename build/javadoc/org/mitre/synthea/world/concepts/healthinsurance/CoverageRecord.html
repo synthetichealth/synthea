@@ -340,7 +340,7 @@ implements java.io.Serializable</pre>
 <div class="block">Get the plan history associated with this CoverageRecord.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the play history.</dd>
+<dd>the plan history</dd>
 </dl>
 </li>
 </ul>
@@ -356,9 +356,9 @@ implements java.io.Serializable</pre>
 <div class="block">Sets the person's payer history at the given time to the given payers.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>time</code> - the current simulation time.</dd>
-<dd><code>newPlan</code> - the primary InsurancePlan.</dd>
-<dd><code>secondaryPlan</code> - the secondary InsurancePlan (i.e. Medicare Supplemental Insurance).</dd>
+<dd><code>time</code> - the current simulation time</dd>
+<dd><code>newPlan</code> - the primary insurance plan</dd>
+<dd><code>secondaryPlan</code> - the secondary insurance plan (e.g., Medicare Supplemental Insurance)</dd>
 </dl>
 </li>
 </ul>
@@ -431,6 +431,12 @@ implements java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;newEnrollmentPeriod&#8203;(long&nbsp;time)</pre>
 <div class="block">Determines whether the person should enter an enrollment period and search for a new insurance
  plan. If so, the next enrollment period will be accordingly updated.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - The current time.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the person should enter an enrollment period, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="getTotalOutOfPocketExpenses()">
@@ -506,6 +512,8 @@ implements java.io.Serializable</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>time</code> - The time to pay the premiums.</dd>
+<dd><code>employerLevel</code> - The employer contribution level.</dd>
+<dd><code>income</code> - The income of the person.</dd>
 </dl>
 </li>
 </ul>
@@ -517,6 +525,10 @@ implements java.io.Serializable</pre>
 <h4>updateLastPayerQols</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;updateLastPayerQols&#8203;(double&nbsp;qolsForYear)</pre>
 <div class="block">Update the quality of life score for the most recent plan.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>qolsForYear</code> - The quality of life score for the year.</dd>
+</dl>
 </li>
 </ul>
 </li>

@@ -143,8 +143,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public static class <span class="typeNameLabel">Components.ExactWithUnit&lt;T&gt;</span>
-extends <a href="Components.Exact.html" title="class in org.mitre.synthea.engine">Components.Exact</a>&lt;T&gt;
-implements java.io.Serializable</pre>
+extends <a href="Components.Exact.html" title="class in org.mitre.synthea.engine">Components.Exact</a>&lt;T&gt;</pre>
 <div class="block">Variant of the Exact class, where a unit is required.
  Defining this in a separate class makes it easier to define
  where units are and are not required.</div>
@@ -176,7 +175,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unit">unit</a></span></code></th>
 <td class="colLast">
-<div class="block">Unit for the quantity.</div>
+<div class="block">Unit for the quantity (e.g., "days" if the quantity represents an amount of time).</div>
 </td>
 </tr>
 </table>
@@ -248,7 +247,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>unit</h4>
 <pre>public&nbsp;java.lang.String unit</pre>
-<div class="block">Unit for the quantity. Ex, "days" if the quantity represents an amount of time.</div>
+<div class="block">Unit for the quantity (e.g., "days" if the quantity represents an amount of time).</div>
 </li>
 </ul>
 </li>

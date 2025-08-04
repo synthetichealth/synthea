@@ -158,7 +158,9 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents a single consolidated service period.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -179,7 +181,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long)">ConsolidatedServicePeriods</a></span>&#8203;(long&nbsp;maxSeparationTime)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor to initialize the ConsolidatedServicePeriods instance.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -244,6 +248,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>ConsolidatedServicePeriods</h4>
 <pre>public&nbsp;ConsolidatedServicePeriods&#8203;(long&nbsp;maxSeparationTime)</pre>
+<div class="block">Constructor to initialize the ConsolidatedServicePeriods instance.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>maxSeparationTime</code> - the maximum allowed separation time in milliseconds</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -277,11 +286,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getPeriods</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a>&gt;&nbsp;getPeriods()</pre>
-<div class="block">Create a list of consolidated service periods from the encounters previously added. Each
- member of the list is a consolidated service period for a particular provider.</div>
+<div class="block">Create a list of consolidated service periods from the encounters previously added.
+ Each member of the list is a consolidated service period for a particular provider.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the list, sorted by period start time</dd>
+<dd>the list of consolidated service periods, sorted by period start time</dd>
 </dl>
 </li>
 </ul>

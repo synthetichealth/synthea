@@ -174,7 +174,9 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="GrowthDataErrorsEditor.Config.html" title="class in org.mitre.synthea.editors">GrowthDataErrorsEditor.Config</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Configuration class for specifying error rates in growth data editing.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -197,32 +199,135 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BMI_LOINC_CODE">BMI_LOINC_CODE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">LOINC code for BMI observations.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#HEIGHT_LOINC_CODE">HEIGHT_LOINC_CODE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">LOINC code for height observations.</div>
+</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightAbsoluteErrorRate">heightAbsoluteErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing absolute errors in height measurements.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightCarriedForwardErrorRate">heightCarriedForwardErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of carrying forward previous height measurements erroneously.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightDuplicateErrorRate">heightDuplicateErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of duplicating height measurements.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightExtremeErrorRate">heightExtremeErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing extreme (outlier) errors in height measurements.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightSwitchErrorRate">heightSwitchErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of switching height values between different records.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightTransposeErrorRate">heightTransposeErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing digit transposition errors in height measurements.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heightUnitErrorRate">heightUnitErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing unit errors in height measurements.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#INCHES_PER_CM">INCHES_PER_CM</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MAX_AGE">MAX_AGE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Conversion factor from centimeters to inches.</div>
+</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#POUNDS_PER_KG">POUNDS_PER_KG</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MAX_AGE">MAX_AGE</a></span></code></th>
+<td class="colLast">
+<div class="block">The maximum age (in years) for which this editor will operate.</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#POUNDS_PER_KG">POUNDS_PER_KG</a></span></code></th>
+<td class="colLast">
+<div class="block">Conversion factor from kilograms to pounds.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#WEIGHT_LOINC_CODE">WEIGHT_LOINC_CODE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">LOINC code for weight observations.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightCarriedForwardErrorRate">weightCarriedForwardErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of carrying forward previous weight measurements erroneously.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightDuplicateErrorRate">weightDuplicateErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of duplicating weight measurements.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightExtremeErrorRate">weightExtremeErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing extreme (outlier) errors in weight measurements.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightSwitchErrorRate">weightSwitchErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of switching weight values between different records.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightTransposeErrorRate">weightTransposeErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing digit transposition errors in weight measurements.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#weightUnitErrorRate">weightUnitErrorRate</a></span></code></th>
+<td class="colLast">
+<div class="block">Probability rate of introducing unit errors in weight measurements.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -243,7 +348,9 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">GrowthDataErrorsEditor</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Empty constructor</div>
+</td>
 </tr>
 </table>
 </li>
@@ -299,7 +406,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#introduceHeightExtremeError(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">introduceHeightExtremeError</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
 <td class="colLast">
-<div class="block">Shift the decimal place for the height observation once place to the right.</div>
+<div class="block">Shift the decimal place for the height observation one place to the right.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -344,7 +451,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#introduceWeightExtremeError(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">introduceWeightExtremeError</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
 <td class="colLast">
-<div class="block">Shift the decimal place for the weight observation once place to the right.</div>
+<div class="block">Shift the decimal place for the weight observation one place to the right.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
@@ -374,7 +481,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recalculateBMI(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">recalculateBMI</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
 <td class="colLast">
-<div class="block">Recalculate the BMI based on the existing height and weigh observations in the encounter.</div>
+<div class="block">Recalculate the BMI based on the existing height and weight observations in the encounter.</div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
@@ -417,6 +524,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>HEIGHT_LOINC_CODE</h4>
 <pre>public static final&nbsp;java.lang.String HEIGHT_LOINC_CODE</pre>
+<div class="block">LOINC code for height observations.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.editors.GrowthDataErrorsEditor.HEIGHT_LOINC_CODE">Constant Field Values</a></dd>
@@ -430,6 +538,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>WEIGHT_LOINC_CODE</h4>
 <pre>public static final&nbsp;java.lang.String WEIGHT_LOINC_CODE</pre>
+<div class="block">LOINC code for weight observations.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.editors.GrowthDataErrorsEditor.WEIGHT_LOINC_CODE">Constant Field Values</a></dd>
@@ -443,6 +552,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>BMI_LOINC_CODE</h4>
 <pre>public static final&nbsp;java.lang.String BMI_LOINC_CODE</pre>
+<div class="block">LOINC code for BMI observations.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.editors.GrowthDataErrorsEditor.BMI_LOINC_CODE">Constant Field Values</a></dd>
@@ -456,6 +566,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>MAX_AGE</h4>
 <pre>public static&nbsp;int MAX_AGE</pre>
+<div class="block">The maximum age (in years) for which this editor will operate.</div>
 </li>
 </ul>
 <a id="POUNDS_PER_KG">
@@ -465,15 +576,147 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>POUNDS_PER_KG</h4>
 <pre>public static&nbsp;double POUNDS_PER_KG</pre>
+<div class="block">Conversion factor from kilograms to pounds.</div>
 </li>
 </ul>
 <a id="INCHES_PER_CM">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>INCHES_PER_CM</h4>
 <pre>public static&nbsp;double INCHES_PER_CM</pre>
+<div class="block">Conversion factor from centimeters to inches.</div>
+</li>
+</ul>
+<a id="weightUnitErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightUnitErrorRate</h4>
+<pre>public&nbsp;double weightUnitErrorRate</pre>
+<div class="block">Probability rate of introducing unit errors in weight measurements.</div>
+</li>
+</ul>
+<a id="weightTransposeErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightTransposeErrorRate</h4>
+<pre>public&nbsp;double weightTransposeErrorRate</pre>
+<div class="block">Probability rate of introducing digit transposition errors in weight measurements.</div>
+</li>
+</ul>
+<a id="weightSwitchErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightSwitchErrorRate</h4>
+<pre>public&nbsp;double weightSwitchErrorRate</pre>
+<div class="block">Probability rate of switching weight values between different records.</div>
+</li>
+</ul>
+<a id="weightExtremeErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightExtremeErrorRate</h4>
+<pre>public&nbsp;double weightExtremeErrorRate</pre>
+<div class="block">Probability rate of introducing extreme (outlier) errors in weight measurements.</div>
+</li>
+</ul>
+<a id="weightDuplicateErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightDuplicateErrorRate</h4>
+<pre>public&nbsp;double weightDuplicateErrorRate</pre>
+<div class="block">Probability rate of duplicating weight measurements.</div>
+</li>
+</ul>
+<a id="weightCarriedForwardErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>weightCarriedForwardErrorRate</h4>
+<pre>public&nbsp;double weightCarriedForwardErrorRate</pre>
+<div class="block">Probability rate of carrying forward previous weight measurements erroneously.</div>
+</li>
+</ul>
+<a id="heightUnitErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightUnitErrorRate</h4>
+<pre>public&nbsp;double heightUnitErrorRate</pre>
+<div class="block">Probability rate of introducing unit errors in height measurements.</div>
+</li>
+</ul>
+<a id="heightTransposeErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightTransposeErrorRate</h4>
+<pre>public&nbsp;double heightTransposeErrorRate</pre>
+<div class="block">Probability rate of introducing digit transposition errors in height measurements.</div>
+</li>
+</ul>
+<a id="heightSwitchErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightSwitchErrorRate</h4>
+<pre>public&nbsp;double heightSwitchErrorRate</pre>
+<div class="block">Probability rate of switching height values between different records.</div>
+</li>
+</ul>
+<a id="heightExtremeErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightExtremeErrorRate</h4>
+<pre>public&nbsp;double heightExtremeErrorRate</pre>
+<div class="block">Probability rate of introducing extreme (outlier) errors in height measurements.</div>
+</li>
+</ul>
+<a id="heightAbsoluteErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightAbsoluteErrorRate</h4>
+<pre>public&nbsp;double heightAbsoluteErrorRate</pre>
+<div class="block">Probability rate of introducing absolute errors in height measurements.</div>
+</li>
+</ul>
+<a id="heightDuplicateErrorRate">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heightDuplicateErrorRate</h4>
+<pre>public&nbsp;double heightDuplicateErrorRate</pre>
+<div class="block">Probability rate of duplicating height measurements.</div>
+</li>
+</ul>
+<a id="heightCarriedForwardErrorRate">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>heightCarriedForwardErrorRate</h4>
+<pre>public&nbsp;double heightCarriedForwardErrorRate</pre>
+<div class="block">Probability rate of carrying forward previous height measurements erroneously.</div>
 </li>
 </ul>
 </li>
@@ -493,6 +736,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>GrowthDataErrorsEditor</h4>
 <pre>public&nbsp;GrowthDataErrorsEditor()</pre>
+<div class="block">Empty constructor</div>
 </li>
 </ul>
 </li>
@@ -519,11 +763,11 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../engine/HealthRecordEditor.html#shouldRun(org.mitre.synthea.world.agents.Person,org.mitre.synthea.world.concepts.HealthRecord,long)">shouldRun</a></code>&nbsp;in interface&nbsp;<code><a href="../engine/HealthRecordEditor.html" title="interface in org.mitre.synthea.engine">HealthRecordEditor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - The Synthea person to check on whether the module should be run</dd>
-<dd><code>record</code> - The person's HealthRecord</dd>
-<dd><code>time</code> - The current time in the simulation</dd>
+<dd><code>person</code> - The Synthea person to check on whether the module should be run.</dd>
+<dd><code>record</code> - The person's HealthRecord.</dd>
+<dd><code>time</code> - The current time in the simulation.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>True if the person is under MAX_AGE</dd>
+<dd>True if the person is under MAX_AGE.</dd>
 </dl>
 </li>
 </ul>
@@ -541,9 +785,9 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../engine/HealthRecordEditor.html#process(org.mitre.synthea.world.agents.Person,java.util.List,long)">process</a></code>&nbsp;in interface&nbsp;<code><a href="../engine/HealthRecordEditor.html" title="interface in org.mitre.synthea.engine">HealthRecordEditor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - The Synthea person to check on whether the module should be run</dd>
-<dd><code>encounters</code> - The encounters that took place during the last time step of the simulation</dd>
-<dd><code>time</code> - The current time in the simulation</dd>
+<dd><code>person</code> - The Synthea person to check on whether the module should be run.</dd>
+<dd><code>encounters</code> - The encounters that took place during the last time step of the simulation.</dd>
+<dd><code>time</code> - The current time in the simulation.</dd>
 </dl>
 </li>
 </ul>
@@ -558,7 +802,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  intentionally messing things up.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -573,7 +817,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  here.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -588,8 +832,8 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <div class="block">Flip the tens and ones place in the desired observation value.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
-<dd><code>obsType</code> - "height" or "weight"</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
+<dd><code>obsType</code> - "height" or "weight".</dd>
 </dl>
 </li>
 </ul>
@@ -604,7 +848,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  and height to the weight value.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -619,7 +863,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  and weight to height.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -630,10 +874,10 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>introduceWeightExtremeError</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;introduceWeightExtremeError&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
-<div class="block">Shift the decimal place for the weight observation once place to the right.</div>
+<div class="block">Shift the decimal place for the weight observation one place to the right.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -644,10 +888,10 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>introduceHeightExtremeError</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;introduceHeightExtremeError&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
-<div class="block">Shift the decimal place for the height observation once place to the right.</div>
+<div class="block">Shift the decimal place for the height observation one place to the right.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -663,7 +907,8 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  shoes before getting measured.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
+<dd><code>random</code> - The random number generator to use.</dd>
 </dl>
 </li>
 </ul>
@@ -678,7 +923,8 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <div class="block">Create a duplicate weight observation in the encounter that is off slightly.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
+<dd><code>random</code> - The random number generator to use.</dd>
 </dl>
 </li>
 </ul>
@@ -693,7 +939,8 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <div class="block">Create a duplicate height observation in the encounter that is off slightly.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
+<dd><code>random</code> - The random number generator to use.</dd>
 </dl>
 </li>
 </ul>
@@ -708,7 +955,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  encounter.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -723,7 +970,7 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
  encounter.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - The encounter that contains the observation</dd>
+<dd><code>encounter</code> - The encounter that contains the observation.</dd>
 </dl>
 </li>
 </ul>
@@ -734,11 +981,11 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <li class="blockList">
 <h4>recalculateBMI</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;recalculateBMI&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
-<div class="block">Recalculate the BMI based on the existing height and weigh observations in the encounter.
+<div class="block">Recalculate the BMI based on the existing height and weight observations in the encounter.
  Only recreates a BMI if one already exists. Otherwise, it does nothing.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounter</code> - to recalculate BMI on</dd>
+<dd><code>encounter</code> - The encounter to recalculate BMI on.</dd>
 </dl>
 </li>
 </ul>
@@ -753,8 +1000,8 @@ implements <a href="../engine/HealthRecordEditor.html" title="interface in org.m
 <div class="block">Filter a list of encounters to find all that have an observation with a particular code.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encounters</code> - The list to filter</dd>
-<dd><code>code</code> - The code to look for</dd>
+<dd><code>encounters</code> - The list to filter.</dd>
+<dd><code>code</code> - The code to look for.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The filtered list. If there are no matching encounters, then an empty list.</dd>
 </dl>

@@ -142,6 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public final class <span class="typeNameLabel">Transition.LookupTableKey</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents a key for lookup tables, containing attributes, age, and time information.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.engine.Transition.LookupTableKey">Serialized Form</a></dd>
@@ -258,6 +259,7 @@ implements java.io.Serializable</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>attributes</code> - Patient attribute values.</dd>
 <dd><code>age</code> - Patient age.</dd>
+<dd><code>time</code> - Patient time.</dd>
 </dl>
 </li>
 </ul>
@@ -275,6 +277,8 @@ implements java.io.Serializable</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>attributes</code> - Table attribute values.</dd>
 <dd><code>range</code> - If the table contains an age column, range contains the age range
+     information for this key.</dd>
+<dd><code>timeRange</code> - If the table contains a time column, timeRange contains the time range
      information for this key.</dd>
 </dl>
 </li>

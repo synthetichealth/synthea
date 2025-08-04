@@ -199,7 +199,9 @@ extends <a href="State.LegacyStateWithUnitlessRV.html" title="class in org.mitre
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addressed">addressed</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Whether the symptom has been addressed</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -267,7 +269,9 @@ extends <a href="State.LegacyStateWithUnitlessRV.html" title="class in org.mitre
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">initialize</a></span>&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
           java.lang.String&nbsp;name,
           com.google.gson.JsonObject&nbsp;definition)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes the state with the given module, name, and definition.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -322,6 +326,7 @@ extends <a href="State.LegacyStateWithUnitlessRV.html" title="class in org.mitre
 <li class="blockList">
 <h4>addressed</h4>
 <pre>public&nbsp;boolean addressed</pre>
+<div class="block">Whether the symptom has been addressed</div>
 </li>
 </ul>
 </li>
@@ -362,9 +367,15 @@ extends <a href="State.LegacyStateWithUnitlessRV.html" title="class in org.mitre
 <pre class="methodSignature">protected&nbsp;void&nbsp;initialize&#8203;(<a href="Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
                           java.lang.String&nbsp;name,
                           com.google.gson.JsonObject&nbsp;definition)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="State.html#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">State</a></code></span></div>
+<div class="block">Initializes the state with the given module, name, and definition.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="State.html#initialize(org.mitre.synthea.engine.Module,java.lang.String,com.google.gson.JsonObject)">initialize</a></code>&nbsp;in class&nbsp;<code><a href="State.html" title="class in org.mitre.synthea.engine">State</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>module</code> - the module associated with this state</dd>
+<dd><code>name</code> - the name of the state</dd>
+<dd><code>definition</code> - the JSON definition of the state</dd>
 </dl>
 </li>
 </ul>

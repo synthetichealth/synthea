@@ -183,12 +183,16 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_STATE">DEFAULT_STATE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The state to default to</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../identity/EntityManager.html" title="class in org.mitre.synthea.identity">EntityManager</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#entityManager">entityManager</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">EntityManager is used to manage fixed patient demographics records.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
@@ -200,42 +204,58 @@ extends java.lang.Object</pre>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#location">location</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The location where the population is generated.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#options">options</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Options for configuring the generator.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#referenceTime">referenceTime</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The reference time for the simulation, in milliseconds since epoch.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.util.concurrent.atomic.AtomicInteger&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stats">stats</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Statistics about the generated population, such as counts of alive and dead individuals.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop">stop</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The time at which the simulation stops, in milliseconds since epoch.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#threadPoolSize">threadPoolSize</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The size of the thread pool used for generating patients.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#timestep">timestep</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The amount of time per timestep, in milliseconds.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.concurrent.atomic.AtomicInteger</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#totalGeneratedPopulation">totalGeneratedPopulation</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The total number of individuals generated in the population.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -282,7 +302,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.engine.Generator.GeneratorOptions,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">Generator</a></span>&#8203;(<a href="Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a>&nbsp;o,
-         <a href="../export/Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a>&nbsp;ero)</code></th>
+         org.mitre.synthea.export.Exporter.ExporterRuntimeOptions&nbsp;ero)</code></th>
 <td class="colLast">
 <div class="block">Create a Generator, with the given options.</div>
 </td>
@@ -434,6 +454,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>options</h4>
 <pre>public&nbsp;<a href="Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a> options</pre>
+<div class="block">Options for configuring the generator.</div>
 </li>
 </ul>
 <a id="timestep">
@@ -443,6 +464,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>timestep</h4>
 <pre>public&nbsp;long timestep</pre>
+<div class="block">The amount of time per timestep, in milliseconds.</div>
 </li>
 </ul>
 <a id="stop">
@@ -452,6 +474,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>stop</h4>
 <pre>public&nbsp;long stop</pre>
+<div class="block">The time at which the simulation stops, in milliseconds since epoch.</div>
 </li>
 </ul>
 <a id="referenceTime">
@@ -461,6 +484,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>referenceTime</h4>
 <pre>public&nbsp;long referenceTime</pre>
+<div class="block">The reference time for the simulation, in milliseconds since epoch.</div>
 </li>
 </ul>
 <a id="stats">
@@ -470,6 +494,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>stats</h4>
 <pre>public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.util.concurrent.atomic.AtomicInteger&gt; stats</pre>
+<div class="block">Statistics about the generated population, such as counts of alive and dead individuals.</div>
 </li>
 </ul>
 <a id="location">
@@ -479,6 +504,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>location</h4>
 <pre>public&nbsp;<a href="../world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a> location</pre>
+<div class="block">The location where the population is generated.</div>
 </li>
 </ul>
 <a id="totalGeneratedPopulation">
@@ -488,6 +514,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>totalGeneratedPopulation</h4>
 <pre>public&nbsp;java.util.concurrent.atomic.AtomicInteger totalGeneratedPopulation</pre>
+<div class="block">The total number of individuals generated in the population.</div>
 </li>
 </ul>
 <a id="DEFAULT_STATE">
@@ -497,6 +524,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>DEFAULT_STATE</h4>
 <pre>public static&nbsp;java.lang.String DEFAULT_STATE</pre>
+<div class="block">The state to default to</div>
 </li>
 </ul>
 <a id="entityManager">
@@ -506,6 +534,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>entityManager</h4>
 <pre>public static&nbsp;<a href="../identity/EntityManager.html" title="class in org.mitre.synthea.identity">EntityManager</a> entityManager</pre>
+<div class="block">EntityManager is used to manage fixed patient demographics records.</div>
 </li>
 </ul>
 <a id="threadPoolSize">
@@ -515,6 +544,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>threadPoolSize</h4>
 <pre>public final&nbsp;int threadPoolSize</pre>
+<div class="block">The size of the thread pool used for generating patients.</div>
 </li>
 </ul>
 </li>
@@ -567,6 +597,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>population</code> - Target population size</dd>
 <dd><code>seed</code> - Seed used for randomness</dd>
+<dd><code>clinicianSeed</code> - Seed used for clinician randomness</dd>
 </dl>
 </li>
 </ul>
@@ -591,7 +622,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>Generator</h4>
 <pre>public&nbsp;Generator&#8203;(<a href="Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a>&nbsp;o,
-                 <a href="../export/Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a>&nbsp;ero)</pre>
+                 org.mitre.synthea.export.Exporter.ExporterRuntimeOptions&nbsp;ero)</pre>
 <div class="block">Create a Generator, with the given options.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -675,7 +706,7 @@ public&nbsp;<a href="../world/agents/Person.html" title="class in org.mitre.synt
                                                                       int&nbsp;index,
                                                                       boolean&nbsp;isAlive)</pre>
 <div class="block">Determines if a patient meets the requested criteria.
- If a patient does not meet the criteria the process will be repeated so a new one is generated</div>
+ If a patient does not meet the criteria the process will be repeated so a new one is generated.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - the patient to check if we want to export them</dd>
@@ -696,6 +727,13 @@ public&nbsp;<a href="../world/agents/Person.html" title="class in org.mitre.synt
 <pre class="methodSignature">public&nbsp;<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;updateRecordExportPerson&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                        int&nbsp;index)</pre>
 <div class="block">Update person record to stop time, record the entry and export record.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person to update and export</dd>
+<dd><code>index</code> - the index of the person being updated</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the updated person</dd>
+</dl>
 </li>
 </ul>
 <a id="createPerson(long,java.util.Map)">
@@ -743,6 +781,8 @@ public&nbsp;<a href="../world/agents/Person.html" title="class in org.mitre.synt
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>random</code> - The random number generator to use.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of random demographics</dd>
 </dl>
 </li>
 </ul>
@@ -759,6 +799,8 @@ public&nbsp;<a href="../world/agents/Person.html" title="class in org.mitre.synt
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>entity</code> - The record group to pull demographics from.</dd>
 <dd><code>random</code> - Random object.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a map of fixed demographics</dd>
 </dl>
 </li>
 </ul>

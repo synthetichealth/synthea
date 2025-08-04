@@ -112,62 +112,77 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>chart</h4>
 <pre><a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.PersonChartConfig</a> chart</pre>
+<div class="block">Configuration to generate a chart image.</div>
 </li>
 <li class="blockList">
 <h4>contentType</h4>
 <pre>java.lang.String contentType</pre>
+<div class="block">Code for the MIME type of the content, with charset etc.</div>
 </li>
 <li class="blockList">
 <h4>creation</h4>
 <pre>java.lang.String creation</pre>
+<div class="block">Date attachment was first created.</div>
 </li>
 <li class="blockList">
 <h4>data</h4>
 <pre>java.lang.String data</pre>
+<div class="block">Data inline, base64 encoded.</div>
 </li>
 <li class="blockList">
 <h4>duration</h4>
 <pre>double duration</pre>
+<div class="block">Length in seconds (audio/video).</div>
 </li>
 <li class="blockList">
 <h4>frames</h4>
 <pre>int frames</pre>
+<div class="block">Number of frames if more than 1 (photo).</div>
 </li>
 <li class="blockList">
 <h4>hash</h4>
 <pre>java.lang.String hash</pre>
+<div class="block">Hash of the data (SHA-1, base64 encoded).</div>
 </li>
 <li class="blockList">
 <h4>height</h4>
 <pre>int height</pre>
+<div class="block">Height of the image in pixels (photo/video).</div>
 </li>
 <li class="blockList">
 <h4>language</h4>
 <pre>java.lang.String language</pre>
+<div class="block">Human language of the content (BCP-47).</div>
 </li>
 <li class="blockList">
 <h4>pages</h4>
 <pre>int pages</pre>
+<div class="block">Number of printed pages.</div>
 </li>
 <li class="blockList">
 <h4>size</h4>
 <pre>int size</pre>
+<div class="block">Number of bytes of content (if URL provided).</div>
 </li>
 <li class="blockList">
 <h4>title</h4>
 <pre>java.lang.String title</pre>
+<div class="block">Label to display in place of the data.</div>
 </li>
 <li class="blockList">
 <h4>url</h4>
 <pre>java.lang.String url</pre>
+<div class="block">URI where the data can be found.</div>
 </li>
 <li class="blockList">
 <h4>validated</h4>
 <pre>java.lang.Boolean validated</pre>
+<div class="block">Whether this Attachment has been validated.</div>
 </li>
 <li class="blockListLast">
 <h4>width</h4>
 <pre>int width</pre>
+<div class="block">Width of the image in pixels (photo/video).</div>
 </li>
 </ul>
 </li>
@@ -184,30 +199,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>day</h4>
 <pre>int day</pre>
+<div class="block">The day component of the date.</div>
 </li>
 <li class="blockList">
 <h4>hour</h4>
 <pre>int hour</pre>
+<div class="block">The hour component of the time.</div>
 </li>
 <li class="blockList">
 <h4>millisecond</h4>
 <pre>int millisecond</pre>
+<div class="block">The millisecond component of the time.</div>
 </li>
 <li class="blockList">
 <h4>minute</h4>
 <pre>int minute</pre>
+<div class="block">The minute component of the time.</div>
 </li>
 <li class="blockList">
 <h4>month</h4>
 <pre>int month</pre>
+<div class="block">The month component of the date.</div>
 </li>
 <li class="blockList">
 <h4>second</h4>
 <pre>int second</pre>
+<div class="block">The second component of the time.</div>
 </li>
 <li class="blockListLast">
 <h4>year</h4>
 <pre>int year</pre>
+<div class="block">The year component of the date.</div>
 </li>
 </ul>
 </li>
@@ -241,7 +263,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
-<div class="block">Unit for the quantity. Ex, "days" if the quantity represents an amount of time.</div>
+<div class="block">Unit for the quantity (e.g., "days" if the quantity represents an amount of time).</div>
 </li>
 </ul>
 </li>
@@ -285,7 +307,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
-<div class="block">Unit for the range. Ex, "years" if the range represents an amount of time.</div>
+<div class="block">Unit for the range (e.g., "years" if the range represents an amount of time).</div>
 </li>
 </ul>
 </li>
@@ -302,30 +324,38 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.List&lt;java.lang.String&gt; attributes</pre>
+<div class="block">Person attributes containing TimeSeriesData objects.</div>
 </li>
 <li class="blockList">
 <h4>decimalFormat</h4>
 <pre>java.lang.String decimalFormat</pre>
+<div class="block">Format for the output decimal numbers.
+ See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html</div>
 </li>
 <li class="blockList">
 <h4>factor</h4>
 <pre>java.lang.Double factor</pre>
+<div class="block">Multiply data by this before adding to origin.</div>
 </li>
 <li class="blockList">
 <h4>lowerLimit</h4>
 <pre>java.lang.Double lowerLimit</pre>
+<div class="block">Lower limit of detection.</div>
 </li>
 <li class="blockList">
 <h4>originValue</h4>
 <pre>double originValue</pre>
+<div class="block">Zero value.</div>
 </li>
 <li class="blockList">
 <h4>series</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a>&gt; series</pre>
+<div class="block">List of actual series data collections.</div>
 </li>
 <li class="blockListLast">
 <h4>upperLimit</h4>
 <pre>java.lang.Double upperLimit</pre>
+<div class="block">Upper limit of detection.</div>
 </li>
 </ul>
 </li>
@@ -342,14 +372,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>kind</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a> kind</pre>
+<div class="block">The type of distribution.</div>
 </li>
 <li class="blockList">
 <h4>parameters</h4>
 <pre>java.util.HashMap&lt;java.lang.String,&#8203;java.lang.Double&gt; parameters</pre>
+<div class="block">Parameters defining the distribution (e.g., mean, standard deviation).</div>
 </li>
 <li class="blockListLast">
 <h4>round</h4>
 <pre>java.lang.Boolean round</pre>
+<div class="block">Whether the generated value should be rounded to the nearest integer.</div>
 </li>
 </ul>
 </li>
@@ -370,10 +403,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">The person in context</div>
 </li>
 <li class="blockListLast">
 <h4>sources</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;<a href="org/mitre/synthea/engine/ExpressedConditionRecord.ModuleConditions.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ModuleConditions</a>&gt; sources</pre>
+<div class="block">a map:  module.name to Conditions</div>
 </li>
 </ul>
 </li>
@@ -394,10 +429,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>endTime</h4>
 <pre>java.lang.Long endTime</pre>
+<div class="block">The time when the condition ended.</div>
 </li>
 <li class="blockListLast">
 <h4>onsetTime</h4>
 <pre>java.lang.Long onsetTime</pre>
+<div class="block">The time when the condition started.</div>
 </li>
 </ul>
 </li>
@@ -418,18 +455,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>conditionName</h4>
 <pre>java.lang.String conditionName</pre>
+<div class="block">The name of the condition.</div>
 </li>
 <li class="blockList">
 <h4>endTime</h4>
 <pre>java.lang.Long endTime</pre>
+<div class="block">The time when the condition ended.</div>
 </li>
 <li class="blockList">
 <h4>onsetTime</h4>
 <pre>java.lang.Long onsetTime</pre>
+<div class="block">The time when the condition started.</div>
 </li>
 <li class="blockListLast">
 <h4>symptoms</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.util.List&lt;java.lang.Integer&gt;&gt; symptoms</pre>
+<div class="block">A map of symptoms and their associated severity levels during the condition.</div>
 </li>
 </ul>
 </li>
@@ -455,6 +496,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>source</h4>
 <pre>java.lang.String source</pre>
+<div class="block">The source of the condition record.</div>
 </li>
 <li class="blockListLast">
 <h4>state2conditionMapping</h4>
@@ -481,10 +523,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">The name of the condition.</div>
 </li>
 <li class="blockListLast">
 <h4>timeInfos</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/ExpressedConditionRecord.ConditionPeriod.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.ConditionPeriod</a>&gt; timeInfos</pre>
+<div class="block">A list of condition periods with associated time information.</div>
 </li>
 </ul>
 </li>
@@ -505,10 +549,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">The name of the symptom</div>
 </li>
 <li class="blockListLast">
 <h4>sources</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a>&gt; sources</pre>
+<div class="block">The sources of the expressed conditions.</div>
 </li>
 </ul>
 </li>
@@ -529,14 +575,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>cause</h4>
 <pre>java.lang.String cause</pre>
+<div class="block">The cause of the symptom.</div>
 </li>
 <li class="blockList">
 <h4>time</h4>
 <pre>java.lang.Long time</pre>
+<div class="block">The time the symptom was set.</div>
 </li>
 <li class="blockListLast">
 <h4>value</h4>
 <pre>java.lang.Integer value</pre>
+<div class="block">The value associated with the symptom.</div>
 </li>
 </ul>
 </li>
@@ -557,22 +606,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>lastUpdateTime</h4>
 <pre>java.lang.Long lastUpdateTime</pre>
+<div class="block">when the expressed was last updated from the a given module</div>
 </li>
 <li class="blockList">
 <h4>resolved</h4>
 <pre>boolean resolved</pre>
+<div class="block">what is the status from a given expressed symptom from a given module</div>
 </li>
 <li class="blockList">
 <h4>source</h4>
 <pre>java.lang.String source</pre>
+<div class="block">From which module the expressed symptom was set</div>
 </li>
 <li class="blockList">
 <h4>symptom</h4>
 <pre><a href="org/mitre/synthea/engine/ExpressedSymptom.html" title="class in org.mitre.synthea.engine">ExpressedSymptom</a> symptom</pre>
+<div class="block">The current instance of ExpressedSymptom</div>
 </li>
 <li class="blockListLast">
 <h4>timeInfos</h4>
 <pre>java.util.Map&lt;java.lang.Long,&#8203;<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a>&gt; timeInfos</pre>
+<div class="block">the time on which the expressed symptom was updated and the associated info.</div>
 </li>
 </ul>
 </li>
@@ -589,6 +643,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>remarks</h4>
 <pre>java.util.List&lt;java.lang.String&gt; remarks</pre>
+<div class="block">Remarks or comments associated with the logic.</div>
 </li>
 </ul>
 </li>
@@ -625,14 +680,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">Operator for comparison</div>
 </li>
 <li class="blockList">
 <h4>quantity</h4>
 <pre>java.lang.Double quantity</pre>
+<div class="block">Quantity of age to test against.</div>
 </li>
 <li class="blockListLast">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">Unit of age (e.g., years, months).</div>
 </li>
 </ul>
 </li>
@@ -654,6 +712,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>minimum</h4>
 <pre>java.lang.Integer minimum</pre>
+<div class="block">The lower bound of sub-conditions that need to be true to return true</div>
 </li>
 </ul>
 </li>
@@ -670,6 +729,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>maximum</h4>
 <pre>java.lang.Integer maximum</pre>
+<div class="block">The max number of sub-conditions that can be true</div>
 </li>
 </ul>
 </li>
@@ -686,14 +746,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attribute</h4>
 <pre>java.lang.String attribute</pre>
+<div class="block">Attribute name</div>
 </li>
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">Comparison operator</div>
 </li>
 <li class="blockListLast">
 <h4>value</h4>
 <pre>java.lang.Object value</pre>
+<div class="block">Value to compare the attribute to</div>
 </li>
 </ul>
 </li>
@@ -710,18 +773,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>date</h4>
 <pre><a href="org/mitre/synthea/engine/Components.DateInput.html" title="class in org.mitre.synthea.engine">Components.DateInput</a> date</pre>
+<div class="block">Specific date to test against.</div>
 </li>
 <li class="blockList">
 <h4>month</h4>
 <pre>java.lang.Integer month</pre>
+<div class="block">Month to test against.</div>
 </li>
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">Operator for comparison</div>
 </li>
 <li class="blockListLast">
 <h4>year</h4>
 <pre>java.lang.Integer year</pre>
+<div class="block">Year to test against.</div>
 </li>
 </ul>
 </li>
@@ -743,6 +810,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>gender</h4>
 <pre>java.lang.String gender</pre>
+<div class="block">Gender to test against (e.g., M or F).</div>
 </li>
 </ul>
 </li>
@@ -759,6 +827,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>condition</h4>
 <pre><a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a> condition</pre>
+<div class="block">The condition to negate</div>
 </li>
 </ul>
 </li>
@@ -775,22 +844,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">List of codes to test against.</div>
 </li>
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">The comparison operator.</div>
 </li>
 <li class="blockList">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">Attribute referencing the observation.</div>
 </li>
 <li class="blockList">
 <h4>value</h4>
 <pre>java.lang.Object value</pre>
+<div class="block">Value to compare the observation against.</div>
 </li>
 <li class="blockListLast">
 <h4>valueCode</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> valueCode</pre>
+<div class="block">Code representing the value to compare.</div>
 </li>
 </ul>
 </li>
@@ -812,18 +886,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">Name of the prior state</div>
 </li>
 <li class="blockList">
 <h4>since</h4>
 <pre>java.lang.String since</pre>
+<div class="block">Name of a state, cuts off the search when reached</div>
 </li>
 <li class="blockList">
 <h4>window</h4>
 <pre>java.lang.Long window</pre>
+<div class="block">Converted value of the `within` variable</div>
 </li>
 <li class="blockListLast">
 <h4>within</h4>
 <pre><a href="org/mitre/synthea/engine/Components.ExactWithUnit.html" title="class in org.mitre.synthea.engine">Components.ExactWithUnit</a>&lt;java.lang.Double&gt; within</pre>
+<div class="block">Max amount of time we'll look back at the history</div>
 </li>
 </ul>
 </li>
@@ -840,6 +918,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>race</h4>
 <pre>java.lang.String race</pre>
+<div class="block">Race to test against.</div>
 </li>
 </ul>
 </li>
@@ -856,6 +935,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">Socioeconomic category to test against (e.g., High, Middle, Low).</div>
 </li>
 </ul>
 </li>
@@ -872,14 +952,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">The comparison operator</div>
 </li>
 <li class="blockList">
 <h4>symptom</h4>
 <pre>java.lang.String symptom</pre>
+<div class="block">The symptom to test against</div>
 </li>
 <li class="blockListLast">
 <h4>value</h4>
 <pre>double value</pre>
+<div class="block">The value to compare the person's symptom against</div>
 </li>
 </ul>
 </li>
@@ -901,14 +984,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>operator</h4>
 <pre>java.lang.String operator</pre>
+<div class="block">Comparator for the vital sign's value</div>
 </li>
 <li class="blockList">
 <h4>value</h4>
 <pre>double value</pre>
+<div class="block">The value to compare against</div>
 </li>
 <li class="blockListLast">
 <h4>vitalSign</h4>
-<pre><a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a> vitalSign</pre>
+<pre>org.mitre.synthea.world.concepts.VitalSign vitalSign</pre>
+<div class="block">The vital sign to test against, like blood pressure</div>
 </li>
 </ul>
 </li>
@@ -925,32 +1011,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>gmfVersion</h4>
 <pre>java.lang.Double gmfVersion</pre>
+<div class="block">Version of the Generic Module Framework (GMF) used by this module.</div>
 </li>
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">Name of the module.</div>
 </li>
 <li class="blockList">
 <h4>remarks</h4>
 <pre>java.util.List&lt;java.lang.String&gt; remarks</pre>
+<div class="block">List of remarks or comments associated with this module.</div>
 </li>
 <li class="blockList">
 <h4>specialty</h4>
 <pre>java.lang.String specialty</pre>
+<div class="block">Specialty associated with the module, if any.</div>
 </li>
 <li class="blockList">
 <h4>states</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a>&gt; states</pre>
+<div class="block">Map of state names to State objects for this module.</div>
 </li>
 <li class="blockList">
 <h4>submodule</h4>
 <pre>boolean submodule</pre>
-<div class="block">true if this is a submodule, false otherwise.</div>
+<div class="block">True if this is a submodule, false otherwise.</div>
 </li>
 <li class="blockListLast">
 <h4>submoduleName</h4>
 <pre>java.lang.String submoduleName</pre>
-<div class="block">if a submodule, the original name of this submodule. Otherwise null.</div>
+<div class="block">If a submodule, the original name of this submodule. Otherwise null.</div>
 </li>
 </ul>
 </li>
@@ -967,14 +1058,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>possibleSeverities</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a>&gt; possibleSeverities</pre>
+<div class="block">List of possible severities and their probabilities for the reaction.</div>
 </li>
 <li class="blockList">
 <h4>reaction</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> reaction</pre>
+<div class="block">Code representing the type of reaction.</div>
 </li>
 <li class="blockListLast">
 <h4>severityDistribution</h4>
 <pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt; severityDistribution</pre>
+<div class="block">Distribution used to sample reaction severities based on probabilities.</div>
 </li>
 </ul>
 </li>
@@ -991,10 +1085,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>level</h4>
 <pre>java.lang.String level</pre>
+<div class="block">Severity level of the reaction (e.g., mild, moderate, severe).</div>
 </li>
 <li class="blockListLast">
 <h4>value</h4>
 <pre>float value</pre>
+<div class="block">Probability of the severity level occurring.</div>
 </li>
 </ul>
 </li>
@@ -1011,54 +1107,67 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>complexTransition</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.ComplexTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.ComplexTransitionOption</a>&gt; complexTransition</pre>
+<div class="block">A list of complex transition options.</div>
 </li>
 <li class="blockList">
 <h4>conditionalTransition</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.ConditionalTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.ConditionalTransitionOption</a>&gt; conditionalTransition</pre>
+<div class="block">List of conditional transitions from this state</div>
 </li>
 <li class="blockList">
 <h4>directTransition</h4>
 <pre>java.lang.String directTransition</pre>
+<div class="block">note that these are not Transition objects, because they are JSON lists</div>
 </li>
 <li class="blockList">
 <h4>distributedTransition</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.DistributedTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.DistributedTransitionOption</a>&gt; distributedTransition</pre>
+<div class="block">A list of distributed transition options.</div>
 </li>
 <li class="blockList">
 <h4>entered</h4>
 <pre>java.lang.Long entered</pre>
+<div class="block">The time the state was entered.</div>
 </li>
 <li class="blockList">
 <h4>entry</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> entry</pre>
+<div class="block">The entry associated with this state.</div>
 </li>
 <li class="blockList">
 <h4>exited</h4>
 <pre>java.lang.Long exited</pre>
+<div class="block">The time the state was exited.</div>
 </li>
 <li class="blockList">
 <h4>lookupTableTransition</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.LookupTableTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.LookupTableTransitionOption</a>&gt; lookupTableTransition</pre>
+<div class="block">A list of lookup table transition options.</div>
 </li>
 <li class="blockList">
 <h4>module</h4>
 <pre><a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a> module</pre>
+<div class="block">The module associated with this state.</div>
 </li>
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">The name of the state.</div>
 </li>
 <li class="blockList">
 <h4>remarks</h4>
 <pre>java.util.List&lt;java.lang.String&gt; remarks</pre>
+<div class="block">Remarks associated with this state.</div>
 </li>
 <li class="blockList">
 <h4>transition</h4>
 <pre><a href="org/mitre/synthea/engine/Transition.html" title="class in org.mitre.synthea.engine">Transition</a> transition</pre>
+<div class="block">The transition associated with this state.</div>
 </li>
 <li class="blockListLast">
 <h4>typeOfCareTransition</h4>
 <pre><a href="org/mitre/synthea/engine/Transition.TypeOfCareTransitionOptions.html" title="class in org.mitre.synthea.engine">Transition.TypeOfCareTransitionOptions</a> typeOfCareTransition</pre>
+<div class="block">Options for type of care transitions.</div>
 </li>
 </ul>
 </li>
@@ -1075,14 +1184,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>allergyOnset</h4>
 <pre>java.lang.String allergyOnset</pre>
+<div class="block">The name of the state this allergy was onset by</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes of the allergy to end</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">The name of the attribute to which a previous AllergyOnset state assigned a condition</div>
 </li>
 </ul>
 </li>
@@ -1099,14 +1211,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>allergyType</h4>
 <pre>java.lang.String allergyType</pre>
+<div class="block">The type of allergy</div>
 </li>
 <li class="blockList">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">The category of allergy</div>
 </li>
 <li class="blockListLast">
 <h4>reactions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a>&gt; reactions</pre>
+<div class="block">A list of probabilities indicating how likely each reaction severity is</div>
 </li>
 </ul>
 </li>
@@ -1123,6 +1238,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>submodule</h4>
 <pre>java.lang.String submodule</pre>
+<div class="block">the name of the submodule to call</div>
 </li>
 </ul>
 </li>
@@ -1139,14 +1255,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>careplan</h4>
 <pre>java.lang.String careplan</pre>
+<div class="block">The name of the CarePlanStart in which this CarePlan was prescribed</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes of the CarePlan to end</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">The attribute to which a CarePlanStart state assigned a care plan</div>
 </li>
 </ul>
 </li>
@@ -1163,14 +1282,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>activities</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; activities</pre>
+<div class="block">The activities listed in the CarePlan</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes associated with the CarePlan</div>
 </li>
 <li class="blockListLast">
 <h4>reason</h4>
 <pre>java.lang.String reason</pre>
+<div class="block">The reason for starting this CarePlan</div>
 </li>
 </ul>
 </li>
@@ -1187,14 +1309,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">Codes of the condition to end</div>
 </li>
 <li class="blockList">
 <h4>conditionOnset</h4>
 <pre>java.lang.String conditionOnset</pre>
+<div class="block">The onset state that caused the condition that's ending</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">The attirbute that a ConditionOnset state assigned a condition</div>
 </li>
 </ul>
 </li>
@@ -1216,18 +1341,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>action</h4>
 <pre>java.lang.String action</pre>
+<div class="block">Whether this counter increments or decrements</div>
 </li>
 <li class="blockList">
 <h4>amount</h4>
 <pre>int amount</pre>
+<div class="block">The current count</div>
 </li>
 <li class="blockList">
 <h4>attribute</h4>
 <pre>java.lang.String attribute</pre>
+<div class="block">The numeric attribute on the patient</div>
 </li>
 <li class="blockListLast">
 <h4>increment</h4>
 <pre>boolean increment</pre>
+<div class="block">Indicates whether the action is increment or decrement</div>
 </li>
 </ul>
 </li>
@@ -1244,22 +1373,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">Codes of the conditions causing death</div>
 </li>
 <li class="blockList">
 <h4>conditionOnset</h4>
 <pre>java.lang.String conditionOnset</pre>
+<div class="block">The name of the state which onset the condition causing death</div>
 </li>
 <li class="blockList">
 <h4>exact</h4>
 <pre><a href="org/mitre/synthea/engine/Components.ExactWithUnit.html" title="class in org.mitre.synthea.engine">Components.ExactWithUnit</a>&lt;java.lang.Double&gt; exact</pre>
+<div class="block">The exact time of death</div>
 </li>
 <li class="blockList">
 <h4>range</h4>
 <pre><a href="org/mitre/synthea/engine/Components.RangeWithUnit.html" title="class in org.mitre.synthea.engine">Components.RangeWithUnit</a>&lt;java.lang.Double&gt; range</pre>
+<div class="block">A range of time between which the person will die</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">Attribute assigned a condition that caused death</div>
 </li>
 </ul>
 </li>
@@ -1276,18 +1410,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">Random distribution from which to get a
+ random delay time from (For GMF 2.0 Support)</div>
 </li>
 <li class="blockList">
 <h4>exact</h4>
 <pre><a href="org/mitre/synthea/engine/Components.ExactWithUnit.html" title="class in org.mitre.synthea.engine">Components.ExactWithUnit</a>&lt;java.lang.Double&gt; exact</pre>
+<div class="block">An exact amount of time to delay state transition</div>
 </li>
 <li class="blockList">
 <h4>range</h4>
 <pre><a href="org/mitre/synthea/engine/Components.RangeWithUnit.html" title="class in org.mitre.synthea.engine">Components.RangeWithUnit</a>&lt;java.lang.Double&gt; range</pre>
+<div class="block">The range of time over which to delay (For GMF 1.0 Support)</div>
 </li>
 <li class="blockListLast">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">Unit of time for the delay</div>
 </li>
 </ul>
 </li>
@@ -1304,6 +1443,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>next</h4>
 <pre>java.lang.Long next</pre>
+<div class="block">next is "transient" in the sense that it represents object state
+ as opposed to the other fields which represent object definition
+ hence it is unset in clone()</div>
 </li>
 </ul>
 </li>
@@ -1320,14 +1462,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>code</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> code</pre>
+<div class="block">Code of the device</div>
 </li>
 <li class="blockList">
 <h4>manufacturer</h4>
 <pre>java.lang.String manufacturer</pre>
+<div class="block">Manufacturer of the device</div>
 </li>
 <li class="blockListLast">
 <h4>model</h4>
 <pre>java.lang.String model</pre>
+<div class="block">Model of the device</div>
 </li>
 </ul>
 </li>
@@ -1344,14 +1489,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">Codes indicating the device to remove</div>
 </li>
 <li class="blockList">
 <h4>device</h4>
 <pre>java.lang.String device</pre>
+<div class="block">The name of the device that is being removed</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">Attribute containing the device to remove</div>
 </li>
 </ul>
 </li>
@@ -1373,22 +1521,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes for the encounter</div>
 </li>
 <li class="blockList">
 <h4>encounterClass</h4>
 <pre>java.lang.String encounterClass</pre>
+<div class="block">The type of encounter (virtual, ambulatory, emergency, etc)</div>
 </li>
 <li class="blockList">
 <h4>reason</h4>
 <pre>java.lang.String reason</pre>
+<div class="block">The reason for having the encounter</div>
 </li>
 <li class="blockList">
 <h4>telemedicinePossibility</h4>
 <pre>java.lang.String telemedicinePossibility</pre>
+<div class="block">Always, sometimes, or never possible for a telemedicine encounter</div>
 </li>
 <li class="blockListLast">
 <h4>wellness</h4>
 <pre>boolean wellness</pre>
+<div class="block">whether this is a wellness encounter</div>
 </li>
 </ul>
 </li>
@@ -1405,6 +1558,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>dischargeDisposition</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> dischargeDisposition</pre>
+<div class="block">Code indicating the person's status upon being discharged</div>
 </li>
 </ul>
 </li>
@@ -1421,6 +1575,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>allow</h4>
 <pre><a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a> allow</pre>
+<div class="block">Logic which dictates whether the module will continue to the next state</div>
 </li>
 </ul>
 </li>
@@ -1437,6 +1592,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>maxNumberSeries</h4>
 <pre>int maxNumberSeries</pre>
+<div class="block">Max number of the series</div>
 </li>
 <li class="blockList">
 <h4>minNumberSeries</h4>
@@ -1475,10 +1631,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>exact</h4>
 <pre><a href="org/mitre/synthea/engine/Components.Exact.html" title="class in org.mitre.synthea.engine">Components.Exact</a> exact</pre>
+<div class="block">The exact value of the random variable.</div>
 </li>
 <li class="blockListLast">
 <h4>range</h4>
 <pre><a href="org/mitre/synthea/engine/Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a> range</pre>
+<div class="block">The range of the random variable.</div>
 </li>
 </ul>
 </li>
@@ -1495,14 +1653,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes of the medications to end</div>
 </li>
 <li class="blockList">
 <h4>medicationOrder</h4>
 <pre>java.lang.String medicationOrder</pre>
+<div class="block">The MedicationOrder state in which the medication was prescribed</div>
 </li>
 <li class="blockListLast">
 <h4>referencedByAttribute</h4>
 <pre>java.lang.String referencedByAttribute</pre>
+<div class="block">The name of the attribute a previous MedicationOrder assigned a medication</div>
 </li>
 </ul>
 </li>
@@ -1525,8 +1686,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  natively serializable.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.lang.ClassNotFoundException</code> - if JSON object conversion fails</dd>
+<dd><code>java.io.IOException</code> - if the object fails to be deserialized</dd>
 </dl>
 </li>
 <li class="blockListLast">
@@ -1537,7 +1698,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  natively serializable.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if the object fails to be serialized</dd>
 </dl>
 </li>
 </ul>
@@ -1548,22 +1709,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>administration</h4>
 <pre>boolean administration</pre>
+<div class="block">Whether to administer this medication</div>
 </li>
 <li class="blockList">
 <h4>chronic</h4>
 <pre>boolean chronic</pre>
+<div class="block">Whether this order is repeated</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes for this medication</div>
 </li>
 <li class="blockList">
 <h4>prescription</h4>
 <pre>com.google.gson.JsonObject prescription</pre>
+<div class="block">Prescription object</div>
 </li>
 <li class="blockListLast">
 <h4>reason</h4>
 <pre>java.lang.String reason</pre>
+<div class="block">The reason this medication is being ordered</div>
 </li>
 </ul>
 </li>
@@ -1580,6 +1746,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">The category of the observation</div>
 </li>
 </ul>
 </li>
@@ -1596,42 +1763,52 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attachment</h4>
 <pre><a href="org/mitre/synthea/engine/Components.Attachment.html" title="class in org.mitre.synthea.engine">Components.Attachment</a> attachment</pre>
+<div class="block">Attachment put on the observation</div>
 </li>
 <li class="blockList">
 <h4>attribute</h4>
 <pre>java.lang.String attribute</pre>
+<div class="block">Associated attribute</div>
 </li>
 <li class="blockList">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">The category of observation (see above)</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">Codes associated with this observation</div>
 </li>
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">Distribution of the random value generator</div>
 </li>
 <li class="blockList">
 <h4>expression</h4>
 <pre>java.lang.String expression</pre>
+<div class="block">CQL expression that sets the value</div>
 </li>
 <li class="blockList">
 <h4>sampledData</h4>
 <pre><a href="org/mitre/synthea/engine/Components.SampledData.html" title="class in org.mitre.synthea.engine">Components.SampledData</a> sampledData</pre>
+<div class="block">Potential value for this observation</div>
 </li>
 <li class="blockList">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">The unit of the value</div>
 </li>
 <li class="blockList">
 <h4>valueCode</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> valueCode</pre>
+<div class="block">Default value for the observation</div>
 </li>
 <li class="blockListLast">
 <h4>vitalSign</h4>
-<pre><a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a> vitalSign</pre>
+<pre>org.mitre.synthea.world.concepts.VitalSign vitalSign</pre>
+<div class="block">The vital sign measured by this observation</div>
 </li>
 </ul>
 </li>
@@ -1648,38 +1825,47 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>altDirectTransition</h4>
 <pre>java.lang.String altDirectTransition</pre>
+<div class="block">An alternative direct transition.</div>
 </li>
 <li class="blockList">
 <h4>altTransition</h4>
 <pre><a href="org/mitre/synthea/engine/Transition.html" title="class in org.mitre.synthea.engine">Transition</a> altTransition</pre>
+<div class="block">An alternative transition for the simulation.</div>
 </li>
 <li class="blockList">
 <h4>inputs</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a>&gt; inputs</pre>
+<div class="block">A list of input mappings for the simulation.</div>
 </li>
 <li class="blockList">
 <h4>leadTime</h4>
 <pre>double leadTime</pre>
+<div class="block">The lead time for the simulation.</div>
 </li>
 <li class="blockList">
 <h4>model</h4>
 <pre>java.lang.String model</pre>
+<div class="block">The name of the physiology model.</div>
 </li>
 <li class="blockList">
 <h4>outputs</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a>&gt; outputs</pre>
+<div class="block">A list of output mappings for the simulation.</div>
 </li>
 <li class="blockList">
 <h4>simDuration</h4>
 <pre>double simDuration</pre>
+<div class="block">The duration of the simulation.</div>
 </li>
 <li class="blockList">
 <h4>solver</h4>
 <pre>java.lang.String solver</pre>
+<div class="block">The solver used for the simulation.</div>
 </li>
 <li class="blockListLast">
 <h4>stepSize</h4>
 <pre>double stepSize</pre>
+<div class="block">The step size for the simulation.</div>
 </li>
 </ul>
 </li>
@@ -1696,30 +1882,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>assignToAttribute</h4>
 <pre>java.lang.String assignToAttribute</pre>
+<div class="block">Which attribute to assign this procedure to</div>
 </li>
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">The codes associated with this procedure</div>
 </li>
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">For GMF 2.0 Support</div>
 </li>
 <li class="blockList">
 <h4>duration</h4>
 <pre><a href="org/mitre/synthea/engine/Components.RangeWithUnit.html" title="class in org.mitre.synthea.engine">Components.RangeWithUnit</a>&lt;java.lang.Long&gt; duration</pre>
+<div class="block">For GMF 1.0 Support</div>
 </li>
 <li class="blockList">
 <h4>reason</h4>
 <pre>java.lang.String reason</pre>
+<div class="block">The reason for doing this procedure</div>
 </li>
 <li class="blockList">
 <h4>stop</h4>
 <pre>java.lang.Long stop</pre>
+<div class="block">The time at which this procedure stops</div>
 </li>
 <li class="blockListLast">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">The unit of time for the duration of the procedure</div>
 </li>
 </ul>
 </li>
@@ -1736,30 +1929,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attribute</h4>
 <pre>java.lang.String attribute</pre>
+<div class="block">The attribute to set</div>
 </li>
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">The distribution to create random values from (For GMF 2.0 Support)</div>
 </li>
 <li class="blockList">
 <h4>expression</h4>
 <pre>java.lang.String expression</pre>
+<div class="block">CQL expression to evaluate to set the value</div>
 </li>
 <li class="blockList">
 <h4>period</h4>
 <pre>double period</pre>
+<div class="block">The number of seconds between samples in a series of data</div>
 </li>
 <li class="blockList">
 <h4>range</h4>
 <pre><a href="org/mitre/synthea/engine/Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a>&lt;java.lang.Double&gt; range</pre>
+<div class="block">The range for the value of the attribute</div>
 </li>
 <li class="blockList">
 <h4>seriesData</h4>
 <pre>java.lang.String seriesData</pre>
+<div class="block">Series data to set as the value</div>
 </li>
 <li class="blockList">
 <h4>value</h4>
 <pre>java.lang.Object value</pre>
+<div class="block">The value of the attribute (For GMF 1.0 support)</div>
 </li>
 <li class="blockList">
 <h4>valueAttribute</h4>
@@ -1769,6 +1969,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>valueCode</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> valueCode</pre>
+<div class="block">The code of the value</div>
 </li>
 </ul>
 </li>
@@ -1790,6 +1991,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>supplies</h4>
 <pre>java.util.List&lt;org.mitre.synthea.engine.State.SupplyList.SupplyComponent&gt; supplies</pre>
+<div class="block">List of components making up this supply list</div>
 </li>
 </ul>
 </li>
@@ -1806,22 +2008,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>addressed</h4>
 <pre>boolean addressed</pre>
+<div class="block">Whether the symptom has been addressed</div>
 </li>
 <li class="blockList">
 <h4>cause</h4>
 <pre>java.lang.String cause</pre>
+<div class="block">The name of the cause of the symptom</div>
 </li>
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">Distribution for the random value generator</div>
 </li>
 <li class="blockList">
 <h4>probability</h4>
 <pre>java.lang.Double probability</pre>
+<div class="block">The probability that the symptom is caused</div>
 </li>
 <li class="blockListLast">
 <h4>symptom</h4>
 <pre>java.lang.String symptom</pre>
+<div class="block">The symptom this state tracks</div>
 </li>
 </ul>
 </li>
@@ -1843,10 +2050,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">Codes representing the vaccine(s) in the person's immunization record</div>
 </li>
 <li class="blockListLast">
 <h4>series</h4>
 <pre>int series</pre>
+<div class="block">The series number of the vaccine. This is used to track the number of doses</div>
 </li>
 </ul>
 </li>
@@ -1863,18 +2072,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">The distribution for the random value generation</div>
 </li>
 <li class="blockList">
 <h4>expression</h4>
 <pre>java.lang.String expression</pre>
+<div class="block">An expression to be executed on a person</div>
 </li>
 <li class="blockList">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">The unit of the vital sign's value</div>
 </li>
 <li class="blockListLast">
 <h4>vitalSign</h4>
-<pre><a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a> vitalSign</pre>
+<pre>org.mitre.synthea.world.concepts.VitalSign vitalSign</pre>
+<div class="block">The in-house representation of the Vital Sign</div>
 </li>
 </ul>
 </li>
@@ -1891,6 +2104,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>remarks</h4>
 <pre>java.util.List&lt;java.lang.String&gt; remarks</pre>
+<div class="block">Remarks associated with the transition.</div>
 </li>
 </ul>
 </li>
@@ -1907,6 +2121,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>transitions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.ComplexTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.ComplexTransitionOption</a>&gt; transitions</pre>
+<div class="block">List of transitions to choose from, each with a condition or
+ distributions.</div>
 </li>
 </ul>
 </li>
@@ -1923,10 +2139,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>condition</h4>
 <pre><a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a> condition</pre>
+<div class="block">Conditional logic gating transition</div>
 </li>
 <li class="blockListLast">
 <h4>distributions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.DistributedTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.DistributedTransitionOption</a>&gt; distributions</pre>
+<div class="block">List of transition options weighted by a percentage chance</div>
 </li>
 </ul>
 </li>
@@ -1943,6 +2161,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>transitions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.ConditionalTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.ConditionalTransitionOption</a>&gt; transitions</pre>
+<div class="block">List of transitions to choose from, each with a condition.
+ The last transition may not have a condition, and will be used as a fallback.</div>
 </li>
 </ul>
 </li>
@@ -1959,6 +2179,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>condition</h4>
 <pre><a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a> condition</pre>
+<div class="block">Conditional logic gating transition.</div>
 </li>
 </ul>
 </li>
@@ -1975,6 +2196,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>transition</h4>
 <pre>java.lang.String transition</pre>
+<div class="block">The name of the state to transition to.</div>
 </li>
 </ul>
 </li>
@@ -1991,6 +2213,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>transitions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.DistributedTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.DistributedTransitionOption</a>&gt; transitions</pre>
+<div class="block">List of transitions to choose from, each with a distribution.
+ The distribution values should sum up to 1.0.</div>
 </li>
 </ul>
 </li>
@@ -2007,14 +2231,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>distribution</h4>
 <pre>java.lang.Object distribution</pre>
+<div class="block">The distribution for this transition. This may be a double, or a
+ NamedDistribution.</div>
 </li>
 <li class="blockList">
 <h4>namedDistribution</h4>
 <pre><a href="org/mitre/synthea/engine/Transition.NamedDistribution.html" title="class in org.mitre.synthea.engine">Transition.NamedDistribution</a> namedDistribution</pre>
+<div class="block">The named distribution, if distribution is named</div>
 </li>
 <li class="blockListLast">
 <h4>numericDistribution</h4>
 <pre>java.lang.Double numericDistribution</pre>
+<div class="block">The numeric distribution value, if distribution is a double.</div>
 </li>
 </ul>
 </li>
@@ -2041,14 +2269,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.List&lt;java.lang.String&gt; attributes</pre>
+<div class="block">Attributes for this key.</div>
 </li>
 <li class="blockList">
 <h4>time</h4>
 <pre>java.lang.Long time</pre>
+<div class="block">Time in the simulation</div>
 </li>
 <li class="blockListLast">
 <h4>timeRange</h4>
 <pre>org.apache.commons.lang3.Range&lt;java.lang.Long&gt; timeRange</pre>
+<div class="block">Time range for this row.</div>
 </li>
 </ul>
 </li>
@@ -2065,18 +2296,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.List&lt;java.lang.String&gt; attributes</pre>
+<div class="block">List of attributes for this transition</div>
 </li>
 <li class="blockList">
 <h4>defaultTransitions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.DistributedTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.DistributedTransitionOption</a>&gt; defaultTransitions</pre>
+<div class="block">Default transition options</div>
 </li>
 <li class="blockList">
 <h4>lookupTableName</h4>
 <pre>java.lang.String lookupTableName</pre>
+<div class="block">The name of the lookup table to use for this transition</div>
 </li>
 <li class="blockListLast">
 <h4>transitions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/engine/Transition.LookupTableTransitionOption.html" title="class in org.mitre.synthea.engine">Transition.LookupTableTransitionOption</a>&gt; transitions</pre>
+<div class="block">List of options for transitioning to</div>
 </li>
 </ul>
 </li>
@@ -2093,10 +2328,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>defaultProbability</h4>
 <pre>double defaultProbability</pre>
+<div class="block">The default probability for this transition if no attributes match</div>
 </li>
 <li class="blockListLast">
 <h4>lookupTableName</h4>
 <pre>java.lang.String lookupTableName</pre>
+<div class="block">The name of the lookup table to use for this transition</div>
 </li>
 </ul>
 </li>
@@ -2113,10 +2350,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attribute</h4>
 <pre>java.lang.String attribute</pre>
+<div class="block">The attribute to fetch the distribution from, if applicable.</div>
 </li>
 <li class="blockListLast">
 <h4>defaultDistribution</h4>
 <pre>double defaultDistribution</pre>
+<div class="block">The default distribution value to use if the attribute is not present.</div>
 </li>
 </ul>
 </li>
@@ -2133,18 +2372,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ambulatory</h4>
 <pre>java.lang.String ambulatory</pre>
+<div class="block">Ambulatory care</div>
 </li>
 <li class="blockList">
 <h4>config</h4>
 <pre><a href="org/mitre/synthea/world/concepts/TelemedicineConfig.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig</a> config</pre>
+<div class="block">The telemedicine configuration</div>
 </li>
 <li class="blockList">
 <h4>emergency</h4>
 <pre>java.lang.String emergency</pre>
+<div class="block">Emergency care</div>
 </li>
 <li class="blockListLast">
 <h4>telemedicine</h4>
 <pre>java.lang.String telemedicine</pre>
+<div class="block">Telemedicine care</div>
 </li>
 </ul>
 </li>
@@ -2161,30 +2404,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ambulatory</h4>
 <pre>java.lang.String ambulatory</pre>
+<div class="block">Ambulatory care</div>
 </li>
 <li class="blockList">
 <h4>emergency</h4>
 <pre>java.lang.String emergency</pre>
+<div class="block">Emergency care</div>
 </li>
 <li class="blockListLast">
 <h4>telemedicine</h4>
 <pre>java.lang.String telemedicine</pre>
+<div class="block">Telemedicine care</div>
 </li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-</section>
-</li>
-<li class="blockList">
-<section>
-<h2 title="Package">Package&nbsp;org.mitre.synthea.export</h2>
-<ul class="blockList">
-<li class="blockList"><a id="org.mitre.synthea.export.PlainBigDecimal">
-<!--   -->
-</a>
-<h3>Class <a href="org/mitre/synthea/export/PlainBigDecimal.html" title="class in org.mitre.synthea.export">org.mitre.synthea.export.PlainBigDecimal</a> extends java.math.BigDecimal implements Serializable</h3>
 </li>
 </ul>
 </section>
@@ -2209,7 +2443,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>axisHiddenY</h4>
 <pre>boolean axisHiddenY</pre>
-<div class="block">CWhether the Y Axis is visible.</div>
+<div class="block">Whether the Y Axis is visible.</div>
 </li>
 <li class="blockList">
 <h4>axisLabelX</h4>
@@ -2349,6 +2583,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>value</h4>
 <pre>double value</pre>
+<div class="block">The value this generator generates</div>
 </li>
 </ul>
 </li>
@@ -2365,14 +2600,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>count</h4>
 <pre>java.util.concurrent.atomic.AtomicLong count</pre>
+<div class="block">Thread safe counter for how many times this generator is called</div>
 </li>
 <li class="blockList">
 <h4>random</h4>
 <pre>java.util.Random random</pre>
+<div class="block">Java's pseudorandom number generator</div>
 </li>
 <li class="blockListLast">
 <h4>seed</h4>
 <pre>long seed</pre>
+<div class="block">The starting value of the generator</div>
 </li>
 </ul>
 </li>
@@ -2389,22 +2627,28 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>config</h4>
 <pre><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a> config</pre>
+<div class="block">Configuration for the physiology generator.</div>
 </li>
 <li class="blockList">
 <h4>outputVariance</h4>
 <pre>double outputVariance</pre>
+<div class="block">Variance applied to the generated output values, represented as a multiplier
+ that amplifies a random number</div>
 </li>
 <li class="blockList">
 <h4>preGenerator</h4>
 <pre><a href="org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a> preGenerator</pre>
+<div class="block">Pre-simulation generator for initial values, if the sim hasn't run yet</div>
 </li>
 <li class="blockList">
 <h4>simRunner</h4>
 <pre><a href="org/mitre/synthea/helpers/physiology/SimRunner.html" title="class in org.mitre.synthea.helpers.physiology">SimRunner</a> simRunner</pre>
+<div class="block">Simulator runner for executing physiology models.</div>
 </li>
 <li class="blockListLast">
 <h4>vitalSign</h4>
-<pre><a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a> vitalSign</pre>
+<pre>org.mitre.synthea.world.concepts.VitalSign vitalSign</pre>
+<div class="block">Vital sign targeted by this generator.</div>
 </li>
 </ul>
 </li>
@@ -2421,10 +2665,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>map</h4>
 <pre>java.util.TreeMap&lt;java.lang.Double,&#8203;<a href="org/mitre/synthea/helpers/RandomCollection.html" title="type parameter in RandomCollection">E</a>&gt; map</pre>
+<div class="block">A collection of objects (results) that can be selected at random
+ based on their associated weights.</div>
 </li>
 <li class="blockListLast">
 <h4>total</h4>
 <pre>double total</pre>
+<div class="block">The total weight of all objects in the collection.</div>
 </li>
 </ul>
 </li>
@@ -2441,6 +2688,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>distribution</h4>
 <pre><a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a> distribution</pre>
+<div class="block">The distribution used to generate random values.
+ Typically a uniform distribution with low and high bounds.</div>
 </li>
 </ul>
 </li>
@@ -2462,6 +2711,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>period</h4>
 <pre>double period</pre>
+<div class="block">number of seconds between samples</div>
 </li>
 <li class="blockListLast">
 <h4>values</h4>
@@ -2484,30 +2734,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>beginMean</h4>
 <pre>double beginMean</pre>
+<div class="block">Mean value at the beginning of the time range.</div>
 </li>
 <li class="blockList">
 <h4>beginTime</h4>
 <pre>long beginTime</pre>
+<div class="block">Start time for the value generation.</div>
 </li>
 <li class="blockList">
 <h4>endMean</h4>
 <pre>double endMean</pre>
+<div class="block">Mean value at the end of the time range.</div>
 </li>
 <li class="blockList">
 <h4>endTime</h4>
 <pre>long endTime</pre>
+<div class="block">End time for the value generation.</div>
 </li>
 <li class="blockList">
 <h4>maximumValue</h4>
 <pre>java.lang.Double maximumValue</pre>
+<div class="block">Maximum bound for the generated values.</div>
 </li>
 <li class="blockList">
 <h4>minimumValue</h4>
 <pre>java.lang.Double minimumValue</pre>
+<div class="block">Minimum bound for the generated values.</div>
 </li>
 <li class="blockListLast">
 <h4>standardDeviation</h4>
 <pre>double standardDeviation</pre>
+<div class="block">Standard deviation of the generated values.</div>
 </li>
 </ul>
 </li>
@@ -2524,6 +2781,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">The person associated with this value generator</div>
 </li>
 </ul>
 </li>
@@ -2547,34 +2805,42 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>from</h4>
 <pre>java.lang.String from</pre>
+<div class="block">Source field for mapping.</div>
 </li>
 <li class="blockList">
 <h4>fromExp</h4>
 <pre>java.lang.String fromExp</pre>
+<div class="block">Expression for mapping.</div>
 </li>
 <li class="blockList">
 <h4>fromList</h4>
 <pre>java.lang.String fromList</pre>
+<div class="block">Source list for mapping.</div>
 </li>
 <li class="blockList">
 <h4>preGenerator</h4>
 <pre><a href="org/mitre/synthea/helpers/physiology/PreGenerator.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator</a> preGenerator</pre>
+<div class="block">PreGenerator instance for pre-simulation outputs.</div>
 </li>
 <li class="blockList">
 <h4>to</h4>
 <pre>java.lang.String to</pre>
+<div class="block">Target field for mapping.</div>
 </li>
 <li class="blockList">
 <h4>type</h4>
 <pre><a href="org/mitre/synthea/helpers/physiology/IoMapper.IoType.html" title="enum in org.mitre.synthea.helpers.physiology">IoMapper.IoType</a> type</pre>
+<div class="block">Type of input/output mapping.</div>
 </li>
 <li class="blockList">
 <h4>variance</h4>
 <pre>double variance</pre>
+<div class="block">Variance threshold for mapping.</div>
 </li>
 <li class="blockListLast">
 <h4>vitalSign</h4>
-<pre><a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a> vitalSign</pre>
+<pre>org.mitre.synthea.world.concepts.VitalSign vitalSign</pre>
+<div class="block">Vital sign associated with the mapping.</div>
 </li>
 </ul>
 </li>
@@ -2591,10 +2857,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>args</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a>&gt; args</pre>
+<div class="block">List of arguments to pass to the generator's constructor.</div>
 </li>
 <li class="blockListLast">
 <h4>className</h4>
 <pre>java.lang.String className</pre>
+<div class="block">Fully qualified class name for the generator.</div>
 </li>
 </ul>
 </li>
@@ -2618,14 +2886,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>cachedValue</h4>
 <pre>java.lang.Double cachedValue</pre>
+<div class="block">Cached blood pressure value for consistency.</div>
 </li>
 <li class="blockList">
 <h4>cacheTime</h4>
 <pre>long cacheTime</pre>
+<div class="block">Timestamp of the cached blood pressure value.</div>
 </li>
 <li class="blockListLast">
 <h4>sysDias</h4>
 <pre><a href="org/mitre/synthea/modules/BloodPressureValueGenerator.SysDias.html" title="enum in org.mitre.synthea.modules">BloodPressureValueGenerator.SysDias</a> sysDias</pre>
+<div class="block">Indicates whether the value is systolic or diastolic.</div>
 </li>
 </ul>
 </li>
@@ -2684,10 +2955,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>chanceOfGettingShot</h4>
 <pre>double chanceOfGettingShot</pre>
+<div class="block">The chance that the person will get the vaccine</div>
 </li>
 <li class="blockListLast">
 <h4>lastUpdated</h4>
 <pre>long lastUpdated</pre>
+<div class="block">The time in weeks that the person was last processed</div>
 </li>
 </ul>
 </li>
@@ -2715,38 +2988,47 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; attributes</pre>
+<div class="block">Attributes of the clinician, such as name, gender, and specialty.</div>
 </li>
 <li class="blockList">
 <h4>encounters</h4>
 <pre>int encounters</pre>
+<div class="block">Number of encounters performed by the clinician.</div>
 </li>
 <li class="blockList">
 <h4>identifier</h4>
 <pre>long identifier</pre>
+<div class="block">Unique identifier for the clinician.</div>
 </li>
 <li class="blockList">
 <h4>npi</h4>
 <pre>java.lang.String npi</pre>
+<div class="block">National Provider Identifier (NPI) for the clinician.</div>
 </li>
 <li class="blockList">
 <h4>organization</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> organization</pre>
+<div class="block">Organization to which the clinician belongs.</div>
 </li>
 <li class="blockList">
 <h4>populationSeed</h4>
 <pre>long populationSeed</pre>
+<div class="block">Seed for generating random values for the clinician.</div>
 </li>
 <li class="blockList">
 <h4>procedures</h4>
 <pre>int procedures</pre>
+<div class="block">Number of procedures performed by the clinician.</div>
 </li>
 <li class="blockList">
 <h4>servicesProvided</h4>
 <pre>java.util.ArrayList&lt;java.lang.String&gt; servicesProvided</pre>
+<div class="block">List of services provided by the clinician.</div>
 </li>
 <li class="blockListLast">
 <h4>uuid</h4>
 <pre>java.lang.String uuid</pre>
+<div class="block">Universally unique identifier (UUID) for the clinician.</div>
 </li>
 </ul>
 </li>
@@ -2768,8 +3050,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the entryUtilization field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.lang.ClassNotFoundException</code> - if a class cannot be found</dd>
+<dd><code>java.io.IOException</code> - if an I/O error occurs</dd>
 </dl>
 </li>
 <li class="blockListLast">
@@ -2779,7 +3061,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the entryUtilization field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if an I/O error occurs</dd>
 </dl>
 </li>
 </ul>
@@ -2790,54 +3072,67 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; attributes</pre>
+<div class="block">Payer Attributes.</div>
 </li>
 <li class="blockList">
 <h4>costsCovered</h4>
 <pre>java.math.BigDecimal costsCovered</pre>
+<div class="block">Costs covered by the payer.</div>
 </li>
 <li class="blockList">
 <h4>costsUncovered</h4>
 <pre>java.math.BigDecimal costsUncovered</pre>
+<div class="block">Costs not covered by the payer.</div>
 </li>
 <li class="blockList">
 <h4>customerUtilization</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.util.concurrent.atomic.AtomicInteger&gt; customerUtilization</pre>
+<div class="block">Unique utilizers of Payer, by Person ID, with number of utilizations per Person.</div>
 </li>
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">Name of the payer organization.</div>
 </li>
 <li class="blockList">
 <h4>ownership</h4>
 <pre>java.lang.String ownership</pre>
+<div class="block">Ownership type of the payer.</div>
 </li>
 <li class="blockList">
 <h4>payerAdjustment</h4>
 <pre><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors.payeradjustment">IPayerAdjustment</a> payerAdjustment</pre>
+<div class="block">Payer Adjustment strategy.</div>
 </li>
 <li class="blockList">
 <h4>planLinkId</h4>
 <pre>int planLinkId</pre>
+<div class="block">Identifier linking the payer to its plans.</div>
 </li>
 <li class="blockList">
 <h4>plans</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&gt; plans</pre>
+<div class="block">List of insurance plans offered by the payer.</div>
 </li>
 <li class="blockList">
 <h4>revenue</h4>
 <pre>java.math.BigDecimal revenue</pre>
+<div class="block">Revenue generated by the payer.</div>
 </li>
 <li class="blockList">
 <h4>statesCovered</h4>
 <pre>java.util.Set&lt;java.lang.String&gt; statesCovered</pre>
+<div class="block">The States that this payer covers and operates in.</div>
 </li>
 <li class="blockList">
 <h4>totalQOLS</h4>
 <pre>double totalQOLS</pre>
+<div class="block">Total quality of life scores for all customers.</div>
 </li>
 <li class="blockListLast">
 <h4>uuid</h4>
 <pre>java.lang.String uuid</pre>
+<div class="block">Universally unique identifier for the payer.</div>
 </li>
 </ul>
 </li>
@@ -2858,10 +3153,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; attributes</pre>
+<div class="block">Map of attributes for the person.</div>
 </li>
 <li class="blockList">
 <h4>chronicMedications</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a>&gt; chronicMedications</pre>
+<div class="block">Map of chronic medications for the person.</div>
 </li>
 <li class="blockList">
 <h4>coverage</h4>
@@ -2915,10 +3212,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>populationSeed</h4>
 <pre>long populationSeed</pre>
+<div class="block">The random number generator seed for generating the population</div>
 </li>
 <li class="blockList">
 <h4>random</h4>
 <pre><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a> random</pre>
+<div class="block">The random number generator to default to</div>
 </li>
 <li class="blockList">
 <h4>record</h4>
@@ -2938,7 +3237,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockListLast">
 <h4>vitalSigns</h4>
-<pre>java.util.Map&lt;<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>,&#8203;<a href="org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&gt; vitalSigns</pre>
+<pre>java.util.Map&lt;org.mitre.synthea.world.concepts.VitalSign,&#8203;<a href="org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&gt; vitalSigns</pre>
+<div class="block">Map of vital signs to their value generators.</div>
 </li>
 </ul>
 </li>
@@ -2960,8 +3260,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the utilization field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.lang.ClassNotFoundException</code> - if the class of a serialized object cannot be found</dd>
+<dd><code>java.io.IOException</code> - if the object can't be read</dd>
 </dl>
 </li>
 <li class="blockListLast">
@@ -2971,7 +3271,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the utilization field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if the object can't be written</dd>
 </dl>
 </li>
 </ul>
@@ -2982,62 +3282,77 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>address</h4>
 <pre>java.lang.String address</pre>
+<div class="block">Address of the provider.</div>
 </li>
 <li class="blockList">
 <h4>attributes</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; attributes</pre>
+<div class="block">Map of provider attributes.</div>
 </li>
 <li class="blockList">
 <h4>bedCount</h4>
 <pre>java.lang.Integer bedCount</pre>
+<div class="block">Number of beds available at the provider.</div>
 </li>
 <li class="blockList">
 <h4>city</h4>
 <pre>java.lang.String city</pre>
+<div class="block">City where the provider is located.</div>
 </li>
 <li class="blockList">
 <h4>cliaNumber</h4>
 <pre>java.lang.String cliaNumber</pre>
+<div class="block">CLIA number.</div>
 </li>
 <li class="blockList">
 <h4>clinicianMap</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.util.ArrayList&lt;<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&gt;&gt; clinicianMap</pre>
+<div class="block">Map of clinicians categorized by their specialties.</div>
 </li>
 <li class="blockList">
 <h4>cmsCategory</h4>
 <pre>java.lang.String cmsCategory</pre>
+<div class="block">CMS category.</div>
 </li>
 <li class="blockList">
 <h4>cmsPin</h4>
 <pre>java.lang.String cmsPin</pre>
+<div class="block">CMS PIN.</div>
 </li>
 <li class="blockList">
 <h4>cmsProviderNum</h4>
 <pre>java.lang.String cmsProviderNum</pre>
+<div class="block">CMS provider number.</div>
 </li>
 <li class="blockList">
 <h4>cmsProviderType</h4>
 <pre>java.lang.String cmsProviderType</pre>
+<div class="block">CMS provider type.</div>
 </li>
 <li class="blockList">
 <h4>cmsRegion</h4>
 <pre>java.lang.String cmsRegion</pre>
+<div class="block">CMS region.</div>
 </li>
 <li class="blockList">
 <h4>cmsUpin</h4>
 <pre>java.lang.String cmsUpin</pre>
+<div class="block">CMS UPIN.</div>
 </li>
 <li class="blockList">
 <h4>coordinates</h4>
 <pre>java.awt.geom.Point2D.Double coordinates</pre>
+<div class="block">Geographic coordinates of the provider.</div>
 </li>
 <li class="blockList">
 <h4>fipsCountyCode</h4>
 <pre>java.lang.String fipsCountyCode</pre>
+<div class="block">FIPS county code of the provider's location.</div>
 </li>
 <li class="blockList">
 <h4>id</h4>
 <pre>java.lang.String id</pre>
+<div class="block">Identifier for the provider.</div>
 </li>
 <li class="blockList">
 <h4>institutional</h4>
@@ -3047,50 +3362,62 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>location</h4>
 <pre><a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a> location</pre>
+<div class="block">Location of the provider.</div>
 </li>
 <li class="blockList">
 <h4>locationUuid</h4>
 <pre>java.lang.String locationUuid</pre>
+<div class="block">Unique identifier for the provider's location.</div>
 </li>
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">Name of the provider.</div>
 </li>
 <li class="blockList">
 <h4>npi</h4>
 <pre>java.lang.String npi</pre>
+<div class="block">National Provider Identifier (NPI).</div>
 </li>
 <li class="blockList">
 <h4>ownership</h4>
 <pre>java.lang.String ownership</pre>
+<div class="block">Ownership type of the provider.</div>
 </li>
 <li class="blockList">
 <h4>phone</h4>
 <pre>java.lang.String phone</pre>
+<div class="block">Phone number of the provider.</div>
 </li>
 <li class="blockList">
 <h4>revenue</h4>
 <pre>double revenue</pre>
+<div class="block">Revenue generated by the provider.</div>
 </li>
 <li class="blockList">
 <h4>servicesProvided</h4>
 <pre>java.util.Set&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&gt; servicesProvided</pre>
+<div class="block">Set of services provided by the provider.</div>
 </li>
 <li class="blockList">
 <h4>state</h4>
 <pre>java.lang.String state</pre>
+<div class="block">State where the provider is located.</div>
 </li>
 <li class="blockList">
 <h4>type</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.ProviderType.html" title="enum in org.mitre.synthea.world.agents">Provider.ProviderType</a> type</pre>
+<div class="block">Type of the provider.</div>
 </li>
 <li class="blockList">
 <h4>uuid</h4>
 <pre>java.lang.String uuid</pre>
+<div class="block">Unique identifier for the provider.</div>
 </li>
 <li class="blockListLast">
 <h4>zip</h4>
 <pre>java.lang.String zip</pre>
+<div class="block">ZIP code of the provider's location.</div>
 </li>
 </ul>
 </li>
@@ -3172,10 +3499,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>eligibilityCriteria</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility">IPlanEligibility</a>&gt; eligibilityCriteria</pre>
+<div class="block">List of all elibigility criteria that apply</div>
 </li>
 <li class="blockListLast">
 <h4>eligibilityLogic</h4>
 <pre>java.util.function.BiFunction&lt;<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>,&#8203;java.lang.Long,&#8203;java.lang.Boolean&gt; eligibilityLogic</pre>
+<div class="block">An eligibility logic function that takes a person and the current time.</div>
 </li>
 </ul>
 </li>
@@ -3207,6 +3536,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>qualifyingAttributes</h4>
 <pre>java.util.List&lt;org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility.AttributeQualifier&gt; qualifyingAttributes</pre>
+<div class="block">A list of logical expressions that qualify a person for this eligibility type.</div>
 </li>
 </ul>
 </li>
@@ -3223,6 +3553,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>qualifyingCodes</h4>
 <pre>java.util.List&lt;java.lang.String&gt; qualifyingCodes</pre>
+<div class="block">A list that maintains the qualifying codes for this instance of an eligibility criteria.</div>
 </li>
 </ul>
 </li>
@@ -3250,26 +3581,32 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>items</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&gt; items</pre>
+<div class="block">Additional items in the claim.</div>
 </li>
 <li class="blockList">
 <h4>mainEntry</h4>
 <pre><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a> mainEntry</pre>
+<div class="block">The main entry of the claim.</div>
 </li>
 <li class="blockList">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">The person associated with this claim.</div>
 </li>
 <li class="blockList">
 <h4>planRecord</h4>
 <pre><a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a> planRecord</pre>
+<div class="block">The plan record associated with the claim.</div>
 </li>
 <li class="blockList">
 <h4>totals</h4>
 <pre><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a> totals</pre>
+<div class="block">Totals for the claim.</div>
 </li>
 <li class="blockListLast">
 <h4>uuid</h4>
 <pre>java.util.UUID uuid</pre>
+<div class="block">Unique identifier for the claim.</div>
 </li>
 </ul>
 </li>
@@ -3290,6 +3627,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>entry</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> entry</pre>
+<div class="block">The health record entry associated with this claim entry.</div>
 </li>
 </ul>
 </li>
@@ -3306,14 +3644,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>chanceOfUnemployment</h4>
 <pre>double chanceOfUnemployment</pre>
+<div class="block">The chance that an employed person becomes unemployed</div>
 </li>
 <li class="blockList">
 <h4>nextTimeToCheck</h4>
 <pre>long nextTimeToCheck</pre>
+<div class="block">How long to wait before checking if the person should become unemployed</div>
 </li>
 <li class="blockListLast">
 <h4>unemployed</h4>
 <pre>boolean unemployed</pre>
+<div class="block">Whether a person is unemployed or not</div>
 </li>
 </ul>
 </li>
@@ -3330,14 +3671,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>chartType</h4>
 <pre><a href="org/mitre/synthea/world/concepts/GrowthChart.ChartType.html" title="enum in org.mitre.synthea.world.concepts">GrowthChart.ChartType</a> chartType</pre>
+<div class="block">The chart type</div>
 </li>
 <li class="blockList">
 <h4>femaleEntries</h4>
 <pre>java.util.HashMap&lt;java.lang.Integer,&#8203;<a href="org/mitre/synthea/world/concepts/GrowthChartEntry.html" title="class in org.mitre.synthea.world.concepts">GrowthChartEntry</a>&gt; femaleEntries</pre>
+<div class="block">A map of age in months to growth chart entries for female individuals.</div>
 </li>
 <li class="blockListLast">
 <h4>maleEntries</h4>
 <pre>java.util.HashMap&lt;java.lang.Integer,&#8203;<a href="org/mitre/synthea/world/concepts/GrowthChartEntry.html" title="class in org.mitre.synthea.world.concepts">GrowthChartEntry</a>&gt; maleEntries</pre>
+<div class="block">A map of age in months to growth chart entries for male individuals.</div>
 </li>
 </ul>
 </li>
@@ -3354,14 +3698,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>lboxCox</h4>
 <pre>double lboxCox</pre>
+<div class="block">The power in the Box-Cox transformation used for z-score calculations.</div>
 </li>
 <li class="blockList">
 <h4>median</h4>
 <pre>double median</pre>
+<div class="block">The median value used for growth chart calculations.</div>
 </li>
 <li class="blockListLast">
 <h4>scov</h4>
 <pre>double scov</pre>
+<div class="block">The generalized coefficient of variation used for z-score and percentile calculations.</div>
 </li>
 </ul>
 </li>
@@ -3388,18 +3735,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>encounters</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&gt; encounters</pre>
+<div class="block">encounters in this health record</div>
 </li>
 <li class="blockList">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">the person associated with the health record</div>
 </li>
 <li class="blockList">
 <h4>present</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&gt; present</pre>
+<div class="block">A map of ids to entries in the record</div>
 </li>
 <li class="blockListLast">
 <h4>provider</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
+<div class="block">the provider associated with the health record</div>
 </li>
 </ul>
 </li>
@@ -3416,14 +3767,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>allergyType</h4>
 <pre>java.lang.String allergyType</pre>
+<div class="block">The type of allergy</div>
 </li>
 <li class="blockList">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">The category of allergy</div>
 </li>
 <li class="blockListLast">
 <h4>reactions</h4>
 <pre>java.util.HashMap&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>,&#8203;<a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.ReactionSeverity</a>&gt; reactions</pre>
+<div class="block">Map associating codes with reaction severity</div>
 </li>
 </ul>
 </li>
@@ -3442,19 +3796,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature">private&nbsp;void&nbsp;readObject&#8203;(java.io.ObjectInputStream&nbsp;ois)
                  throws java.lang.ClassNotFoundException,
                         java.io.IOException</pre>
+<div class="block">Deserialize the care plan goals.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.lang.ClassNotFoundException</code> - if the class is not found.</dd>
+<dd><code>java.io.IOException</code> - if deserialization fails.</dd>
 </dl>
 </li>
 <li class="blockListLast">
 <h4>writeObject</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;writeObject&#8203;(java.io.ObjectOutputStream&nbsp;oos)
                   throws java.io.IOException</pre>
+<div class="block">Serialize the care plan goals.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if serialization fails.</dd>
 </dl>
 </li>
 </ul>
@@ -3465,10 +3821,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>activities</h4>
 <pre>java.util.Set&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; activities</pre>
+<div class="block">The set of activities included in the care plan.</div>
 </li>
 <li class="blockListLast">
 <h4>stopReason</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> stopReason</pre>
+<div class="block">The reason for stopping the care plan.</div>
 </li>
 </ul>
 </li>
@@ -3523,30 +3881,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>deviceIdentifier</h4>
 <pre>java.lang.String deviceIdentifier</pre>
+<div class="block">Mandatory fixed portion of UDI</div>
 </li>
 <li class="blockList">
 <h4>expirationTime</h4>
 <pre>long expirationTime</pre>
+<div class="block">time of expiry of this device (if applicable)</div>
 </li>
 <li class="blockList">
 <h4>lotNumber</h4>
 <pre>java.lang.String lotNumber</pre>
+<div class="block">Lot number of manufacture</div>
 </li>
 <li class="blockList">
 <h4>manufacturer</h4>
 <pre>java.lang.String manufacturer</pre>
+<div class="block">manufacturer of the device</div>
 </li>
 <li class="blockList">
 <h4>manufactureTime</h4>
 <pre>long manufactureTime</pre>
+<div class="block">the time the device was manufactured</div>
 </li>
 <li class="blockList">
 <h4>model</h4>
 <pre>java.lang.String model</pre>
+<div class="block">model of the device</div>
 </li>
 <li class="blockList">
 <h4>serialNumber</h4>
 <pre>java.lang.String serialNumber</pre>
+<div class="block">Serial number assigned by the manufacturer</div>
 </li>
 <li class="blockListLast">
 <h4>udi</h4>
@@ -3568,82 +3933,102 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>allergies</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a>&gt; allergies</pre>
+<div class="block">Allergies identified during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>careplans</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a>&gt; careplans</pre>
+<div class="block">Care plans initiated or updated during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>chronicMedsRenewed</h4>
 <pre>boolean chronicMedsRenewed</pre>
+<div class="block">Track if we renewed meds at this encounter. Used in State.java encounter state.</div>
 </li>
 <li class="blockList">
 <h4>claim</h4>
 <pre><a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a> claim</pre>
+<div class="block">Claim associated with the encounter.</div>
 </li>
 <li class="blockList">
 <h4>clinicalNote</h4>
 <pre>java.lang.String clinicalNote</pre>
+<div class="block">Clinical note associated with the encounter.</div>
 </li>
 <li class="blockList">
 <h4>clinician</h4>
 <pre><a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a> clinician</pre>
+<div class="block">Clinician who performed the encounter.</div>
 </li>
 <li class="blockList">
 <h4>conditions</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&gt; conditions</pre>
+<div class="block">Conditions diagnosed during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>devices</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a>&gt; devices</pre>
+<div class="block">Devices implanted or assigned during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>discharge</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> discharge</pre>
+<div class="block">Discharge information for the encounter.</div>
 </li>
 <li class="blockList">
 <h4>ended</h4>
 <pre>boolean ended</pre>
+<div class="block">Indicates whether the encounter has ended.</div>
 </li>
 <li class="blockList">
 <h4>endedTime</h4>
 <pre>long endedTime</pre>
+<div class="block">Time when the encounter ended.</div>
 </li>
 <li class="blockList">
 <h4>imagingStudies</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy</a>&gt; imagingStudies</pre>
+<div class="block">Imaging studies performed during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>immunizations</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Immunization.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Immunization</a>&gt; immunizations</pre>
+<div class="block">Immunizations administered during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>medications</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a>&gt; medications</pre>
+<div class="block">Medications prescribed or administered during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>observations</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">Observations recorded during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>procedures</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a>&gt; procedures</pre>
+<div class="block">Procedures performed during the encounter.</div>
 </li>
 <li class="blockList">
 <h4>provider</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
+<div class="block">Provider responsible for the encounter.</div>
 </li>
 <li class="blockList">
 <h4>reason</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> reason</pre>
+<div class="block">Reason for the encounter.</div>
 </li>
 <li class="blockList">
 <h4>reports</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a>&gt; reports</pre>
+<div class="block">Reports generated during the encounter.</div>
 </li>
 <li class="blockListLast">
 <h4>supplies</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a>&gt; supplies</pre>
+<div class="block">Supplies used during the encounter.</div>
 </li>
 </ul>
 </li>
@@ -3660,43 +4045,52 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>codes</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; codes</pre>
+<div class="block">List of associated codes for the entry.</div>
 </li>
 <li class="blockList">
 <h4>cost</h4>
 <pre>java.math.BigDecimal cost</pre>
+<div class="block">Cost of the entry.</div>
 </li>
 <li class="blockList">
 <h4>fullUrl</h4>
 <pre>java.lang.String fullUrl</pre>
+<div class="block">Cached full URL used in FHIR exporters.</div>
 </li>
 <li class="blockList">
 <h4>name</h4>
 <pre>java.lang.String name</pre>
+<div class="block">Name of the entry.</div>
 </li>
 <li class="blockList">
 <h4>note</h4>
 <pre>java.lang.String note</pre>
+<div class="block">Note associated with the entry.</div>
 </li>
 <li class="blockList">
 <h4>record</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a> record</pre>
-<div class="block">reference to the HealthRecord this entry belongs to.</div>
+<div class="block">Reference to the HealthRecord this entry belongs to.</div>
 </li>
 <li class="blockList">
 <h4>start</h4>
 <pre>long start</pre>
+<div class="block">Start time of the entry.</div>
 </li>
 <li class="blockList">
 <h4>stop</h4>
 <pre>long stop</pre>
+<div class="block">Stop time of the entry.</div>
 </li>
 <li class="blockList">
 <h4>type</h4>
 <pre>java.lang.String type</pre>
+<div class="block">Type of the entry.</div>
 </li>
 <li class="blockListLast">
 <h4>uuid</h4>
 <pre>java.util.UUID uuid</pre>
+<div class="block">Unique identifier for the entry.</div>
 </li>
 </ul>
 </li>
@@ -3713,6 +4107,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>reasons</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; reasons</pre>
+<div class="block">A list of reason codes associated with the entry.</div>
 </li>
 </ul>
 </li>
@@ -3729,10 +4124,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>dicomUid</h4>
 <pre>java.lang.String dicomUid</pre>
+<div class="block">A randomly assigned DICOM UID</div>
 </li>
 <li class="blockListLast">
 <h4>series</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.Series.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy.Series</a>&gt; series</pre>
+<div class="block">The series of images associated with this study</div>
 </li>
 </ul>
 </li>
@@ -3795,6 +4192,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>maxNumberInstances</h4>
 <pre>int maxNumberInstances</pre>
+<div class="block">max</div>
 </li>
 <li class="blockList">
 <h4>minNumberInstances</h4>
@@ -3828,6 +4226,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>series</h4>
 <pre>int series</pre>
+<div class="block">Make the series functionally null</div>
 </li>
 </ul>
 </li>
@@ -3849,8 +4248,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the prescriptionDetails field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code></dd>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.lang.ClassNotFoundException</code> - if the class is not found</dd>
+<dd><code>java.io.IOException</code> - if the deserialization fails</dd>
 </dl>
 </li>
 <li class="blockListLast">
@@ -3860,7 +4259,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Java Serialization support for the prescriptionDetails field.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if the serialization fails</dd>
 </dl>
 </li>
 </ul>
@@ -3871,18 +4270,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>administration</h4>
 <pre>boolean administration</pre>
+<div class="block">Whether the medication is being administered</div>
 </li>
 <li class="blockList">
 <h4>chronic</h4>
 <pre>boolean chronic</pre>
+<div class="block">Whether the medication is being taken chronically</div>
 </li>
 <li class="blockList">
 <h4>claim</h4>
 <pre><a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a> claim</pre>
+<div class="block">The claim associated with this medication</div>
 </li>
 <li class="blockListLast">
 <h4>stopReason</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> stopReason</pre>
+<div class="block">The reason to stop giving the medication</div>
 </li>
 </ul>
 </li>
@@ -3899,22 +4302,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>category</h4>
 <pre>java.lang.String category</pre>
+<div class="block">The category this observation falls under, bound by a valueset</div>
 </li>
 <li class="blockList">
 <h4>observations</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">List of sub-observations</div>
 </li>
 <li class="blockList">
 <h4>report</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a> report</pre>
+<div class="block">The report this observation is part of, if any</div>
 </li>
 <li class="blockList">
 <h4>unit</h4>
 <pre>java.lang.String unit</pre>
+<div class="block">The unit of the value</div>
 </li>
 <li class="blockListLast">
 <h4>value</h4>
 <pre>java.lang.Object value</pre>
+<div class="block">The value of this observation</div>
 </li>
 </ul>
 </li>
@@ -3931,10 +4339,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>clinician</h4>
 <pre><a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a> clinician</pre>
+<div class="block">The clinician who performed the procedure.</div>
 </li>
 <li class="blockListLast">
 <h4>provider</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
+<div class="block">The provider responsible for the procedure.</div>
 </li>
 </ul>
 </li>
@@ -3951,6 +4361,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>observations</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>&gt; observations</pre>
+<div class="block">The observations which comprise this report</div>
 </li>
 </ul>
 </li>
@@ -3967,6 +4378,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>quantity</h4>
 <pre>int quantity</pre>
+<div class="block">Amount in the supply</div>
 </li>
 </ul>
 </li>
@@ -3983,38 +4395,48 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>agem</h4>
 <pre>int agem</pre>
+<div class="block">Age in months.</div>
 </li>
 <li class="blockList">
 <h4>bmi</h4>
 <pre>double bmi</pre>
+<div class="block">BMI computed from height and weight.</div>
 </li>
 <li class="blockList">
 <h4>ht</h4>
 <pre>double ht</pre>
+<div class="block">Height of the individual.</div>
 </li>
 <li class="blockList">
 <h4>id</h4>
 <pre>int id</pre>
+<div class="block">NHANES ID.</div>
 </li>
 <li class="blockList">
 <h4>prob</h4>
 <pre>double prob</pre>
+<div class="block">Weighted probability that this sample should be selected relative to the
+ other selected samples.</div>
 </li>
 <li class="blockList">
 <h4>racec</h4>
 <pre>java.lang.String racec</pre>
+<div class="block">Race code of the individual.</div>
 </li>
 <li class="blockList">
 <h4>sex</h4>
 <pre>int sex</pre>
+<div class="block">Sex of the individual.</div>
 </li>
 <li class="blockList">
 <h4>swt</h4>
 <pre>double swt</pre>
+<div class="block">Sample weight as assigned by NHANES.</div>
 </li>
 <li class="blockListLast">
 <h4>wt</h4>
 <pre>double wt</pre>
+<div class="block">Weight of the individual.</div>
 </li>
 </ul>
 </li>
@@ -4031,14 +4453,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>initialSample</h4>
 <pre><a href="org/mitre/synthea/world/concepts/NHANESSample.html" title="class in org.mitre.synthea.world.concepts">NHANESSample</a> initialSample</pre>
+<div class="block">A sample from NHANES that is used to start the growth trajectory.</div>
 </li>
 <li class="blockList">
 <h4>seed</h4>
 <pre>long seed</pre>
+<div class="block">The seed for the random number generator</div>
 </li>
 <li class="blockListLast">
 <h4>trajectory</h4>
 <pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.Point.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory.Point</a>&gt; trajectory</pre>
+<div class="block">The trajectory of the individual, kept as a list of points containing info like age and bmi</div>
 </li>
 </ul>
 </li>
@@ -4055,14 +4480,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ageInMonths</h4>
 <pre>int ageInMonths</pre>
+<div class="block">Age in months for the individual.</div>
 </li>
 <li class="blockList">
 <h4>bmi</h4>
 <pre>double bmi</pre>
+<div class="block">Body Mass Index (BMI) of the individual.</div>
 </li>
 <li class="blockListLast">
 <h4>timeInSimulation</h4>
 <pre>long timeInSimulation</pre>
+<div class="block">Time spent in the simulation.</div>
 </li>
 </ul>
 </li>
@@ -4079,26 +4507,35 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>highEmergencyUseInsuranceNames</h4>
 <pre>java.util.List&lt;java.lang.String&gt; highEmergencyUseInsuranceNames</pre>
+<div class="block">List of insurance names with high emergency department utilization.</div>
 </li>
 <li class="blockList">
 <h4>preTelemedHighEmergency</h4>
 <pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt; preTelemedHighEmergency</pre>
+<div class="block">Distribution of emergency care types before telemedicine for high emergency use insurance.</div>
 </li>
 <li class="blockList">
 <h4>preTelemedTypicalEmergency</h4>
 <pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt; preTelemedTypicalEmergency</pre>
+<div class="block">Distribution of emergency care types before telemedicine
+ for typical emergency use insurance.</div>
 </li>
 <li class="blockList">
 <h4>telemedHighEmergency</h4>
 <pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt; telemedHighEmergency</pre>
+<div class="block">Distribution of emergency care types during telemedicine
+ for high emergency use insurance.</div>
 </li>
 <li class="blockList">
 <h4>telemedicineStartTime</h4>
 <pre>long telemedicineStartTime</pre>
+<div class="block">The time in the simulation that transitions to telemedicine should start.</div>
 </li>
 <li class="blockListLast">
 <h4>telemedTypicalEmergency</h4>
 <pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;java.lang.String&gt; telemedTypicalEmergency</pre>
+<div class="block">Distribution of emergency care types during telemedicine
+ for typical emergency use insurance.</div>
 </li>
 </ul>
 </li>
@@ -4126,14 +4563,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>nextEnrollmentPeriod</h4>
 <pre>java.lang.Long nextEnrollmentPeriod</pre>
+<div class="block">The next enrollment period</div>
 </li>
 <li class="blockList">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+<div class="block">Person that this coverage record belongs to</div>
 </li>
 <li class="blockListLast">
 <h4>planHistory</h4>
 <pre>java.util.Set&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a>&gt; planHistory</pre>
+<div class="block">Unique set of plan records</div>
 </li>
 </ul>
 </li>
@@ -4150,62 +4590,77 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>activeTimeRange</h4>
 <pre>org.apache.commons.lang3.Range&lt;java.lang.Long&gt; activeTimeRange</pre>
+<div class="block">Start/end date of plan availablity.</div>
 </li>
 <li class="blockList">
 <h4>deductible</h4>
 <pre>java.math.BigDecimal deductible</pre>
+<div class="block">The deductible amount for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>defaultCoinsurance</h4>
 <pre>java.math.BigDecimal defaultCoinsurance</pre>
+<div class="block">The default coinsurance rate for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>defaultCopay</h4>
 <pre>java.math.BigDecimal defaultCopay</pre>
+<div class="block">The default copay amount for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>id</h4>
 <pre>int id</pre>
+<div class="block">Unique identifier for the insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>incomeBasedPremium</h4>
 <pre>boolean incomeBasedPremium</pre>
+<div class="block">Indicates whether this insurance plan has an income-based premium.</div>
 </li>
 <li class="blockList">
 <h4>insuranceStatus</h4>
 <pre>java.lang.String insuranceStatus</pre>
+<div class="block">The insurance status associated with this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>isACA</h4>
 <pre>boolean isACA</pre>
+<div class="block">Indicates whether this insurance plan is an Affordable Care Act plan.</div>
 </li>
 <li class="blockList">
 <h4>maxOutOfPocket</h4>
 <pre>java.math.BigDecimal maxOutOfPocket</pre>
+<div class="block">The maximum out-of-pocket cost for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>medicareSupplement</h4>
 <pre>boolean medicareSupplement</pre>
+<div class="block">Indicates whether this insurance plan is a Medicare supplement plan.</div>
 </li>
 <li class="blockList">
 <h4>monthlyPremium</h4>
 <pre>java.math.BigDecimal monthlyPremium</pre>
+<div class="block">The monthly premium for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>payer</h4>
 <pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> payer</pre>
+<div class="block">The payer associated with this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>planEligibility</h4>
 <pre><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility">IPlanEligibility</a> planEligibility</pre>
+<div class="block">The eligibility criteria for this insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>priority</h4>
 <pre>int priority</pre>
+<div class="block">The priority level of this insurance plan.</div>
 </li>
 <li class="blockListLast">
 <h4>servicesCovered</h4>
 <pre>java.util.Set&lt;java.lang.String&gt; servicesCovered</pre>
+<div class="block">The set of services covered by this insurance plan.</div>
 </li>
 </ul>
 </li>
@@ -4226,46 +4681,57 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>coveredExpenses</h4>
 <pre>java.math.BigDecimal coveredExpenses</pre>
+<div class="block">Covered expenses for the plan record.</div>
 </li>
 <li class="blockList">
 <h4>id</h4>
 <pre>java.lang.String id</pre>
+<div class="block">Unique identifier for the plan record.</div>
 </li>
 <li class="blockList">
 <h4>insuranceExpenses</h4>
 <pre>java.math.BigDecimal insuranceExpenses</pre>
+<div class="block">The expenses associated with having an insurance plan: Premiums.</div>
 </li>
 <li class="blockList">
 <h4>outOfPocketExpenses</h4>
 <pre>java.math.BigDecimal outOfPocketExpenses</pre>
+<div class="block">Any healthcare expenses not covered by insurance and paid, out of pocket, by the patient.</div>
 </li>
 <li class="blockList">
 <h4>ownerName</h4>
 <pre>java.lang.String ownerName</pre>
+<div class="block">Name of the owner of the insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>ownership</h4>
 <pre>java.lang.String ownership</pre>
+<div class="block">Ownership type of the insurance plan.</div>
 </li>
 <li class="blockList">
 <h4>plan</h4>
 <pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
+<div class="block">Primary insurance plan associated with the record.</div>
 </li>
 <li class="blockList">
 <h4>remainingDeductible</h4>
 <pre>java.math.BigDecimal remainingDeductible</pre>
+<div class="block">Remaining deductible for the plan record.</div>
 </li>
 <li class="blockList">
 <h4>secondaryPlan</h4>
 <pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
+<div class="block">Secondary insurance plan associated with the record.</div>
 </li>
 <li class="blockList">
 <h4>start</h4>
 <pre>long start</pre>
+<div class="block">Start time of the plan record.</div>
 </li>
 <li class="blockListLast">
 <h4>stop</h4>
 <pre>long stop</pre>
+<div class="block">Stop time of the plan record.</div>
 </li>
 </ul>
 </li>
@@ -4289,70 +4755,87 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ageDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; ageDistribution</pre>
+<div class="block">Age distribution for the population</div>
 </li>
 <li class="blockList">
 <h4>ages</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Double&gt; ages</pre>
+<div class="block">A map of age ranges to their frequency in the population.</div>
 </li>
 <li class="blockList">
 <h4>city</h4>
 <pre>java.lang.String city</pre>
+<div class="block">The name of the city.</div>
 </li>
 <li class="blockList">
 <h4>county</h4>
 <pre>java.lang.String county</pre>
+<div class="block">The name of the county where the city is located.</div>
 </li>
 <li class="blockList">
 <h4>education</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Double&gt; education</pre>
+<div class="block">A map of education levels to their frequency in the population.</div>
 </li>
 <li class="blockList">
 <h4>educationDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; educationDistribution</pre>
+<div class="block">Eduction distribution for the population</div>
 </li>
 <li class="blockList">
 <h4>ethnicity</h4>
 <pre>double ethnicity</pre>
+<div class="block">The percentage of the population that is of Hispanic ethnicity.</div>
 </li>
 <li class="blockList">
 <h4>ethnicityDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; ethnicityDistribution</pre>
+<div class="block">Ethnicity distribution for the population</div>
 </li>
 <li class="blockList">
 <h4>gender</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Double&gt; gender</pre>
+<div class="block">A map of genders to their frequency in the population.</div>
 </li>
 <li class="blockList">
 <h4>genderDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; genderDistribution</pre>
+<div class="block">Gender distribution of the population</div>
 </li>
 <li class="blockList">
 <h4>id</h4>
 <pre>java.lang.String id</pre>
+<div class="block">The unique identifier for the location.</div>
 </li>
 <li class="blockList">
 <h4>income</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Double&gt; income</pre>
+<div class="block">A map of income ranges to their frequency in the population.</div>
 </li>
 <li class="blockList">
 <h4>incomeDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; incomeDistribution</pre>
+<div class="block">Income distribution for the population</div>
 </li>
 <li class="blockList">
 <h4>population</h4>
 <pre>long population</pre>
+<div class="block">Number of people in the location.</div>
 </li>
 <li class="blockList">
 <h4>race</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Double&gt; race</pre>
+<div class="block">A map of races to their frequency in the population.</div>
 </li>
 <li class="blockList">
 <h4>raceDistribution</h4>
 <pre><a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a>&lt;java.lang.String&gt; raceDistribution</pre>
+<div class="block">Race distribution for the population</div>
 </li>
 <li class="blockListLast">
 <h4>state</h4>
 <pre>java.lang.String state</pre>
+<div class="block">The name of the state where the city is located.</div>
 </li>
 </ul>
 </li>
@@ -4373,6 +4856,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>city</h4>
 <pre>java.lang.String city</pre>
+<div class="block">The name of the city.</div>
 </li>
 <li class="blockList">
 <h4>demographics</h4>
@@ -4382,14 +4866,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>fixedCity</h4>
 <pre><a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a> fixedCity</pre>
+<div class="block">Demographics for the city represented by the above variable.</div>
 </li>
 <li class="blockList">
 <h4>populationByCity</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Long&gt; populationByCity</pre>
+<div class="block">Cache the population by city name for performance</div>
 </li>
 <li class="blockList">
 <h4>populationByCityId</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Long&gt; populationByCityId</pre>
+<div class="block">Cache of population by city ID for performance.</div>
 </li>
 <li class="blockList">
 <h4>socialDeterminantsOfHealth</h4>
@@ -4399,14 +4886,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>state</h4>
 <pre>java.lang.String state</pre>
+<div class="block">The name of the state.</div>
 </li>
 <li class="blockList">
 <h4>totalPopulation</h4>
 <pre>long totalPopulation</pre>
+<div class="block">Total population of the location.</div>
 </li>
 <li class="blockListLast">
 <h4>zipCodes</h4>
 <pre>java.util.Map&lt;java.lang.String,&#8203;java.util.List&lt;<a href="org/mitre/synthea/world/geography/Place.html" title="class in org.mitre.synthea.world.geography">Place</a>&gt;&gt; zipCodes</pre>
+<div class="block">Cache of zip codes by city name.</div>
 </li>
 </ul>
 </li>

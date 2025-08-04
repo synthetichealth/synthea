@@ -142,7 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">C19ImmunizationModule</span>
 extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></pre>
-<div class="block">A module to simulate COVID19 Immunizations in the United States.
+<div class="block">A module to simulate COVID-19 Immunizations in the United States.
  <p>
  People meeting the criteria for vaccination may get one as soon as it it available. A percentage
  of the population will opt not to get vaccinated and drop out. For individuals in the simulation
@@ -234,7 +234,9 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="C19ImmunizationModule.VaccinationStatus.html" title="enum in org.mitre.synthea.modules.covid">C19ImmunizationModule.VaccinationStatus</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Enum representing the vaccination status of a person.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -264,77 +266,109 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_FULLY_VACCINATED">C19_FULLY_VACCINATED</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
+ check attributes set to java enumeration values, so this will just be a simple boolean</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_LATE_ADOPTER_MODEL">C19_LATE_ADOPTER_MODEL</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">If someone does not get vaccinated in the period of time that they are eligible and Synthea
+ has national statistics on, there is still a chance that they will get vaccinated.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_PERSON_ATTRS_KEY">C19_PERSON_ATTRS_KEY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Key to use in Person.attributes in the IMMUNIZATIONS entry.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_SCHEDULED_FIRST_SHOT">C19_SCHEDULED_FIRST_SHOT</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the scheduled first shot.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_SCHEDULED_SECOND_SHOT">C19_SCHEDULED_SECOND_SHOT</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the scheduled second shot.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_VACCINE">C19_VACCINE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for the vaccine to give to the individual.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#C19_VACCINE_STATUS">C19_VACCINE_STATUS</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attribute key for COVID-19 vaccine status.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#COVID_CODE">COVID_CODE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">COVID-19 SNOMED code.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EXPAND_AGE_TO_TWELVE">EXPAND_AGE_TO_TWELVE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Time when vaccine eligibility expanded to age 12.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EXPANDED_ELIGIBLE_AGE">EXPANDED_ELIGIBLE_AGE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Expanded eligible age for vaccination.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRST_ELIGIBLE_AGE">FIRST_ELIGIBLE_AGE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">First eligible age for vaccination.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRST_POSSIBLE_SHOT_TIME">FIRST_POSSIBLE_SHOT_TIME</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">First possible time for a COVID-19 shot.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#JANSSEN_APPROVED">JANSSEN_APPROVED</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Time when Janssen vaccine was approved.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LATE_ADOPTION_START_TIME">LATE_ADOPTION_START_TIME</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Start time for late adoption of vaccines.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MODERNA_APPROVED">MODERNA_APPROVED</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Time when Moderna vaccine was approved.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -388,7 +422,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <td class="colFirst"><code><a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clone()">clone</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Clone this module.</div>
+<div class="block">Clone the module.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -429,7 +463,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#process(org.mitre.synthea.world.agents.Person,long)">process</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
        long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
+<div class="block">Process the module for a person at a given time.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -488,6 +522,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>COVID_CODE</h4>
 <pre>public static final&nbsp;java.lang.String COVID_CODE</pre>
+<div class="block">COVID-19 SNOMED code.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.COVID_CODE">Constant Field Values</a></dd>
@@ -501,6 +536,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>FIRST_POSSIBLE_SHOT_TIME</h4>
 <pre>public static final&nbsp;long FIRST_POSSIBLE_SHOT_TIME</pre>
+<div class="block">First possible time for a COVID-19 shot.</div>
 </li>
 </ul>
 <a id="MODERNA_APPROVED">
@@ -510,6 +546,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>MODERNA_APPROVED</h4>
 <pre>public static final&nbsp;long MODERNA_APPROVED</pre>
+<div class="block">Time when Moderna vaccine was approved.</div>
 </li>
 </ul>
 <a id="JANSSEN_APPROVED">
@@ -519,6 +556,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>JANSSEN_APPROVED</h4>
 <pre>public static final&nbsp;long JANSSEN_APPROVED</pre>
+<div class="block">Time when Janssen vaccine was approved.</div>
 </li>
 </ul>
 <a id="EXPAND_AGE_TO_TWELVE">
@@ -528,6 +566,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>EXPAND_AGE_TO_TWELVE</h4>
 <pre>public static final&nbsp;long EXPAND_AGE_TO_TWELVE</pre>
+<div class="block">Time when vaccine eligibility expanded to age 12.</div>
 </li>
 </ul>
 <a id="LATE_ADOPTION_START_TIME">
@@ -537,6 +576,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>LATE_ADOPTION_START_TIME</h4>
 <pre>public static final&nbsp;long LATE_ADOPTION_START_TIME</pre>
+<div class="block">Start time for late adoption of vaccines.</div>
 </li>
 </ul>
 <a id="FIRST_ELIGIBLE_AGE">
@@ -546,6 +586,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>FIRST_ELIGIBLE_AGE</h4>
 <pre>public static final&nbsp;int FIRST_ELIGIBLE_AGE</pre>
+<div class="block">First eligible age for vaccination.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.FIRST_ELIGIBLE_AGE">Constant Field Values</a></dd>
@@ -559,6 +600,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>EXPANDED_ELIGIBLE_AGE</h4>
 <pre>public static final&nbsp;int EXPANDED_ELIGIBLE_AGE</pre>
+<div class="block">Expanded eligible age for vaccination.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.EXPANDED_ELIGIBLE_AGE">Constant Field Values</a></dd>
@@ -572,6 +614,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_VACCINE_STATUS</h4>
 <pre>public static final&nbsp;java.lang.String C19_VACCINE_STATUS</pre>
+<div class="block">Attribute key for COVID-19 vaccine status.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_VACCINE_STATUS">Constant Field Values</a></dd>
@@ -585,6 +628,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_VACCINE</h4>
 <pre>public static final&nbsp;java.lang.String C19_VACCINE</pre>
+<div class="block">Attribute key for the vaccine to give to the individual.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_VACCINE">Constant Field Values</a></dd>
@@ -598,6 +642,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_SCHEDULED_FIRST_SHOT</h4>
 <pre>public static final&nbsp;java.lang.String C19_SCHEDULED_FIRST_SHOT</pre>
+<div class="block">Attribute key for the scheduled first shot.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_SCHEDULED_FIRST_SHOT">Constant Field Values</a></dd>
@@ -611,6 +656,7 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_SCHEDULED_SECOND_SHOT</h4>
 <pre>public static final&nbsp;java.lang.String C19_SCHEDULED_SECOND_SHOT</pre>
+<div class="block">Attribute key for the scheduled second shot.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_SCHEDULED_SECOND_SHOT">Constant Field Values</a></dd>
@@ -624,6 +670,10 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_LATE_ADOPTER_MODEL</h4>
 <pre>public static final&nbsp;java.lang.String C19_LATE_ADOPTER_MODEL</pre>
+<div class="block">If someone does not get vaccinated in the period of time that they are eligible and Synthea
+ has national statistics on, there is still a chance that they will get vaccinated. The chance
+ is stored in their attributes under this key, where the chance of being vaccinated decays
+ exponentially.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_LATE_ADOPTER_MODEL">Constant Field Values</a></dd>
@@ -637,6 +687,8 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_FULLY_VACCINATED</h4>
 <pre>public static final&nbsp;java.lang.String C19_FULLY_VACCINATED</pre>
+<div class="block">This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
+ check attributes set to java enumeration values, so this will just be a simple boolean</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_FULLY_VACCINATED">Constant Field Values</a></dd>
@@ -650,6 +702,8 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>C19_PERSON_ATTRS_KEY</h4>
 <pre>public static final&nbsp;java.lang.String C19_PERSON_ATTRS_KEY</pre>
+<div class="block">Key to use in Person.attributes in the IMMUNIZATIONS entry. Convention used by the
+ Immunizations module is to use lower case.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.modules.covid.C19ImmunizationModule.C19_PERSON_ATTRS_KEY">Constant Field Values</a></dd>
@@ -693,11 +747,12 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <li class="blockList">
 <h4>clone</h4>
 <pre class="methodSignature">public&nbsp;<a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;clone()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../engine/Module.html#clone()">Module</a></code></span></div>
-<div class="block">Clone this module. Never provide the original.</div>
+<div class="block">Clone the module.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../engine/Module.html#clone()">clone</a></code>&nbsp;in class&nbsp;<code><a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a clone of the module.</dd>
 </dl>
 </li>
 </ul>
@@ -801,17 +856,15 @@ extends <a href="../../engine/Module.html" title="class in org.mitre.synthea.eng
 <h4>process</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;process&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                        long&nbsp;time)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../engine/Module.html#process(org.mitre.synthea.world.agents.Person,long)">Module</a></code></span></div>
-<div class="block">Process this Module with the given Person at the specified time within the simulation.
- Processing will complete if the person dies.</div>
+<div class="block">Process the module for a person at a given time.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../engine/Module.html#process(org.mitre.synthea.world.agents.Person,long)">process</a></code>&nbsp;in class&nbsp;<code><a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - : the person being simulated</dd>
-<dd><code>time</code> - : the date within the simulated world</dd>
+<dd><code>person</code> - the person to process</dd>
+<dd><code>time</code> - the current time in the simulation</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>completed : whether or not this Module completed.</dd>
+<dd>false to indicate the module does not terminate the simulation</dd>
 </dl>
 </li>
 </ul>

@@ -166,7 +166,9 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Represents an argument for the PreGenerator.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -210,12 +212,16 @@ implements java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getArgs()">getArgs</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the list of arguments to pass to the generator's constructor.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClassName()">getClassName</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the fully qualified class name for the generator.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a></code></td>
@@ -227,12 +233,16 @@ implements java.io.Serializable</pre>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setArgs(java.util.List)">setArgs</a></span>&#8203;(java.util.List&lt;<a href="PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a>&gt;&nbsp;args)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the list of arguments to pass to the generator's constructor.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setClassName(java.lang.String)">setClassName</a></span>&#8203;(java.lang.String&nbsp;className)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the fully qualified class name for the generator.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -284,6 +294,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getClassName</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getClassName()</pre>
+<div class="block">Gets the fully qualified class name for the generator.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The class name.</dd>
+</dl>
 </li>
 </ul>
 <a id="setClassName(java.lang.String)">
@@ -293,6 +308,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setClassName</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setClassName&#8203;(java.lang.String&nbsp;className)</pre>
+<div class="block">Sets the fully qualified class name for the generator.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>className</code> - The class name to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="getArgs()">
@@ -302,6 +322,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getArgs</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a>&gt;&nbsp;getArgs()</pre>
+<div class="block">Gets the list of arguments to pass to the generator's constructor.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The list of arguments.</dd>
+</dl>
 </li>
 </ul>
 <a id="setArgs(java.util.List)">
@@ -311,6 +336,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setArgs</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setArgs&#8203;(java.util.List&lt;<a href="PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a>&gt;&nbsp;args)</pre>
+<div class="block">Sets the list of arguments to pass to the generator's constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>args</code> - The list of arguments to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="getGenerator(org.mitre.synthea.world.agents.Person)">
@@ -322,8 +352,10 @@ implements java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;<a href="../ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&nbsp;getGenerator&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
 <div class="block">Instantiates the ValueGenerator from the configuration options.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - The person for whom the generator is created.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>new ValueGenerator instance</dd>
+<dd>A new ValueGenerator instance.</dd>
 </dl>
 </li>
 </ul>

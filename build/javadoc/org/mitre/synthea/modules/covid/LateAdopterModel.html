@@ -184,7 +184,10 @@ implements java.io.Serializable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LOWEST_CHANCE_THRESHOLD">LOWEST_CHANCE_THRESHOLD</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The lowest chance of getting a shot before the model stops trying to see if the person
+ will get vaccinated.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -231,12 +234,16 @@ implements java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChanceOfGettingShot()">getChanceOfGettingShot</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the chance of getting a shot for this model.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastUpdated()">getLastUpdated</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the last updated time for this model.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -248,12 +255,16 @@ implements java.io.Serializable</pre>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setChanceOfGettingShot(double)">setChanceOfGettingShot</a></span>&#8203;(double&nbsp;chanceOfGettingShot)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the chance of getting a shot for this model.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLastUpdated(long)">setLastUpdated</a></span>&#8203;(long&nbsp;lastUpdated)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the last updated time for this model.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -294,6 +305,8 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>LOWEST_CHANCE_THRESHOLD</h4>
 <pre>public static&nbsp;double LOWEST_CHANCE_THRESHOLD</pre>
+<div class="block">The lowest chance of getting a shot before the model stops trying to see if the person
+ will get vaccinated.</div>
 </li>
 </ul>
 </li>
@@ -339,6 +352,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getChanceOfGettingShot</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getChanceOfGettingShot()</pre>
+<div class="block">Retrieves the chance of getting a shot for this model.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The chance of getting a shot.</dd>
+</dl>
 </li>
 </ul>
 <a id="setChanceOfGettingShot(double)">
@@ -348,6 +366,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setChanceOfGettingShot</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setChanceOfGettingShot&#8203;(double&nbsp;chanceOfGettingShot)</pre>
+<div class="block">Sets the chance of getting a shot for this model.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>chanceOfGettingShot</code> - The chance to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="getLastUpdated()">
@@ -357,6 +380,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getLastUpdated</h4>
 <pre class="methodSignature">public&nbsp;long&nbsp;getLastUpdated()</pre>
+<div class="block">Retrieves the last updated time for this model.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The last updated time.</dd>
+</dl>
 </li>
 </ul>
 <a id="setLastUpdated(long)">
@@ -366,6 +394,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setLastUpdated</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setLastUpdated&#8203;(long&nbsp;lastUpdated)</pre>
+<div class="block">Sets the last updated time for this model.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lastUpdated</code> - The time to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="willGetShot(org.mitre.synthea.world.agents.Person,long)">

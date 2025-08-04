@@ -138,6 +138,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">TimeSeriesData</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
+<div class="block">Represents a collection of time series values along with sampling metadata.
+ This class provides methods to manage and retrieve time series data.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.mitre.synthea.helpers.TimeSeriesData">Serialized Form</a></dd>
@@ -163,17 +165,23 @@ implements java.io.Serializable</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(double)">TimeSeriesData</a></span>&#8203;(double&nbsp;period)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a TimeSeriesData object with a specified sampling period.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int,double)">TimeSeriesData</a></span>&#8203;(int&nbsp;initialCapacity,
               double&nbsp;period)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a TimeSeriesData object with an initial capacity for values and a sampling period.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.List,double)">TimeSeriesData</a></span>&#8203;(java.util.List&lt;java.lang.Double&gt;&nbsp;values,
               double&nbsp;period)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a TimeSeriesData object with specified values and sampling period.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -196,27 +204,37 @@ implements java.io.Serializable</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addValue(double)">addValue</a></span>&#8203;(double&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Adds a value to the time series.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPeriod()">getPeriod</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the sampling period in seconds.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.Double&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getValues()">getValues</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the list of time series values.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPeriod(double)">setPeriod</a></span>&#8203;(double&nbsp;period)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the sampling period in seconds.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setValues(java.util.List)">setValues</a></span>&#8203;(java.util.List&lt;java.lang.Double&gt;&nbsp;values)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the list of time series values.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -249,6 +267,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>TimeSeriesData</h4>
 <pre>public&nbsp;TimeSeriesData&#8203;(double&nbsp;period)</pre>
+<div class="block">Constructs a TimeSeriesData object with a specified sampling period.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>period</code> - The number of seconds between samples.</dd>
+</dl>
 </li>
 </ul>
 <a id="&lt;init&gt;(java.util.List,double)">
@@ -259,6 +282,12 @@ implements java.io.Serializable</pre>
 <h4>TimeSeriesData</h4>
 <pre>public&nbsp;TimeSeriesData&#8203;(java.util.List&lt;java.lang.Double&gt;&nbsp;values,
                       double&nbsp;period)</pre>
+<div class="block">Constructs a TimeSeriesData object with specified values and sampling period.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>values</code> - The list of time series values.</dd>
+<dd><code>period</code> - The number of seconds between samples.</dd>
+</dl>
 </li>
 </ul>
 <a id="&lt;init&gt;(int,double)">
@@ -269,6 +298,12 @@ implements java.io.Serializable</pre>
 <h4>TimeSeriesData</h4>
 <pre>public&nbsp;TimeSeriesData&#8203;(int&nbsp;initialCapacity,
                       double&nbsp;period)</pre>
+<div class="block">Constructs a TimeSeriesData object with an initial capacity for values and a sampling period.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>initialCapacity</code> - The initial capacity of the values list.</dd>
+<dd><code>period</code> - The number of seconds between samples.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -288,6 +323,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getValues</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;java.lang.Double&gt;&nbsp;getValues()</pre>
+<div class="block">Retrieves the list of time series values.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The list of time series values.</dd>
+</dl>
 </li>
 </ul>
 <a id="setValues(java.util.List)">
@@ -297,6 +337,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setValues</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setValues&#8203;(java.util.List&lt;java.lang.Double&gt;&nbsp;values)</pre>
+<div class="block">Sets the list of time series values.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>values</code> - The list of time series values to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="getPeriod()">
@@ -306,6 +351,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>getPeriod</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getPeriod()</pre>
+<div class="block">Retrieves the sampling period in seconds.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The sampling period in seconds.</dd>
+</dl>
 </li>
 </ul>
 <a id="setPeriod(double)">
@@ -315,6 +365,11 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>setPeriod</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setPeriod&#8203;(double&nbsp;period)</pre>
+<div class="block">Sets the sampling period in seconds.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>period</code> - The sampling period in seconds to set.</dd>
+</dl>
 </li>
 </ul>
 <a id="addValue(double)">
@@ -324,6 +379,13 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>addValue</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;addValue&#8203;(double&nbsp;value)</pre>
+<div class="block">Adds a value to the time series.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>value</code> - The value to add to the time series.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if the value was added successfully, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 </li>

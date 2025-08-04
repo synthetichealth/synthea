@@ -157,7 +157,9 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.LocalDate,java.time.LocalDate)">Period</a></span>&#8203;(java.time.LocalDate&nbsp;start,
       java.time.LocalDate&nbsp;end)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a Period with a start and end date.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -187,17 +189,23 @@ extends java.lang.Object</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#contains(java.time.LocalDate)">contains</a></span>&#8203;(java.time.LocalDate&nbsp;date)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Checks if the given date is within this period.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.time.LocalDate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEnd()">getEnd</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the end date of the period.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.time.LocalDate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStart()">getStart</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the start date of the period.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -231,6 +239,12 @@ extends java.lang.Object</pre>
 <h4>Period</h4>
 <pre>public&nbsp;Period&#8203;(java.time.LocalDate&nbsp;start,
               java.time.LocalDate&nbsp;end)</pre>
+<div class="block">Constructs a Period with a start and end date.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start</code> - the start date of the period</dd>
+<dd><code>end</code> - the end date of the period, may be null for open-ended periods</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -250,6 +264,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>contains</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;contains&#8203;(java.time.LocalDate&nbsp;date)</pre>
+<div class="block">Checks if the given date is within this period.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>date</code> - the date to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the date is within the period, inclusive of start and end</dd>
+</dl>
 </li>
 </ul>
 <a id="contains(long)">
@@ -275,6 +296,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getStart</h4>
 <pre class="methodSignature">public&nbsp;java.time.LocalDate&nbsp;getStart()</pre>
+<div class="block">Gets the start date of the period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the start date</dd>
+</dl>
 </li>
 </ul>
 <a id="getEnd()">
@@ -284,6 +310,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getEnd</h4>
 <pre class="methodSignature">public&nbsp;java.time.LocalDate&nbsp;getEnd()</pre>
+<div class="block">Gets the end date of the period.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the end date, or null if open-ended</dd>
+</dl>
 </li>
 </ul>
 </li>
