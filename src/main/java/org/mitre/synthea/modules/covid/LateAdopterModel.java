@@ -27,9 +27,15 @@ import org.mitre.synthea.world.agents.Person;
  * </p>
  */
 public class LateAdopterModel implements Serializable {
+  /**
+   * The lowest chance of getting a shot before the model stops trying to see if the person
+   * will get vaccinated.
+   */
   public static double LOWEST_CHANCE_THRESHOLD = 0.001;
 
+  /** The chance that the person will get the vaccine */
   private double chanceOfGettingShot;
+  /** The time in weeks that the person was last processed */
   private long lastUpdated;
 
   /**
@@ -52,18 +58,34 @@ public class LateAdopterModel implements Serializable {
     this.lastUpdated = time;
   }
 
+  /**
+   * Retrieves the chance of getting a shot for this model.
+   * @return The chance of getting a shot.
+   */
   public double getChanceOfGettingShot() {
     return chanceOfGettingShot;
   }
 
+  /**
+   * Sets the chance of getting a shot for this model.
+   * @param chanceOfGettingShot The chance to set.
+   */
   public void setChanceOfGettingShot(double chanceOfGettingShot) {
     this.chanceOfGettingShot = chanceOfGettingShot;
   }
 
+  /**
+   * Retrieves the last updated time for this model.
+   * @return The last updated time.
+   */
   public long getLastUpdated() {
     return lastUpdated;
   }
 
+  /**
+   * Sets the last updated time for this model.
+   * @param lastUpdated The time to set.
+   */
   public void setLastUpdated(long lastUpdated) {
     this.lastUpdated = lastUpdated;
   }

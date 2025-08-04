@@ -30,13 +30,21 @@ import org.yaml.snakeyaml.constructor.Constructor;
  * A ValueGenerator for generation of values from a physiology simulation.
  */
 public class PhysiologyValueGenerator extends ValueGenerator {
+  /** Path to the directory containing physiology generator configurations. */
   public static Path GENERATORS_PATH;
-  private static ConcurrentMap<String,PhysiologyGeneratorConfig> CONFIG_CACHE
-      = new ConcurrentHashMap<String,PhysiologyGeneratorConfig>();
+  /** Cache for storing loaded physiology generator configurations. */
+  private static ConcurrentMap<String, PhysiologyGeneratorConfig> CONFIG_CACHE =
+      new ConcurrentHashMap<>();
+  /** Simulator runner for executing physiology models. */
   private SimRunner simRunner;
+  /** Configuration for the physiology generator. */
   private PhysiologyGeneratorConfig config;
+  /** Vital sign targeted by this generator. */
   private VitalSign vitalSign;
+  /** Pre-simulation generator for initial values, if the sim hasn't run yet */
   private ValueGenerator preGenerator;
+  /** Variance applied to the generated output values, represented as a multiplier
+   * that amplifies a random number */
   private double outputVariance;
 
   static {
@@ -48,6 +56,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     }
   }
 
+  /**
+   * Sets the path to the generators directory.
+   * @param newPath The new path to the generators directory.
+   */
   public static void setGeneratorsPath(Path newPath) {
     GENERATORS_PATH = newPath;
   }
@@ -55,7 +67,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   /**
    * A generator of VitalSign values from a physiology simulation.
    * @param config physiology configuration file
+   * @param runner SimRunner to execute the physiology model
    * @param person Person instance to generate VitalSigns for
+   * @param vitalSign VitalSign to generate
+   * @param outputVariance amount of variance to apply to the output values, represented as a
+   *                      multiplier that amplifies a random number
    */
   public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, SimRunner runner,
       VitalSign vitalSign,
@@ -105,6 +121,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
 
   /**
    * Returns a List of all PhysiologyValueGenerators defined in the configuration directory.
+   * @param person Person to generate values for
    * @return List of PhysiologyValueGenerator
    */
   public static List<PhysiologyValueGenerator> loadAll(Person person) {

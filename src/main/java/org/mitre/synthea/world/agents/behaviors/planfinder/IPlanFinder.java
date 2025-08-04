@@ -50,6 +50,7 @@ public interface IPlanFinder {
    * Choose a random payer from a list of payers.
    *
    * @param options the list of acceptable payer options that the person can recieve.
+   * @param rand the random number generator to use for selecting a payer.
    * @return a random payer from the given list of options.
    */
   public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options,

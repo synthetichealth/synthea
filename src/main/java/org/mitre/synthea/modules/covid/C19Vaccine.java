@@ -20,6 +20,7 @@ import org.mitre.synthea.world.agents.Person;
  * </p>
  */
 public class C19Vaccine {
+  /** Map of EUA keys to their object representation */
   public static final Map<EUASet, C19Vaccine> EUAs = new TreeMap<>();
   private static SyncedEnumeratedDistro<EUASet> shotSelector;
 
@@ -29,9 +30,15 @@ public class C19Vaccine {
   private double usagePercentage;
   private long timeBetweenDoses;
 
+  /**
+   * Enum representing the Emergency Use Authorization (EUA) set of vaccines.
+   */
   public enum EUASet {
+    /** Pfizer-BioNTech COVID-19 Vaccine. */
     PFIZER,
+    /** Moderna COVID-19 Vaccine. */
     MODERNA,
+    /** Johnson and Johnson (Janssen) COVID-19 Vaccine. */
     JANSSEN
   }
 
@@ -88,43 +95,93 @@ public class C19Vaccine {
     this.timeBetweenDoses = timeBetweenDoses;
   }
 
+  /**
+   * Get the display name of the vaccine.
+   *
+   * @return The display name as a string.
+   */
   public String getDisplay() {
     return display;
   }
 
+  /**
+   * Set the display name of the vaccine.
+   *
+   * @param display The display name to set.
+   */
   public void setDisplay(String display) {
     this.display = display;
   }
 
-  public boolean isTwoDose() {
-    return twoDose;
-  }
-
-  public void setTwoDose(boolean twoDose) {
-    this.twoDose = twoDose;
-  }
-
-  public double getUsagePercentage() {
-    return usagePercentage;
-  }
-
-  public void setUsagePercentage(double usagePercentage) {
-    this.usagePercentage = usagePercentage;
-  }
-
-  public long getTimeBetweenDoses() {
-    return timeBetweenDoses;
-  }
-
-  public void setTimeBetweenDoses(long timeBetweenDoses) {
-    this.timeBetweenDoses = timeBetweenDoses;
-  }
-
+  /**
+   * Get the CVX code for the vaccine.
+   *
+   * @return The CVX code as a string.
+   */
   public String getCvx() {
     return cvx;
   }
 
+  /**
+   * Set the CVX code for the vaccine.
+   *
+   * @param cvx The CVX code to set.
+   */
   public void setCvx(String cvx) {
     this.cvx = cvx;
+  }
+
+  /**
+   * Check if the vaccine requires two doses.
+   *
+   * @return True if the vaccine requires two doses, otherwise false.
+   */
+  public boolean isTwoDose() {
+    return twoDose;
+  }
+
+  /**
+   * Set whether the vaccine requires two doses.
+   *
+   * @param twoDose True if the vaccine requires two doses, otherwise false.
+   */
+  public void setTwoDose(boolean twoDose) {
+    this.twoDose = twoDose;
+  }
+
+  /**
+   * Get the usage percentage of the vaccine.
+   *
+   * @return The usage percentage as a double.
+   */
+  public double getUsagePercentage() {
+    return usagePercentage;
+  }
+
+  /**
+   * Set the usage percentage of the vaccine.
+   *
+   * @param usagePercentage The usage percentage to set.
+   */
+  public void setUsagePercentage(double usagePercentage) {
+    this.usagePercentage = usagePercentage;
+  }
+
+  /**
+   * Get the time between doses for a two-dose vaccine.
+   *
+   * @return The time between doses in milliseconds.
+   */
+  public long getTimeBetweenDoses() {
+    return timeBetweenDoses;
+  }
+
+  /**
+   * Set the time between doses for a two-dose vaccine.
+   *
+   * @param timeBetweenDoses The time between doses in milliseconds to set.
+   */
+  public void setTimeBetweenDoses(long timeBetweenDoses) {
+    this.timeBetweenDoses = timeBetweenDoses;
   }
 }

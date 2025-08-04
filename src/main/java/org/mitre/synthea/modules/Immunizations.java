@@ -28,6 +28,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
  * conditions. For now, we've avoided specific brand names, preferring the general CVX codes.
  */
 public class Immunizations {
+  /**
+   * The key used to identify immunizations in the system.
+   */
   public static final String IMMUNIZATIONS = "immunizations";
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

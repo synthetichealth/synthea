@@ -17,7 +17,7 @@ import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * A module to simulate COVID19 Immunizations in the United States.
+ * A module to simulate COVID-19 Immunizations in the United States.
  * <p>
  * People meeting the criteria for vaccination may get one as soon as it it available. A percentage
  * of the population will opt not to get vaccinated and drop out. For individuals in the simulation
@@ -84,47 +84,77 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  * </p>
  */
 public class C19ImmunizationModule extends Module {
+  /** COVID-19 SNOMED code. */
   public static final String COVID_CODE = "840539006";
 
+  /** First possible time for a COVID-19 shot. */
   public static final long FIRST_POSSIBLE_SHOT_TIME = LocalDateTime.of(2020, 12, 11, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+
+  /** Time when Moderna vaccine was approved. */
   public static final long MODERNA_APPROVED = LocalDateTime.of(2020, 12, 18, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+
+  /** Time when Janssen vaccine was approved. */
   public static final long JANSSEN_APPROVED = LocalDateTime.of(2021, 2, 27, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+
+  /** Time when vaccine eligibility expanded to age 12. */
   public static final long EXPAND_AGE_TO_TWELVE = LocalDateTime.of(2021, 5, 10, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+
+  /** Start time for late adoption of vaccines. */
   public static final long LATE_ADOPTION_START_TIME = LocalDateTime.of(2021, 9, 14, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
 
+  /** First eligible age for vaccination. */
   public static final int FIRST_ELIGIBLE_AGE = 16;
+
+  /** Expanded eligible age for vaccination. */
   public static final int EXPANDED_ELIGIBLE_AGE = 12;
 
+  /** Attribute key for COVID-19 vaccine status. */
   public static final String C19_VACCINE_STATUS = "C19_VACCINE_STATUS";
-  // Attribute used to store the vaccine to give to the individual
+
+  /** Attribute key for the vaccine to give to the individual. */
   public static final String C19_VACCINE = "C19_VACCINE";
+
+  /** Attribute key for the scheduled first shot. */
   public static final String C19_SCHEDULED_FIRST_SHOT = "C19_SCHEDULED_FIRST_SHOT";
+
+  /** Attribute key for the scheduled second shot. */
   public static final String C19_SCHEDULED_SECOND_SHOT = "C19_SCHEDULED_SECOND_SHOT";
-  // If someone does not get vaccinated in the period of time that they are eligible and Synthea
-  // has national statistics on, there is still a chance that they will get vaccinated. The chance
-  // is stored in their attributes under this key, where the chance of being vaccinated decays
-  // exponentially.
+  /** If someone does not get vaccinated in the period of time that they are eligible and Synthea
+  * has national statistics on, there is still a chance that they will get vaccinated. The chance
+  * is stored in their attributes under this key, where the chance of being vaccinated decays
+  * exponentially. */
   public static final String C19_LATE_ADOPTER_MODEL = "C19_LATE_ADOPTER_MODEL";
 
-  // This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
-  // check attributes set to java enumeration values, so this will just be a simple boolean
+  /** This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
+  * check attributes set to java enumeration values, so this will just be a simple boolean
+  */
   public static final String C19_FULLY_VACCINATED = "C19_FULLY_VACCINATED";
 
-  // Key to use in Person.attributes in the IMMUNIZATIONS entry. Convention used by the
-  // Immunizations module is to use lower case.
+  /** Key to use in Person.attributes in the IMMUNIZATIONS entry. Convention used by the
+   * Immunizations module is to use lower case.
+   */
   public static final String C19_PERSON_ATTRS_KEY = "covid19";
 
+  /**
+   * Enum representing the vaccination status of a person.
+   */
   public enum VaccinationStatus {
+    /** Not eligible for vaccination. */
     NOT_ELIGIBLE,
+    /** Waiting for the first shot. */
     WAITING_FOR_SHOT,
+    /** Potential late adopter of vaccination. */
     POTENTIAL_LATE_ADOPTER,
+    /** Never going to get vaccinated. */
     NEVER_GOING_TO_GET_SHOT,
+    /** Received the first shot. */
     FIRST_SHOT,
+    /** Fully vaccinated. */
     FULLY_VACCINATED
   }
 
@@ -137,6 +167,11 @@ public class C19ImmunizationModule extends Module {
     this.name = "COVID-19 Immunization Module";
   }
 
+  /**
+   * Clone the module.
+   *
+   * @return a clone of the module.
+   */
   public Module clone() {
     return this;
   }
@@ -253,6 +288,13 @@ public class C19ImmunizationModule extends Module {
     }
   }
 
+  /**
+   * Process the module for a person at a given time.
+   *
+   * @param person the person to process
+   * @param time   the current time in the simulation
+   * @return false to indicate the module does not terminate the simulation
+   */
   @Override
   public boolean process(Person person, long time) {
     if (time < FIRST_POSSIBLE_SHOT_TIME) {

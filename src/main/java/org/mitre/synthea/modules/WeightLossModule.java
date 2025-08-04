@@ -22,39 +22,61 @@ import org.mitre.synthea.world.concepts.VitalSign;
  * given the default probabilities).
  */
 public final class WeightLossModule extends Module {
-
+  /** Constructor */
   public WeightLossModule() {
     this.name = "Weight Loss";
   }
 
+  /** Represents one year in milliseconds. */
   public static long ONE_YEAR = Utilities.convertTime("years", 1);
+  /** Represents two years in months. */
   public static int TW0_YEARS_IN_MONTHS = 24;
+  /** Represents twenty years in months. */
   public static int TWENTY_YEARS_IN_MONTHS = 240;
-
+  /** A map of growth charts by chart type. */
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
+  /** Indicates active weight management. */
   public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
+  /** Indicates pre-management weight. */
   public static final String PRE_MANAGEMENT_WEIGHT = "pre_management_weight";
+  /** Indicates the start of weight management. */
   public static final String WEIGHT_MANAGEMENT_START = "weight_management_start";
+  /** Represents weight loss percentage. */
   public static final String WEIGHT_LOSS_PERCENTAGE = "weight_loss_percentage";
-  public static final String WEIGHT_LOSS_BMI_PERCENTILE_CHANGE
-      = "weight_loss_bmi_percentile_change";
+  /** Represents BMI percentile change during weight loss. */
+  public static final String WEIGHT_LOSS_BMI_PERCENTILE_CHANGE =
+      "weight_loss_bmi_percentile_change";
+  /** Indicates long-term weight loss. */
   public static final String LONG_TERM_WEIGHT_LOSS = "long_term_weight_loss";
+  /** Represents weight loss adherence. */
   public static final String WEIGHT_LOSS_ADHERENCE = "weight_loss_adherence";
+  /** Indicates the trigger for weight loss. */
   public static final String TRIGGER_WEIGHT_LOSS = "trigger_weight_loss";
-
+  /** The minimum age to start weight management. */
   public static final int managementStartAge = (int) BiometricsConfig.get("min_age", 5);
+  /** The probability of starting weight management. */
   public static final double startWeightManagementProb =
       (double) BiometricsConfig.get("start_prob", 0.493);
+
+  /** How closely the medical patient follows care instructions, represented as a probability */
   public static final double adherence =
       (double) BiometricsConfig.get("adherence", 0.605);
+  /** The start value for the patient's BMI */
   public static final double startBMI =
       (double) BiometricsConfig.get("start_bmi", 30d);
+  /** The start percentile for the patient's BMI */
   public static final double startPercentile =
       (double) BiometricsConfig.get("start_percentile", 0.95d);
+  /** The minimum amount of weight a patient will lose when adhering to the plan, represented as a
+   * percentage */
   public static final double minLoss = (double) BiometricsConfig.get("min_loss", 0.07);
+  /** The maximum amount of weight a patient will lose when adhering to the plan, represented as a
+   * percentage */
   public static final double maxLoss = (double) BiometricsConfig.get("max_loss", 0.1);
+  /** The percent chance a patient will continue maintaining their weight loss long term */
   public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
+  /** The max percentile BMI change for young patient (below 20), replaces minLoss/maxLoss */
   public static final double maxPedPercentileChange =
       (double) BiometricsConfig.get("max_ped_percentile_change", 0.1);
 
@@ -103,6 +125,8 @@ public final class WeightLossModule extends Module {
   /**
    * This method handles all weight management cases (adherent and non-adherent) for the first year
    * of weight management.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
    */
   public void manageFirstYearWeight(Person person, long time) {
     boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
@@ -131,6 +155,8 @@ public final class WeightLossModule extends Module {
   /**
    * This method handles all weight management cases (adherent and non-adherent) for the year two
    * through year five of weight management.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
    */
   public void manageYearTwoThroughFive(Person person, long time) {
     boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
@@ -172,6 +198,7 @@ public final class WeightLossModule extends Module {
   /**
    * Person stops weight management. The module will remove all weight management related
    * attributes.
+   * @param person The person stopping weight management.
    */
   public void stopWeightManagement(Person person) {
     person.attributes.remove(WEIGHT_MANAGEMENT_START);
@@ -187,6 +214,9 @@ public final class WeightLossModule extends Module {
   /**
    * Determines whether the person is currently within their first year of active weight management
    * based on the WEIGHT_MANAGEMENT_START attribute.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
+   * @return True if the person is in their first year of weight management, false otherwise.
    */
   public boolean firstYearOfManagement(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -196,6 +226,9 @@ public final class WeightLossModule extends Module {
   /**
    * Determines whether the person is currently within their first five years of active weight
    * management based on the WEIGHT_MANAGEMENT_START attribute.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
+   * @return True if the person is in their first five years of weight management, false otherwise.
    */
   public boolean firstFiveYearsOfManagement(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -206,6 +239,9 @@ public final class WeightLossModule extends Module {
    * Weight loss is linear from the person's start weight to their target
    * weight (start - percentage loss) over the first year of active weight management.
    * Returns the new weight for the person.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
+   * @return The new weight for the person.
    */
   public double adultWeightLoss(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -219,6 +255,9 @@ public final class WeightLossModule extends Module {
   /**
    * Weight regression is linear from a person's current weight to their original weight over the
    * second through fifth year of active weight management. Returns the new weight for the person.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
+   * @return The new weight for the person.
    */
   public double adultRegression(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -234,6 +273,8 @@ public final class WeightLossModule extends Module {
    * This will regress a pediatric patient back to their BMI percentile. Weight gain will not
    * necessarily be linear. It will approach the BMI based on percentile at age as a function
    * of time in the regression period.
+   * @param person The pediatric patient undergoing weight management.
+   * @param time The current simulation time.
    */
   public void pediatricRegression(Person person, long time) {
     PediatricGrowthTrajectory pgt =
@@ -263,6 +304,9 @@ public final class WeightLossModule extends Module {
   /**
    * Revert the person to their 240 month weight percentile following the same procedure as
    * pediatric regression.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
+   * @return The new weight for the person.
    */
   public double transitionRegression(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
@@ -335,6 +379,8 @@ public final class WeightLossModule extends Module {
    * For patients under 20 that have successful weight management and long term success, they will
    * maintain their BMI until they reach age 20. This means that they will gain weight as they are
    * gaining height, but it will be in a more healthy range.
+   * @param person The person undergoing weight management.
+   * @param time The current simulation time.
    */
   public void maintainBMIPercentile(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
@@ -361,6 +407,8 @@ public final class WeightLossModule extends Module {
    * Starts active weight management for the person. It will select if a person adheres to their
    * weight management plan. If they do, it will select the percentage of their body weight that
    * they will lose and whether they will keep it off long term.
+   * @param person The person starting weight management.
+   * @param time The current simulation time.
    */
   public void startWeightManagement(Person person, long time) {
     double startWeight = person.getVitalSign(VitalSign.WEIGHT, time);
@@ -397,6 +445,9 @@ public final class WeightLossModule extends Module {
    * Determines whether a person will start weight management. If they meet the weight
    * management thresholds, there is a 49.3% chance that they will start
    * weight management. This does not mean that they will adhere to the management plan.
+   * @param person The person being evaluated for weight management.
+   * @param time The current simulation time.
+   * @return True if the person will start weight management, false otherwise.
    */
   public boolean willStartWeightManagement(Person person, long time) {
     Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
@@ -421,6 +472,9 @@ public final class WeightLossModule extends Module {
    * Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 95th percentile
    *   for their age in months
    * Patients 20 and older meet the threshold if their BMI is 30 or over.
+   * @param person The person being evaluated for weight management thresholds.
+   * @param time The current simulation time.
+   * @return True if the person meets the thresholds for weight management, false otherwise.
    */
   public boolean meetsWeightManagementThresholds(Person person, long time) {
     int age = person.ageInYears(time);

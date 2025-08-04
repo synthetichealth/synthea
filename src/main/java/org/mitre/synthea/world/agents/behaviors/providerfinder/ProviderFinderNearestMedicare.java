@@ -11,6 +11,10 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
+/**
+ * ProviderFinderNearestMedicare finds the nearest Medicare provider for a person
+ * based on distance and other criteria such as service type.
+ */
 public class ProviderFinderNearestMedicare implements IProviderFinder {
 
   @Override

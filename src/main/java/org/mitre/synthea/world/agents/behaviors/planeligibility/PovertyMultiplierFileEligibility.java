@@ -22,6 +22,11 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
   private static double povertyPregnant;  // Poverty multiplier for pregnant women.
   private static double povertyAdult;  // Poverty multiplier for ages 19+.
 
+  /**
+   * Constructs a PovertyMultiplierFileEligibility instance.
+   * @param state The state for which to build eligibility.
+   * @param fileName The name of the file containing poverty multiplier data.
+   */
   public PovertyMultiplierFileEligibility(String state, String fileName) {
     this.buildPovertyMultiplierEligibility(state, fileName);
   }

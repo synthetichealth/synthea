@@ -61,14 +61,41 @@ public class Generator {
    * Even if the same settings are used multiple times, this ID should be unique.
    */
   public final UUID id = UUID.randomUUID();
+
+  /**
+   * Options for configuring the generator.
+   */
   public GeneratorOptions options;
   private DefaultRandomNumberGenerator populationRandom;
   private DefaultRandomNumberGenerator clinicianRandom;
+  /**
+   * The amount of time per timestep, in milliseconds.
+   */
   public long timestep;
+
+  /**
+   * The time at which the simulation stops, in milliseconds since epoch.
+   */
   public long stop;
+
+  /**
+   * The reference time for the simulation, in milliseconds since epoch.
+   */
   public long referenceTime;
+
+  /**
+   * Statistics about the generated population, such as counts of alive and dead individuals.
+   */
   public Map<String, AtomicInteger> stats;
+
+  /**
+   * The location where the population is generated.
+   */
   public Location location;
+
+  /**
+   * The total number of individuals generated in the population.
+   */
   public AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyAlivePatients;
@@ -76,9 +103,16 @@ public class Generator {
   private boolean onlyVeterans;
   private Module keepPatientsModule;
   private Long maxAttemptsToKeepPatient;
+  /** The state to default to */
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
+  /**
+   * EntityManager is used to manage fixed patient demographics records.
+   */
   public static EntityManager entityManager;
+  /**
+   * The size of the thread pool used for generating patients.
+   */
   public final int threadPoolSize;
 
   /**
@@ -101,7 +135,9 @@ public class Generator {
    * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
+    /** Population size */
     public int population = Config.getAsInteger("generate.default_population", 1);
+    /** Number of threads to use */
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = System.currentTimeMillis();
@@ -111,7 +147,9 @@ public class Generator {
     public final long runStartTime = referenceTime;
     /** By default use the current time as random seed. */
     public long seed = referenceTime;
+    /** The clinician seed matches the random seed */
     public long clinicianSeed = referenceTime;
+    /** Fixed seed for generating a single individual */
     public Long singlePersonSeed;
     /** Population as exclusively live persons or including deceased.
      * True for live, false includes deceased */
@@ -124,12 +162,16 @@ public class Generator {
     public int minAge = 0;
     /** Maximum age of people to be generated. Defaults to 140. */
     public int maxAge = 140;
+    /** City name */
     public String city;
+    /** State name */
     public String state;
     /** When Synthea is used as a standalone library, this directory holds
      * any locally created modules. */
     public File localModuleDir;
+    /** File used to import fixed patient demographics records. */
     public File fixedRecordPath;
+    /** List of module names to enable. If null, all modules are enabled. */
     public List<String> enabledModules;
     /** File used to initialize a population. */
     public File initialPopulationSnapshotPath;
@@ -167,6 +209,7 @@ public class Generator {
    *
    * @param population Target population size
    * @param seed Seed used for randomness
+   * @param clinicianSeed Seed used for clinician randomness
    */
   public Generator(int population, long seed, long clinicianSeed) {
     this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
@@ -353,7 +396,13 @@ public class Generator {
       try {
         fis = new FileInputStream(options.initialPopulationSnapshotPath);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        initialPopulation = (List<Person>) ois.readObject();
+        Object snapshotObject = ois.readObject();
+        if (snapshotObject instanceof List<?>) {
+          initialPopulation = ((List<?>) snapshotObject).stream()
+              .filter(item -> item instanceof Person)
+              .map(item -> (Person) item)
+              .collect(Collectors.toList());
+        }
         ois.close();
       } catch (Exception ex) {
         System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
@@ -437,10 +486,8 @@ public class Generator {
    * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
    * based on the given seed.
    *
-   * @param index
-   *          Target index in the whole set of people to generate
-   * @param personSeed
-   *          Seed for the random person
+   * @param index Target index in the whole set of people to generate
+   * @param personSeed Seed for the random person
    * @return generated Person
    */
   public Person generatePerson(int index, long personSeed) {
@@ -585,7 +632,8 @@ public class Generator {
 
   /**
    * Determines if a patient meets the requested criteria.
-   * If a patient does not meet the criteria the process will be repeated so a new one is generated
+   * If a patient does not meet the criteria the process will be repeated so a new one is generated.
+   *
    * @param person the patient to check if we want to export them
    * @param finishTime the time simulation finished
    * @param index Target index in the whole set of people to generate
@@ -625,6 +673,10 @@ public class Generator {
 
   /**
    * Update person record to stop time, record the entry and export record.
+   *
+   * @param person the person to update and export
+   * @param index the index of the person being updated
+   * @return the updated person
    */
   public Person updateRecordExportPerson(Person person, int index) {
     updatePerson(person);
@@ -637,6 +689,7 @@ public class Generator {
   /**
    * Create a new person and update them until Generator.stop or
    * they die, whichever comes sooner.
+   *
    * @param personSeed Seed for the random person
    * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
    * @return the new person
@@ -665,6 +718,7 @@ public class Generator {
   /**
    * Update a previously created person from the time they were last updated until Generator.stop or
    * they die, whichever comes sooner.
+   *
    * @param person the previously created person to update
    */
   public void updatePerson(Person person) {
@@ -749,7 +803,9 @@ public class Generator {
 
   /**
    * Create a set of random demographics.
+   *
    * @param random The random number generator to use.
+   * @return a map of random demographics
    */
   public Map<String, Object> randomDemographics(RandomNumberGenerator random) {
     Demographics city = location.randomCity(random);
@@ -758,7 +814,8 @@ public class Generator {
   }
 
   /**
-   * Print out the completed person to the consol.
+   * Print out the completed person to the console.
+   *
    * @param person The person to print.
    * @param index The number person simulated.
    * @param time The time at which they died/the simulation ended.
@@ -793,6 +850,7 @@ public class Generator {
 
   /**
    * Returns a map of demographics that have been randomly picked based on the given location.
+   *
    * @param random The random object to use.
    * @param city The city to base the demographics off of.
    * @return the person's picked demographics.
@@ -871,8 +929,10 @@ public class Generator {
 
   /**
    * Pick a person's demographics based on their seed fixed record.
+   *
    * @param entity The record group to pull demographics from.
    * @param random Random object.
+   * @return a map of fixed demographics
    */
   public Map<String, Object> pickFixedDemographics(Entity entity, RandomNumberGenerator random) {
     Seed firstSeed = entity.getSeeds().get(0);
@@ -899,9 +959,10 @@ public class Generator {
 
   /**
    * Get a birthdate from the given target age.
+   *
    * @param targetAge The target age.
    * @param random A random object.
-   * @return
+   * @return the calculated birthdate
    */
   private long birthdateFromTargetAge(long targetAge, RandomNumberGenerator random) {
     long earliestBirthdate = referenceTime - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
@@ -912,6 +973,7 @@ public class Generator {
 
   /**
    * Record the person using whatever tracking mechanisms are currently configured.
+   *
    * @param person the person to record
    * @param index the index of the person being recorded, e.g. if generating 100 people, the index
    *     would identify which of those 100 is being recorded.
@@ -947,6 +1009,7 @@ public class Generator {
 
   /**
    * Get the seeded random number generator used by this Generator.
+   *
    * @return the random number generator.
    */
   public RandomNumberGenerator getRandomizer() {

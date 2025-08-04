@@ -36,23 +36,43 @@ import org.mitre.synthea.world.agents.Person;
  * </p>
  */
 public class C19VaccineAgeDistributions {
+  /** File containing dose rates. */
   public static final String DOSE_RATES_FILE = "covid_dose_rates.csv";
+
+  /** File containing first shot probabilities by age. */
   public static final String FIRST_SHOT_PROBS_FILE = "covid_first_shot_percentage_by_age.json";
+
+  /** Column header for dates in the CSV file. */
   public static final String DATE_COLUMN_HEADER = "date";
+
+  /** Date when vaccine eligibility expanded to age 12. */
   public static final LocalDate EXPAND_AGE_TO_TWELVE = LocalDate.of(2021, 5, 10);
+
+  /** Date format used in the CSV file. */
   public static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
-  public static final HashMap<AgeRange,
-      List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
-  public static final HashMap<AgeRange,
-      SyncedEnumeratedDistro<String>> distributions = new HashMap<>();
+
+  /** Raw distributions of doses by age range. */
+  public static final HashMap<AgeRange, List<Pair<String, Integer>>> rawDistributions =
+      new HashMap<>();
+
+  /** Processed distributions of doses by age range. */
+  public static final HashMap<AgeRange, SyncedEnumeratedDistro<String>> distributions =
+      new HashMap<>();
+
+  /** Probabilities of getting the first shot by age range. */
   public static final HashMap<AgeRange, Double> firstShotProbByAge = new HashMap<>();
 
   /**
    * Representation of an age range in years with logic for parsing the format used by the CDC API.
    */
   public static class AgeRange {
+    /** Minimum age in the range. */
     public int min;
+
+    /** Maximum age in the range. */
     public int max;
+
+    /** Display string for the age range. */
     public String display;
 
     @Override
