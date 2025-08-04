@@ -34,7 +34,8 @@ public class Claim implements Serializable {
   /**
    * Represents the cost details of a claim.
    */
-  public static class ClaimCost {
+  public static class ClaimCost implements Serializable {
+    private static final long serialVersionUID = 1L;
     /** Total cost of the entry. */
     public BigDecimal cost = ZERO_CENTS;
     /** Copay paid by the patient. */
