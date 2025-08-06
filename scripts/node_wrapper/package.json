@@ -1,0 +1,16 @@
+{
+  "name": "synthea-node-wrapper",
+  "version": "1.0.0",
+  "description": "Node.js wrapper for Synthea synthetic patient data generator",
+  "main": "wrapper.js",
+  "scripts": {
+    "example": "node example.js",
+    "test": "node test.js"
+  },
+  "keywords": ["synthea", "fhir", "healthcare", "synthetic-data"],
+  "author": "",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
