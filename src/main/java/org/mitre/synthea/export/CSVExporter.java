@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.mitre.synthea.export.CSVFileManager;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -115,7 +116,6 @@ public class CSVExporter {
    * Writer for supplies.csv
    */
   private OutputStreamWriter supplies;
-
   /**
    * Writer for organizations.csv
    */
@@ -124,7 +124,6 @@ public class CSVExporter {
    * Writer for providers.csv
    */
   private OutputStreamWriter providers;
-
   /**
    * Writer for payers.csv
    */
@@ -145,16 +144,16 @@ public class CSVExporter {
    * Writer for patient_expenses.csv
    */
   private OutputStreamWriter patientExpenses;
-
   /**
    * Charset for specifying the character set of the output files.
    */
   private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
-
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
    */
   private static final String NEWLINE = System.lineSeparator();
+
+  private CSVFileManager fileManager;
 
   /**
    * Thread-safe monotonically increasing transactionId.
@@ -220,7 +219,8 @@ public class CSVExporter {
       }
 
       boolean append = Config.getAsBoolean("exporter.csv.append_mode");
-      patients = getWriter(outputDirectory, "patients.csv", append, includedFiles, excludedFiles);
+      fileManager = new CSVFileManager(outputDirectory, includedFiles, excludedFiles, append);
+      patients = fileManager.patientWriter();
 
       allergies = getWriter(outputDirectory, "allergies.csv", append, includedFiles, excludedFiles);
 
