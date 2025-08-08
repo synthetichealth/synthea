@@ -84,6 +84,11 @@ public class CSVFileManager {
     if (writer == null) {
       writer = getResourceWriter(resourceKey);
       writerMap.put(resourceKey, writer);
+      if (!append) {
+        synchronized (writer) {
+          writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+        }
+      }
     }
     return writer;
   }
