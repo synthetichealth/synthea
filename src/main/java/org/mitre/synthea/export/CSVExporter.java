@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.mitre.synthea.export.CSVConstants;
 import org.mitre.synthea.export.CSVFileManager;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
@@ -220,54 +221,26 @@ public class CSVExporter {
 
       boolean append = Config.getAsBoolean("exporter.csv.append_mode");
       fileManager = new CSVFileManager(outputDirectory, includedFiles, excludedFiles, append);
-      patients = fileManager.patientWriter();
 
-      allergies = getWriter(outputDirectory, "allergies.csv", append, includedFiles, excludedFiles);
-
-      medications = getWriter(outputDirectory, "medications.csv", append, includedFiles,
-          excludedFiles);
-
-      conditions = getWriter(outputDirectory, "conditions.csv", append, includedFiles,
-          excludedFiles);
-
-      careplans = getWriter(outputDirectory, "careplans.csv", append, includedFiles, excludedFiles);
-
-      observations = getWriter(outputDirectory, "observations.csv", append, includedFiles,
-          excludedFiles);
-
-      procedures = getWriter(outputDirectory, "procedures.csv", append, includedFiles,
-          excludedFiles);
-
-      immunizations = getWriter(outputDirectory, "immunizations.csv", append, includedFiles,
-          excludedFiles);
-
-      encounters = getWriter(outputDirectory, "encounters.csv", append, includedFiles,
-          excludedFiles);
-
-      imagingStudies = getWriter(outputDirectory, "imaging_studies.csv", append, includedFiles,
-          excludedFiles);
-
-      devices = getWriter(outputDirectory, "devices.csv", append, includedFiles, excludedFiles);
-
-      supplies = getWriter(outputDirectory, "supplies.csv", append, includedFiles, excludedFiles);
-
-      organizations = getWriter(outputDirectory, "organizations.csv", append, includedFiles,
-          excludedFiles);
-
-      providers = getWriter(outputDirectory, "providers.csv", append, includedFiles, excludedFiles);
-
-      payers = getWriter(outputDirectory, "payers.csv", append, includedFiles, excludedFiles);
-
-      payerTransitions = getWriter(outputDirectory, "payer_transitions.csv", append, includedFiles,
-          excludedFiles);
-
-      claims = getWriter(outputDirectory, "claims.csv", append, includedFiles, excludedFiles);
-
-      claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
-          includedFiles, excludedFiles);
-
-      patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
-          append, includedFiles, excludedFiles);
+      patients = fileManager.getWriter(CSVConstants.PATIENT_KEY);
+      allergies = fileManager.getWriter(CSVConstants.ALLERGY_KEY);
+      medications = fileManager.getWriter(CSVConstants.MEDICATION_KEY);
+      conditions = fileManager.getWriter(CSVConstants.CONDITION_KEY);
+      careplans = fileManager.getWriter(CSVConstants.CAREPLAN_KEY);
+      observations = fileManager.getWriter(CSVConstants.OBSERVATION_KEY);
+      procedures = fileManager.getWriter(CSVConstants.PROCEDURE_KEY);
+      immunizations = fileManager.getWriter(CSVConstants.IMMUNIZATION_KEY);
+      encounters = fileManager.getWriter(CSVConstants.ENCOUNTER_KEY);
+      imagingStudies = fileManager.getWriter(CSVConstants.IMAGING_STUDY_KEY);
+      devices = fileManager.getWriter(CSVConstants.DEVICE_KEY);
+      supplies = fileManager.getWriter(CSVConstants.SUPPLY_KEY);
+      organizations = fileManager.getWriter(CSVConstants.ORGANIZATION_KEY);
+      providers = fileManager.getWriter(CSVConstants.PROVIDER_KEY);
+      payers = fileManager.getWriter(CSVConstants.PAYER_KEY);
+      payerTransitions = fileManager.getWriter(CSVConstants.PAYER_TRANSITION_KEY);
+      claims = fileManager.getWriter(CSVConstants.CLAIM_KEY);
+      claimsTransactions = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
+      patientExpenses = fileManager.getWriter(CSVConstants.PATIENT_EXPENSE_KEY);
 
       if (!append) {
         writeCSVHeaders();
@@ -1999,39 +1972,5 @@ public class CSVExporter {
     synchronized (writer) {
       writer.write(line);
     }
-  }
-
-  /**
-   * "No-op" writer to use to prevent writing to excluded files.
-   * Note that this uses an Apache "NullOutputStream", but JDK11 provides its own.
-   */
-  private static final OutputStreamWriter NO_OP =
-      new OutputStreamWriter(NullOutputStream.NULL_OUTPUT_STREAM);
-
-  /**
-   * Helper method to get the writer for the given output file.
-   * Returns a "no-op" writer for any excluded files.
-   *
-   * @param outputDirectory Parent directory for output csv files
-   * @param filename Filename for the current file
-   * @param append True = append to an existing file, False = overwrite any existing files
-   * @param includedFiles List of filenames that should be included in output
-   * @param excludedFiles List of filenames that should not be included in output
-   *
-   * @return OutputStreamWriter for the given output file.
-   */
-  private OutputStreamWriter getWriter(Path outputDirectory, String filename, boolean append,
-      List<String> includedFiles, List<String> excludedFiles) throws IOException {
-
-    boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(filename))
-        || excludedFiles.contains(filename);
-    if (excluded) {
-      return NO_OP;
-    }
-
-    File file = outputDirectory.resolve(filename).toFile();
-    // file writing may fail if we tell it to append to a file that doesn't already exist
-    append = append && file.exists();
-    return new OutputStreamWriter(new FileOutputStream(file, append), charset);
   }
 }
