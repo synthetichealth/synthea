@@ -18,7 +18,6 @@ public class CSVFileManager {
   /**
    * Writer for patients.csv.
    */
-  private OutputStreamWriter patients;
   private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
   private boolean append;
   private Path outputDirectory;
@@ -91,5 +90,14 @@ public class CSVFileManager {
       }
     }
     return writer;
+  }
+
+  public void flushWriters() throws IOException {
+    for (var entry : writerMap.entrySet()) {
+      OutputStreamWriter writer = entry.getValue();
+      if (entry != null) {
+        writer.flush();
+      }
+    }
   }
 }
