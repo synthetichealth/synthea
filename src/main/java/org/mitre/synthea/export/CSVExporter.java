@@ -442,8 +442,7 @@ public class CSVExporter {
     // s.append(person.attributes.get("most-recent-daly"));
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PATIENT_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PATIENT_KEY);
 
     return personID;
   }
@@ -523,8 +522,7 @@ public class CSVExporter {
     }
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.ENCOUNTER_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.ENCOUNTER_KEY);
 
     return encounterID;
   }
@@ -557,8 +555,7 @@ public class CSVExporter {
     s.append(clean(coding.display));
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.CONDITION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.CONDITION_KEY);
   }
 
   /**
@@ -629,8 +626,7 @@ public class CSVExporter {
     }
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.ALLERGY_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.ALLERGY_KEY);
   }
 
   /**
@@ -680,8 +676,7 @@ public class CSVExporter {
     s.append(type);
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.OBSERVATION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.OBSERVATION_KEY);
   }
 
   /**
@@ -722,8 +717,7 @@ public class CSVExporter {
     }
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PROCEDURE_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PROCEDURE_KEY);
   }
 
   /**
@@ -807,8 +801,7 @@ public class CSVExporter {
     }
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.MEDICATION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.MEDICATION_KEY);
   }
 
   /**
@@ -836,8 +829,7 @@ public class CSVExporter {
     s.append(String.format(Locale.US, "%.2f", immunization.getCost()));
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.IMMUNIZATION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.IMMUNIZATION_KEY);
   }
 
   /**
@@ -877,8 +869,7 @@ public class CSVExporter {
     }
     s.append(NEWLINE);
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.CAREPLAN_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.CAREPLAN_KEY);
 
     return carePlanID;
   }
@@ -929,8 +920,7 @@ public class CSVExporter {
       }
     }
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.IMAGING_STUDY_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.IMAGING_STUDY_KEY);
 
     return studyID;
   }
@@ -965,8 +955,7 @@ public class CSVExporter {
 
     s.append(NEWLINE);
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.DEVICE_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.DEVICE_KEY);
   }
 
   /**
@@ -994,8 +983,7 @@ public class CSVExporter {
 
     s.append(NEWLINE);
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.SUPPLY_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.SUPPLY_KEY);
   }
 
   /**
@@ -1021,8 +1009,7 @@ public class CSVExporter {
     s.append(utilization);
     s.append(NEWLINE);
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.ORGANIZATION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.ORGANIZATION_KEY);
   }
 
   /**
@@ -1051,8 +1038,7 @@ public class CSVExporter {
 
     s.append(NEWLINE);
 
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PROVIDER_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PROVIDER_KEY);
   }
 
   /**
@@ -1104,8 +1090,7 @@ public class CSVExporter {
     s.append(payer.getNumYearsCovered() * 12);
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PAYER_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PAYER_KEY);
   }
 
   /**
@@ -1148,8 +1133,7 @@ public class CSVExporter {
       s.append(planRecord.ownerName);
     }
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PAYER_TRANSITION_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PAYER_TRANSITION_KEY);
   }
 
   private void exportPatientExpense(Person person, PlanRecord planRecord) throws IOException {
@@ -1173,8 +1157,7 @@ public class CSVExporter {
     s.append(coveredExpenses);
 
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.PATIENT_EXPENSE_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.PATIENT_EXPENSE_KEY);
   }
 
   /**
@@ -1395,8 +1378,7 @@ public class CSVExporter {
       s.append('0');
     }
     s.append(NEWLINE);
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.CLAIM_KEY);
-    write(s.toString(), writer);
+    write(s.toString(), CSVConstants.CLAIM_KEY);
 
     // Main Claim
     simulateClaimProcess(person, claim, claimId, encounter, encounterID, claim.mainEntry,
@@ -1432,8 +1414,7 @@ public class CSVExporter {
       t.transferType = "1";
     }
     // TODO: there are a bunch in here
-    OutputStreamWriter writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-    write(t.toString(), writer);
+    write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
     chargeId = transactionId.getAndIncrement();
 
     BigDecimal remainder = claimEntry.cost;
@@ -1453,8 +1434,7 @@ public class CSVExporter {
         t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
-        writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-        write(t.toString(), writer);
+        write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
         chargeId = transactionId.getAndIncrement();
       }
     }
@@ -1473,8 +1453,7 @@ public class CSVExporter {
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       chargeId = transactionId.getAndIncrement();
     }
 
@@ -1490,8 +1469,7 @@ public class CSVExporter {
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       chargeId = transactionId.getAndIncrement();
     }
 
@@ -1505,8 +1483,7 @@ public class CSVExporter {
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       long transferOut = chargeId;
       chargeId = transactionId.getAndIncrement();
 
@@ -1520,8 +1497,7 @@ public class CSVExporter {
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       chargeId = transactionId.getAndIncrement();
 
       // PAYMENT FROM SECONDARY INSURANCE
@@ -1536,8 +1512,7 @@ public class CSVExporter {
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       chargeId = transactionId.getAndIncrement();
     }
 
@@ -1551,8 +1526,7 @@ public class CSVExporter {
         t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
-        writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-        write(t.toString(), writer);
+        write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
         long transferOut = chargeId;
         chargeId = transactionId.getAndIncrement();
 
@@ -1566,8 +1540,7 @@ public class CSVExporter {
         t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
-        writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-        write(t.toString(), writer);
+        write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
         chargeId = transactionId.getAndIncrement();
       }
       // PAYMENT
@@ -1583,8 +1556,7 @@ public class CSVExporter {
       t.unpaid = Claim.ZERO_CENTS;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
-      writer = fileManager.getWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
-      write(t.toString(), writer);
+      write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
       chargeId = transactionId.getAndIncrement();
     }
   }
@@ -1799,7 +1771,8 @@ public class CSVExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, OutputStreamWriter writer) throws IOException {
+  private void write(String line, String resourceKey) throws IOException {
+    OutputStreamWriter writer = fileManager.getWriter(resourceKey);
     synchronized (writer) {
       writer.write(line);
     }
