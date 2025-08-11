@@ -192,8 +192,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 55440008,
-        "display": "M1 category (finding)"
+        "code": "1229903009",
+        "display": "American Joint Committee on Cancer cM1 (qualifier value)"
       },
       "direct_transition": "Distant Breast Cancer"
     },
@@ -210,8 +210,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 30893008,
-        "display": "M0 category (finding)"
+        "code": "1229901006",
+        "display": "American Joint Committee on Cancer cM0 (qualifier value)"
       },
       "distributed_transition": [
         {
@@ -242,8 +242,8 @@
       "direct_transition": "N Marker",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 58790005,
-        "display": "T0 category (finding)"
+        "code": "1228882005",
+        "display": "American Joint Committee on Cancer cT0 (qualifier value)"
       }
     },
     "T1_Diagnosed": {
@@ -259,8 +259,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 23351008,
-        "display": "T1 category (finding)"
+        "code": "1228889001",
+        "display": "American Joint Committee on Cancer cT1 (qualifier value)"
       },
       "direct_transition": "N Marker"
     },
@@ -277,8 +277,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 67673008,
-        "display": "T2 category (finding)"
+        "code": "1228929004",
+        "display": "American Joint Committee on Cancer cT2 (qualifier value)"
       },
       "direct_transition": "N Marker"
     },
@@ -295,8 +295,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 14410001,
-        "display": "T3 category (finding)"
+        "code": "1228938002",
+        "display": "American Joint Committee on Cancer cT3 (qualifier value)"
       },
       "direct_transition": "N Marker",
       "remarks": [
@@ -316,8 +316,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 65565005,
-        "display": "T4 category (finding)"
+        "code": "1228944003",
+        "display": "American Joint Committee on Cancer cT4 (qualifier value)"
       },
       "direct_transition": "N Marker"
     },
@@ -335,8 +335,8 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 53623008,
-        "display": "N1 category (finding)"
+        "code": "1229973008",
+        "display": "American Joint Committee on Cancer cN1 (qualifier value)"
       }
     },
     "N0_Diagnosed": {
@@ -352,8 +352,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 62455006,
-        "display": "N0 category (finding)"
+        "code": "1229967007",
+        "display": "American Joint Committee on Cancer cN0 (qualifier value)"
       },
       "direct_transition": "Terminal"
     },
@@ -370,8 +370,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 46059003,
-        "display": "N2 category (finding)"
+        "code": "1229978004",
+        "display": "American Joint Committee on Cancer cN2 (qualifier value)"
       },
       "direct_transition": "Terminal"
     },
@@ -388,8 +388,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 5856006,
-        "display": "N3 category (finding)"
+        "code": "1229984001",
+        "display": "American Joint Committee on Cancer cN3 (qualifier value)"
       },
       "direct_transition": "Terminal"
     },

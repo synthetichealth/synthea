@@ -13,8 +13,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 234817001,
-          "display": "Insertion of oral appliance for the handicapped (procedure)"
+          "code": "1259900009",
+          "display": "Fitting of intraoral appliance (procedure)"
         }
       ],
       "duration": {

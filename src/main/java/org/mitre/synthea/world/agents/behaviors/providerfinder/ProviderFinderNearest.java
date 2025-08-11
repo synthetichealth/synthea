@@ -12,6 +12,10 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
+/**
+ * ProviderFinderNearest finds the nearest provider for a person based on distance
+ * and other criteria such as service type and provider type.
+ */
 public class ProviderFinderNearest implements IProviderFinder {
 
   @Override
@@ -30,11 +34,11 @@ public class ProviderFinderNearest implements IProviderFinder {
         || !(service.equals(EncounterType.URGENTCARE) || service.equals(EncounterType.EMERGENCY))) {
       // Filter to only VA Facilities if the person is a veteran
       if (person.attributes.containsKey(Person.VETERAN)) {
-        options = options.filter(p -> ProviderType.VETERAN.equals(p.type));
-      }
-
-      // Filter out IHS facilities if someone is not Native American
-      if (! "native".equals(person.attributes.get(Person.RACE))) {
+        if (providers.stream().anyMatch(p -> ProviderType.VETERAN.equals(p.type))) {
+          options = options.filter(p -> ProviderType.VETERAN.equals(p.type));
+        }
+      } else if (! "native".equals(person.attributes.get(Person.RACE))) {
+        // Filter out IHS facilities if someone is not Native American
         options = options.filter(p -> ! ProviderType.IHS.equals(p.type));
       }
     }

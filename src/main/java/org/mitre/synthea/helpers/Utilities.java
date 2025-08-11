@@ -1,5 +1,9 @@
 package org.mitre.synthea.helpers;
 
+import ca.uhn.fhir.parser.IParser;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.FieldNamingPolicy;
@@ -36,11 +40,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.Range;
+import org.hl7.fhir.r4.model.Resource;
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
+/**
+ * A utility class providing various helper methods for time conversions, comparisons,
+ * file reading, and resource parsing.
+ */
 public class Utilities {
   /**
    * Convert a quantity of time in a specified units into milliseconds.
@@ -104,6 +114,8 @@ public class Utilities {
 
   /**
    * Convert a calendar year (e.g. 2020) to a Unix timestamp
+   * @param years The number of calendar years to convert.
+   * @return The equivalent time in milliseconds.
    */
   public static long convertCalendarYearsToTime(int years) {
     Calendar c = Calendar.getInstance();
@@ -115,6 +127,8 @@ public class Utilities {
 
   /**
    * Get the year of a Unix timestamp.
+   * @param time The simulation timestamp.
+   * @return The year extracted from the timestamp.
    */
   public static int getYear(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -124,6 +138,8 @@ public class Utilities {
 
   /**
    * Get the month of a Unix timestamp.
+   * @param time The simulation timestamp.
+   * @return The month extracted from the timestamp.
    */
   public static int getMonth(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -145,6 +161,8 @@ public class Utilities {
   /**
    * Convert the given Unix timestamp into a LocalDate.
    * The timestamp is assumed to be interpreted in the UTC time zone.
+   * @param timestamp The simulation timestamp.
+   * @return The equivalent LocalDate.
    */
   public static LocalDate timestampToLocalDate(long timestamp) {
     return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC).toLocalDate();
@@ -190,6 +208,9 @@ public class Utilities {
 
   /**
    * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
+   * @param risk The risk value to convert.
+   * @param originalPeriodInMS The original period in milliseconds.
+   * @return The equivalent timestep in milliseconds.
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
     double currTimeStepInMS = Config.getAsDouble("generate.timestep");
@@ -199,6 +220,10 @@ public class Utilities {
 
   /**
    * Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).
+   * @param risk The risk value to convert.
+   * @param originalPeriodInMS The original period in milliseconds.
+   * @param newTimeStepInMS The new timestep in milliseconds.
+   * @return The equivalent timestep in milliseconds.
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS,
       double newTimeStepInMS) {
@@ -210,6 +235,10 @@ public class Utilities {
    * Numbers are converted to double prior to comparison.
    * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
+   * @param lhs The left-hand side object.
+   * @param rhs The right-hand side object.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(Object lhs, Object rhs, String operator) {
     if (operator.equals("is nil")) {
@@ -237,6 +266,10 @@ public class Utilities {
    * Compare two Doubles.
    * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
+   * @param lhs The left-hand side Double value.
+   * @param rhs The right-hand side Double value.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(Double lhs, Double rhs, String operator) {
     switch (operator) {
@@ -266,6 +299,10 @@ public class Utilities {
    * Compare two Booleans.
    * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
+   * @param lhs The left-hand side Boolean value.
+   * @param rhs The right-hand side Boolean value.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(Boolean lhs, Boolean rhs, String operator) {
     switch (operator) {
@@ -295,6 +332,10 @@ public class Utilities {
    * Compare two Strings.
    * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
+   * @param lhs The left-hand side String value.
+   * @param rhs The right-hand side String value.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(String lhs, String rhs, String operator) {
     switch (operator) {
@@ -324,6 +365,10 @@ public class Utilities {
    * Compare two Integers.
    * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
+   * @param lhs The left-hand side Integer value.
+   * @param rhs The right-hand side Integer value.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(Integer lhs, Integer rhs, String operator) {
     switch (operator) {
@@ -353,6 +398,10 @@ public class Utilities {
    * Compare two Codes.
    * Supported operators are: !=, is nil, is not nil. Only lhs is checked for
    * is nil and is not nil.
+   * @param lhs The left-hand side Code object.
+   * @param rhs The right-hand side Code object.
+   * @param operator The comparison operator.
+   * @return True if the comparison is valid, false otherwise.
    */
   public static boolean compare(Code lhs, Code rhs, String operator) {
     switch (operator) {
@@ -530,6 +579,10 @@ public class Utilities {
    * Optionally add series and/or instance numbers to the UID to enhance its uniqueness.
    * Pass 0 for the series/instance number to omit it from the UID.
    *
+   * @param random The random number generator.
+   * @param time The simulation time.
+   * @param seriesNo The series number.
+   * @param instanceNo The instance number.
    * @return a String DICOM UID
    */
   public static String randomDicomUid(RandomNumberGenerator random,
@@ -601,6 +654,7 @@ public class Utilities {
    *
    * @param action Action to apply for every module. Function signature is
    *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
+   * @throws Exception if an error occurs while walking the directory structure.
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
     List<Path> modulePaths = Module.getModulePaths();
@@ -614,8 +668,10 @@ public class Utilities {
    * Walk the directory structure of the modules starting at the given location, and apply the given
    * function for every module underneath.
    *
+   * @param modulesPath The starting path of the modules.
    * @param action Action to apply for every module. Function signature is
    *        (currentModulePath) -&gt; {...}
+   * @throws Exception if an error occurs while walking the directory structure.
    */
   public static void walkAllModules(Path modulesPath, Consumer<Path> action) throws Exception {
     Files.walk(modulesPath, Integer.MAX_VALUE)
@@ -651,7 +707,9 @@ public class Utilities {
    * Note that it's not always possible to know when a user-provided path
    * is within a JAR file, so this method should be called if it is possible the
    * path refers to an internal location.
-   * @param uri URI to be accessed
+   *
+   * @param uri URI to be accessed.
+   * @throws IOException if an error occurs while enabling reading from the JAR file.
    */
   public static void enableReadingURIFromJar(URI uri) throws IOException {
     // this function is a hack to enable reading modules from within a JAR file
@@ -668,5 +726,37 @@ public class Utilities {
         }
       }
     }
+  }
+
+  /**
+   * Helper method to parse FHIR resources from YAML.
+   * This is a workaround since the FHIR model classes don't work with our YAML parser.
+   *
+   * @param <T> Resource type contained in the YAML
+   * @param yaml List of pre-parsed YAML as Map&lt;String, Object&gt;
+   * @param resourceClass Specific resource class, must not be Resource
+   * @return List of parsed resources
+   * @throws JsonProcessingException (should never happen)
+   */
+  public static <T extends Resource> List<T> parseYamlToResources(
+      List<Map<String, Object>> yaml, Class<T> resourceClass)
+          throws JsonProcessingException {
+    if (yaml.isEmpty()) {
+      return Collections.emptyList();
+    }
+    ObjectMapper jsonMapper = new ObjectMapper();
+    IParser jsonParser = FhirR4.getContext().newJsonParser();
+    List<T> results = new ArrayList<>();
+    for (Map<String, Object> singleYaml : yaml) {
+      if (!singleYaml.containsKey("resourceType")) {
+        // allows the YAML to be cleaner by letting the resourceType be implied
+        singleYaml.put("resourceType", resourceClass.getSimpleName());
+      }
+      String resourceJson = jsonMapper.writeValueAsString(singleYaml);
+      @SuppressWarnings("unchecked")
+      T resource = (T) jsonParser.parseResource(resourceJson);
+      results.add(resource);
+    }
+    return results;
   }
 }

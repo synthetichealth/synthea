@@ -1,9 +1,6 @@
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
@@ -46,8 +42,9 @@ public class RunFlexporter {
    *  -ig {Implementation Guide file path}
    *
    * @param args Command line args as described above
+   * @throws IOException If a required file is not found
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     Queue<String> argsQ = new ArrayDeque<String>(Arrays.asList(args));
 
     File igDirectory = null;
@@ -125,6 +122,7 @@ public class RunFlexporter {
       throws IOException {
 
     Mapping mapping = Mapping.parseMapping(mappingFile);
+    mapping.loadValueSets();
 
     if (igDirectory != null) {
       loadIG(igDirectory);

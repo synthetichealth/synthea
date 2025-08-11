@@ -256,7 +256,6 @@ public class PayerManager {
       // Return without an error, because the given payer might only exist in another state.
       return;
     }
-    String planName = line.remove(NAME).trim();
     Set<String> servicesCovered
         = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
     BigDecimal deductible = new BigDecimal(line.remove(DEDUCTIBLE).trim());
@@ -264,16 +263,17 @@ public class PayerManager {
     BigDecimal defaultCopay = new BigDecimal(line.remove(COPAY).trim());
     BigDecimal monthlyPremium = new BigDecimal(line.remove(MONTHLY_PREMIUM).trim());
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
-    boolean isACA = Boolean.parseBoolean(line.remove(ACA).trim());
-    boolean incomeBasedPremium = Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim());
+    boolean isACA = Boolean.parseBoolean(line.getOrDefault(ACA, "false").trim());
+    boolean incomeBasedPremium
+        = Boolean.parseBoolean(line.getOrDefault(INCOME_BASED_PREMIUM, "false").trim());
     String yearStartStr = line.remove(START_YEAR).trim();
     int yearStart = yearStartStr.equals("") ? 0 : Integer.parseInt(yearStartStr);
     String yearEndStr = line.remove(END_YEAR).trim();
     int yearEnd = StringUtils.isBlank(yearEndStr)
         ? Integer.MAX_VALUE : Integer.parseInt(yearEndStr);
-    BigDecimal maxOutOfPocket = new BigDecimal(line.remove(MAX_OOP).trim());
+    BigDecimal maxOutOfPocket = new BigDecimal(line.getOrDefault(MAX_OOP, "0").trim());
     // If the priority is blank, give it minimum priority (maximum int value).
-    String priorityString = line.remove(PRIORITY_LEVEL).trim();
+    String priorityString = line.getOrDefault(PRIORITY_LEVEL,"").trim();
     int priority = StringUtils.isBlank(priorityString)
         ? Integer.MAX_VALUE : Integer.parseInt(priorityString);
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
@@ -314,6 +314,7 @@ public class PayerManager {
 
   /**
    * Returns the List of all loaded payers.
+   * @return A list of all loaded payers.
    */
   public static List<Payer> getAllPayers() {
     return payers.values().stream().collect(Collectors.toList());
@@ -377,7 +378,7 @@ public class PayerManager {
 
   /**
    * Returns the no insurance plan.
-   * @return
+   * @return The no insurance plan.
    */
   public static InsurancePlan getNoInsurancePlan() {
     return noInsurance.getPlans().iterator().next();

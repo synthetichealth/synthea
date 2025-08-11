@@ -15,11 +15,22 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
+/**
+ * Module for managing patient encounters, including wellness visits,
+ * symptom-driven visits, and emergency care.
+ */
 public final class EncounterModule extends Module {
 
+  /** Attribute key for active wellness encounters. */
   public static final String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
+
+  /** Attribute key for active urgent care encounters. */
   public static final String ACTIVE_URGENT_CARE_ENCOUNTER = "active_urgent_care_encounter";
+
+  /** Attribute key for active emergency encounters. */
   public static final String ACTIVE_EMERGENCY_ENCOUNTER = "active_emergency_encounter";
+
+  /** Module name. */
   public static final String NAME = "Encounter";
   /**
    * These are thresholds for patients to seek symptom-driven care - they'll go to
@@ -30,26 +41,48 @@ public final class EncounterModule extends Module {
    * The goal for the number of symptom-driven encounters (urgent care, PCP, and ER) is .0998 * age.
    */
   public static final int PCP_SYMPTOM_THRESHOLD = 300;
+  /** Threshold for symptoms to trigger an urgent care visit */
   public static final int URGENT_CARE_SYMPTOM_THRESHOLD = 350;
+
+  /** Threshold for symptoms to trigger an emergency room visit. */
   public static final int EMERGENCY_SYMPTOM_THRESHOLD = 500;
+
+  /** Attribute key for the last visit symptom total. */
   public static final String LAST_VISIT_SYMPTOM_TOTAL = "last_visit_symptom_total";
 
+  /** Code for a check-up encounter. */
   public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "185349003",
       "Encounter for check up (procedure)");
+
+  /** Code for an emergency room admission. */
   public static final Code ENCOUNTER_EMERGENCY = new Code("SNOMED-CT", "50849002",
       "Emergency room admission (procedure)");
+
+  /** Code for a well-child visit. */
   public static final Code WELL_CHILD_VISIT = new Code("SNOMED-CT", "410620009",
       "Well child visit (procedure)");
+
+  /** Code for a general examination. */
   public static final Code GENERAL_EXAM = new Code("SNOMED-CT", "162673000",
       "General examination of patient (procedure)");
+
+  /** Code for an urgent care clinic visit. */
   public static final Code ENCOUNTER_URGENTCARE = new Code("SNOMED-CT", "702927004",
       "Urgent care clinic (environment)");
   // NOTE: if new codes are added, be sure to update getAllCodes below
 
+  /**
+   * Constructor for the EncounterModule.
+   */
   public EncounterModule() {
     this.name = EncounterModule.NAME;
   }
 
+  /**
+   * Clone the module.
+   *
+   * @return a clone of the module
+   */
   public Module clone() {
     return this;
   }
@@ -229,6 +262,8 @@ public final class EncounterModule extends Module {
 
   /**
    * End a wellness encounter if currently active.
+   * @param person The patient.
+   * @param time The time of the encounter end.
    */
   public void endEncounterModuleEncounters(Person person, long time) {
     if (person.hasCurrentEncounter()
@@ -266,7 +301,7 @@ public final class EncounterModule extends Module {
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = EncounterModule.class.getSimpleName();
     // Read
     Attributes.inventory(attributes, m, LAST_VISIT_SYMPTOM_TOTAL, true, true, "Integer");

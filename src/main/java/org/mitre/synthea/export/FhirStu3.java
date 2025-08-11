@@ -1759,7 +1759,7 @@ public class FhirStu3 {
     medicationResource.setRequester(requester);
 
     if (medication.stop != 0L) {
-      medicationResource.setStatus(MedicationRequestStatus.STOPPED);
+      medicationResource.setStatus(MedicationRequestStatus.COMPLETED);
     } else {
       medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
     }

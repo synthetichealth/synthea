@@ -1950,8 +1950,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 409066002,
-          "display": "Education, guidance and counseling (procedure)"
+          "code": "410314003",
+          "display": "Health promotion education, guidance, and counseling (procedure)"
         }
       ],
       "distribution": {

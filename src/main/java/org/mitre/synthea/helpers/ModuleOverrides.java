@@ -53,6 +53,7 @@ public class ModuleOverrides {
    * Main method, not to be invoked directly: should always be called via gradle task `overrides`.
    *
    * @param args -- format is [includeFields, includeModules, excludeFields, excludeModules]
+   * @throws Exception if there is an error reading the modules or writing the output file.
    */
   public static void main(String[] args) throws Exception {
     String includeFieldsArg = args[0];
@@ -130,6 +131,7 @@ public class ModuleOverrides {
    * Perform the actual processing to generate the list of properties, per the given settings.
    * @return List of strings to be written to file. Strings are of format:
    *         (module file name)\:\:(JSONPath to numeric field within module) = original value
+   * @throws Exception If walking over the modules fails.
    */
   public List<String> generateOverrides() throws Exception {
     List<String> lines = new LinkedList<>();

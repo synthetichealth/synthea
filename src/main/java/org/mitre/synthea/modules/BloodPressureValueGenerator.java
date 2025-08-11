@@ -20,16 +20,26 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  * with impacts from select medications.
  */
 public class BloodPressureValueGenerator extends ValueGenerator {
+  /**
+   * Enum representing systolic and diastolic blood pressure.
+   */
   public enum SysDias {
-    SYSTOLIC, DIASTOLIC
+    /** Systolic blood pressure. */
+    SYSTOLIC,
+    /** Diastolic blood pressure. */
+    DIASTOLIC
   }
 
+  /** Hypertensive systolic blood pressure range. */
   private static final int[] HYPERTENSIVE_SYS_BP_RANGE = BiometricsConfig
       .ints("metabolic.blood_pressure.hypertensive.systolic");
+  /** Hypertensive diastolic blood pressure range. */
   private static final int[] HYPERTENSIVE_DIA_BP_RANGE = BiometricsConfig
       .ints("metabolic.blood_pressure.hypertensive.diastolic");
+  /** Normal systolic blood pressure range. */
   private static final int[] NORMAL_SYS_BP_RANGE = BiometricsConfig
       .ints("metabolic.blood_pressure.normal.systolic");
+  /** Normal diastolic blood pressure range. */
   private static final int[] NORMAL_DIA_BP_RANGE = BiometricsConfig
       .ints("metabolic.blood_pressure.normal.diastolic");
 
@@ -38,6 +48,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   // https://www.bmj.com/content/359/bmj.j5542
   // https://pubmed.ncbi.nlm.nih.gov/31668726/
   // https://academic.oup.com/ajh/article/18/7/935/221053
+  /** Table of impacts of hypertension drugs on blood pressure. */
   private static final Table<String, SysDias, Range<Double>> HTN_DRUG_IMPACTS;
 
   static {
@@ -72,19 +83,40 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
   }
 
+  /** One year in milliseconds. */
+  private static final long ONE_YEAR = Utilities.convertTime("years", 1);
+
+  /** Cycle time for blood pressure variation in milliseconds. */
+  private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
+
   // simple 1-value cache, so that we get consistent results when called with the same timestamp
   // note that consistency is not guaranteed if we go time A -> time B -> time A across modules.
   // in that case we'd need a bigger cache
+  /** Cached blood pressure value for consistency. */
   private Double cachedValue;
+  /** Timestamp of the cached blood pressure value. */
   private long cacheTime;
 
+  /** Indicates whether the value is systolic or diastolic. */
   private SysDias sysDias;
 
+  /**
+   * Constructor for BloodPressureValueGenerator.
+   *
+   * @param person The person for whom blood pressure is being generated.
+   * @param sysDias Indicates whether the value is systolic or diastolic.
+   */
   public BloodPressureValueGenerator(Person person, SysDias sysDias) {
     super(person);
     this.sysDias = sysDias;
   }
 
+  /**
+   * Get the blood pressure value at a specific time.
+   *
+   * @param time The time for which the blood pressure value is needed.
+   * @return The blood pressure value.
+   */
   @Override
   public double getValue(long time) {
     if (cacheTime == time && cachedValue != null) {
@@ -104,6 +136,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   /**
    * Helper function to ensure a person has a consistent impact from a drug.
+   *
+   * @param person The person taking the drug.
+   * @param drug The drug being taken.
+   * @param sysDias Indicates whether the impact is on systolic or diastolic blood pressure.
+   * @param impactRange The range of the drug's impact.
+   * @return The impact of the drug on blood pressure.
    */
   private static double getDrugImpact(Person person, String drug, SysDias sysDias,
       Range<Double> impactRange) {
@@ -130,6 +168,9 @@ public class BloodPressureValueGenerator extends ValueGenerator {
    * Get the "baseline" BP for a Person.
    * Baseline here means the BP values accounting for hypertension, but before
    * applying medications, lifestyle changes, and intra-daily variation.
+   *
+   * @param person The person for whom the baseline is being calculated.
+   * @return The baseline blood pressure.
    */
   private double calculateBaseline(Person person) {
     boolean hypertension = (boolean) person.attributes.getOrDefault("hypertension", false);
@@ -176,11 +217,14 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
   }
 
-  private static final long ONE_YEAR = Utilities.convertTime("years", 1);
-
   /**
    * Get the amount of impact that lifestyle changes, if this Person is making any,
    * will have on their BP. Lifestyle changes are tracked as specific CarePlans.
+   *
+   * @param person The person making lifestyle changes.
+   * @param baseline The baseline blood pressure.
+   * @param time The time for which the impact is being calculated.
+   * @return The impact of lifestyle changes on blood pressure.
    */
   private double getLifestyleImpacts(Person person, double baseline, long time) {
     // if the person has a "blood pressure care plan"
@@ -244,7 +288,10 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   }
 
   /**
-   * Get the amount that Medications will impact this Person's BP.
+   * Get the impact of medications on blood pressure.
+   *
+   * @param person The person taking medications.
+   * @return The impact of medications on blood pressure.
    */
   private double getMedicationImpacts(Person person) {
     double drugImpactDelta = 0.0;
@@ -264,10 +311,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return drugImpactDelta;
   }
 
-  private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
-
   /**
-   * Get an small amount of daily variation in the Person's BP.
+   * Get the daily variation in blood pressure.
+   *
+   * @param person The person whose blood pressure is being calculated.
+   * @param time The time for which the variation is being calculated.
+   * @return The daily variation in blood pressure.
    */
   private double getVariation(Person person, long time) {
     // blood pressure can vary significantly during the day

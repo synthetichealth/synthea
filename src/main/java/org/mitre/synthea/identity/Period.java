@@ -12,11 +12,21 @@ public class Period {
   private LocalDate start;
   private LocalDate end;
 
+  /**
+   * Constructs a Period with a start and end date.
+   * @param start the start date of the period
+   * @param end the end date of the period, may be null for open-ended periods
+   */
   public Period(LocalDate start, LocalDate end) {
     this.start = start;
     this.end = end;
   }
 
+  /**
+   * Checks if the given date is within this period.
+   * @param date the date to check
+   * @return true if the date is within the period, inclusive of start and end
+   */
   public boolean contains(LocalDate date) {
     return ((this.start.isBefore(date) || this.start.isEqual(date))
         && ((this.end == null) || (this.end.isAfter(date) || this.end.isEqual(date))));
@@ -31,10 +41,18 @@ public class Period {
     return contains(Utilities.timestampToLocalDate(timestamp));
   }
 
+  /**
+   * Gets the start date of the period.
+   * @return the start date
+   */
   public LocalDate getStart() {
     return start;
   }
 
+  /**
+   * Gets the end date of the period.
+   * @return the end date, or null if open-ended
+   */
   public LocalDate getEnd() {
     return end;
   }

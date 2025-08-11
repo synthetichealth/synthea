@@ -18,6 +18,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.hl7.fhir.r4.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
@@ -37,10 +39,22 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
  */
 public abstract class RandomCodeGenerator {
 
+  /**
+   * The base URL for expanding ValueSets using the terminology service.
+   */
   public static String expandBaseUrl = Config.get("generate.terminology_service_url")
       + "/ValueSet/$expand?url=";
+
+  /**
+   * A cache of ValueSet URIs to their corresponding list of codes.
+   */
   public static Map<String, List<Code>> codeListCache = new HashMap<>();
+
+  /**
+   * A list of codes that have been selected during the current session.
+   */
   public static List<Code> selectedCodes = new ArrayList<>();
+
   private static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
   private static OkHttpClient client = new OkHttpClient();
 
@@ -51,7 +65,9 @@ public abstract class RandomCodeGenerator {
    *          the URI of the ValueSet
    * @param seed
    *          a random seed to ensure reproducibility of this result
-   * @return the randomly selected Code
+   * @param code
+   *          a fallback code to return if no new code is found
+   * @return the randomly selected Code, or the fallback code if no new code is found
    */
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
@@ -117,8 +133,25 @@ public abstract class RandomCodeGenerator {
         ResponseBody body = response.body();
         if (body != null) {
           IParser parser = FhirR4.getContext().newJsonParser();
-          ValueSet valueSet = (ValueSet) parser.parseResource(body.charStream());
-          loadValueSet(valueSetUri, valueSet);
+          Resource resource = (Resource) parser.parseResource(body.charStream());
+          if (resource instanceof ValueSet) {
+            loadValueSet(valueSetUri, (ValueSet)resource);
+          } else if (resource instanceof OperationOutcome) {
+            OperationOutcome oo = (OperationOutcome)resource;
+            parser.setPrettyPrint(true);
+            System.err.println(parser.encodeResourceToString(oo));
+            String details = oo.getIssueFirstRep().getDetails().getText();
+
+            throw new RuntimeException(
+                "Received OperationOutcome in ValueSet expand response. Detail: "
+                + details + ". See log for full resource");
+          } else {
+            parser.setPrettyPrint(true);
+            System.err.println(parser.encodeResourceToString(resource));
+            throw new RuntimeException(
+                "Unexpected resourceType received in expand ValueSet response: "
+                + resource.getResourceType() + ". See log for full resource");
+          }
         } else {
           throw new RuntimeException("Value Set Expansion contained no body");
         }
@@ -192,6 +225,11 @@ public abstract class RandomCodeGenerator {
     }
   }
 
+  /**
+   * Sets the base URL for the terminology service.
+   *
+   * @param url The new base URL to set.
+   */
   public static void setBaseUrl(String url) {
     expandBaseUrl = url + "/ValueSet/$expand?url=";
   }

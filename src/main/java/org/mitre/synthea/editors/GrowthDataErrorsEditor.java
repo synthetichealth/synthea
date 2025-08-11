@@ -28,31 +28,98 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  */
 public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
+  /** LOINC code for height observations. */
   public static final String HEIGHT_LOINC_CODE = "8302-2";
+
+  /** LOINC code for weight observations. */
   public static final String WEIGHT_LOINC_CODE = "29463-7";
+
+  /** LOINC code for BMI observations. */
   public static final String BMI_LOINC_CODE = "39156-5";
 
+  /** Empty constructor */
   public GrowthDataErrorsEditor() { }
 
+  /** The maximum age (in years) for which this editor will operate. */
   public static int MAX_AGE = 65;
+
+  /** Conversion factor from kilograms to pounds. */
   public static double POUNDS_PER_KG = 2.205;
+
+  /** Conversion factor from centimeters to inches. */
   public static double INCHES_PER_CM = 0.394;
 
+  /** Configuration for error rates in growth data. */
   private static final Config config = loadConfig();
 
+  /** Configuration class for growth data error rates. */
+
+  /** Probability rate of introducing unit errors in weight measurements. */
+  public double weightUnitErrorRate;
+
+  /** Probability rate of introducing digit transposition errors in weight measurements. */
+  public double weightTransposeErrorRate;
+
+  /** Probability rate of switching weight values between different records. */
+  public double weightSwitchErrorRate;
+
+  /** Probability rate of introducing extreme (outlier) errors in weight measurements. */
+  public double weightExtremeErrorRate;
+
+  /** Probability rate of duplicating weight measurements. */
+  public double weightDuplicateErrorRate;
+
+  /** Probability rate of carrying forward previous weight measurements erroneously. */
+  public double weightCarriedForwardErrorRate;
+
+  /** Probability rate of introducing unit errors in height measurements. */
+  public double heightUnitErrorRate;
+
+  /** Probability rate of introducing digit transposition errors in height measurements. */
+  public double heightTransposeErrorRate;
+
+  /** Probability rate of switching height values between different records. */
+  public double heightSwitchErrorRate;
+
+  /** Probability rate of introducing extreme (outlier) errors in height measurements. */
+  public double heightExtremeErrorRate;
+
+  /** Probability rate of introducing absolute errors in height measurements. */
+  public double heightAbsoluteErrorRate;
+
+  /** Probability rate of duplicating height measurements. */
+  public double heightDuplicateErrorRate;
+
+  /** Probability rate of carrying forward previous height measurements erroneously. */
+  public double heightCarriedForwardErrorRate;
+  /** Configuration class for specifying error rates in growth data editing. */
+
   public class Config {
+    /** Probability of introducing a unit error in weight measurements. */
     public double weightUnitErrorRate;
+    /** Probability of transposing digits in weight measurements. */
     public double weightTransposeErrorRate;
+    /** Probability of switching weight values between records. */
     public double weightSwitchErrorRate;
+    /** Probability of introducing an extreme error in weight measurements. */
     public double weightExtremeErrorRate;
+    /** Probability of duplicating weight measurements. */
     public double weightDuplicateErrorRate;
+    /** Probability of carrying forward previous weight measurements. */
     public double weightCarriedForwardErrorRate;
+    /** Probability of introducing a unit error in height measurements. */
     public double heightUnitErrorRate;
+    /** Probability of transposing digits in height measurements. */
     public double heightTransposeErrorRate;
+    /** Probability of switching height values between records. */
     public double heightSwitchErrorRate;
+    /** Probability of introducing an extreme error in height measurements. */
     public double heightExtremeErrorRate;
+    /** Probability of introducing an absolute error in height measurements. */
     public double heightAbsoluteErrorRate;
+    /** Probability of duplicating height measurements. */
     public double heightDuplicateErrorRate;
+    /** Probability of carrying forward previous height measurements. */
     public double heightCarriedForwardErrorRate;
   }
 
@@ -71,10 +138,11 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Checks to see if the person is under MAX_AGE.
-   * @param person The Synthea person to check on whether the module should be run
-   * @param record The person's HealthRecord
-   * @param time The current time in the simulation
-   * @return True if the person is under MAX_AGE
+   *
+   * @param person The Synthea person to check on whether the module should be run.
+   * @param record The person's HealthRecord.
+   * @param time The current time in the simulation.
+   * @return True if the person is under MAX_AGE.
    */
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
@@ -83,9 +151,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Potentially mess up heights and weights in the encounters.
-   * @param person The Synthea person to check on whether the module should be run
-   * @param encounters The encounters that took place during the last time step of the simulation
-   * @param time The current time in the simulation
+   *
+   * @param person The Synthea person to check on whether the module should be run.
+   * @param encounters The encounters that took place during the last time step of the simulation.
+   * @param time The current time in the simulation.
    */
   public void process(Person person, List<HealthRecord.Encounter> encounters, long time) {
     List<HealthRecord.Encounter> encountersWithWeights =
@@ -154,7 +223,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Convert the weight observation value from kg to lbs. The unit is not updated because we are
    * intentionally messing things up.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceWeightUnitError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation obs = weightObservation(encounter);
@@ -165,7 +235,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Convert the height observation from cm to in. Again, we're intentionally messing things up
    * here.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceHeightUnitError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation obs = heightObservation(encounter);
@@ -175,8 +246,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Flip the tens and ones place in the desired observation value.
-   * @param encounter The encounter that contains the observation
-   * @param obsType "height" or "weight"
+   *
+   * @param encounter The encounter that contains the observation.
+   * @param obsType "height" or "weight".
    */
   public static void introduceTransposeError(HealthRecord.Encounter encounter, String obsType) {
     HealthRecord.Observation obs;
@@ -207,7 +279,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Swap weight and height. This will work even if height is null. It will set weight to null
    * and height to the weight value.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceWeightSwitchError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
@@ -228,7 +301,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Swap height and weight. This will work even if weight is null. It will set height to null
    * and weight to height.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceHeightSwitchError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
@@ -247,8 +321,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   }
 
   /**
-   * Shift the decimal place for the weight observation once place to the right.
-   * @param encounter The encounter that contains the observation
+   * Shift the decimal place for the weight observation one place to the right.
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceWeightExtremeError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
@@ -257,8 +332,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   }
 
   /**
-   * Shift the decimal place for the height observation once place to the right.
-   * @param encounter The encounter that contains the observation
+   * Shift the decimal place for the height observation one place to the right.
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceHeightExtremeError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation htObs = heightObservation(encounter);
@@ -269,7 +345,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Reduce the height observation by 3 to 6 cm. It looks like someone forgot to take off their
    * shoes before getting measured.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
+   * @param random The random number generator to use.
    */
   public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter,
                                                   RandomNumberGenerator random) {
@@ -281,7 +359,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Create a duplicate weight observation in the encounter that is off slightly.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
+   * @param random The random number generator to use.
    */
   public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter,
                                                    RandomNumberGenerator random) {
@@ -296,7 +376,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Create a duplicate height observation in the encounter that is off slightly.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
+   * @param random The random number generator to use.
    */
   public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter,
                                                    RandomNumberGenerator random) {
@@ -312,7 +394,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Replace the weight observation in this encounter with the value from the person's last
    * encounter.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceWeightCarriedForwardError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
@@ -328,7 +411,8 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   /**
    * Replace the height observation in this encounter with the value from the person's last
    * encounter.
-   * @param encounter The encounter that contains the observation
+   *
+   * @param encounter The encounter that contains the observation.
    */
   public static void introduceHeightCarriedForwardError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation htObs = heightObservation(encounter);
@@ -354,9 +438,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   }
 
   /**
-   * Recalculate the BMI based on the existing height and weigh observations in the encounter.
+   * Recalculate the BMI based on the existing height and weight observations in the encounter.
    * Only recreates a BMI if one already exists. Otherwise, it does nothing.
-   * @param encounter to recalculate BMI on
+   *
+   * @param encounter The encounter to recalculate BMI on.
    */
   public static void recalculateBMI(HealthRecord.Encounter encounter) {
     HealthRecord.Observation bmi = bmiObservation(encounter);
@@ -373,8 +458,9 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   /**
    * Filter a list of encounters to find all that have an observation with a particular code.
-   * @param encounters The list to filter
-   * @param code The code to look for
+   *
+   * @param encounters The list to filter.
+   * @param code The code to look for.
    * @return The filtered list. If there are no matching encounters, then an empty list.
    */
   public List<HealthRecord.Encounter> encountersWithObservationsOfCode(

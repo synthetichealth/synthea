@@ -193,8 +193,18 @@ public class CSVExporter {
       List<String> excludedFiles = Collections.emptyList();
 
       if (!includedFilesStr.isEmpty() && !excludedFilesStr.isEmpty()) {
-        System.err.println(
-            "CSV exporter: Included and Excluded file settings are both set -- ignoring both");
+        includedFiles = propStringToList(includedFilesStr);
+        excludedFiles = propStringToList(excludedFilesStr);
+
+        // Check if there is any overlap
+        for (String includedFile : includedFiles) {
+          if (excludedFiles.contains(includedFile)) {
+            System.err.println("ERROR! CSV exporter is set to include and exclude the same file: "
+                    + includedFile);
+            throw new IllegalArgumentException(
+                    "CSV exporter cannot include and exclude the same file: " + includedFile);
+          }
+        }
       } else {
         if (!includedFilesStr.isEmpty()) {
           includedFiles = propStringToList(includedFilesStr);

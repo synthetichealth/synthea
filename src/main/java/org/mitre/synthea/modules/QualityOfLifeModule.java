@@ -17,6 +17,10 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
+/**
+ * A module for calculating quality of life metrics such as QALY, DALY, and QOLS.
+ * This module processes a person's health data to compute these metrics annually.
+ */
 public class QualityOfLifeModule extends Module {
 
   /**
@@ -28,10 +32,18 @@ public class QualityOfLifeModule extends Module {
    */
   private static Map<String, DisabilityWeight> disabilityWeights = loadDisabilityWeights();
 
+  /** Quality-Adjusted Life Year (QALY) metric. */
   public static final String QALY = "QALY";
+
+  /** Disability-Adjusted Life Year (DALY) metric. */
   public static final String DALY = "DALY";
+
+  /** Quality of Life Score (QOLS) metric. */
   public static final String QOLS = "QOLS";
 
+  /**
+   * Constructs a new QualityOfLifeModule with the default name "Quality of Life".
+   */
   public QualityOfLifeModule() {
     this.name = "Quality of Life";
   }

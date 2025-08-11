@@ -35,14 +35,26 @@ public class Variant implements IdentityRecord {
   private String socialSecurityNumber;
   private transient Seed seed;
 
+  /**
+   * Gets the variant ID.
+   * @return The variant ID.
+   */
   public String getVariantId() {
     return variantId;
   }
 
+  /**
+   * Sets the variant ID.
+   * @param variantId The variant ID to set.
+   */
   public void setVariantId(String variantId) {
     this.variantId = variantId;
   }
 
+  /**
+   * Gets the period associated with the seed.
+   * @return The period associated with the seed.
+   */
   public Period getPeriod() {
     return seed.getPeriod();
   }
@@ -59,6 +71,10 @@ public class Variant implements IdentityRecord {
     return givenName;
   }
 
+  /**
+   * Sets the given name.
+   * @param givenName The given name to set.
+   */
   public void setGivenName(String givenName) {
     this.givenName = givenName;
   }
@@ -75,6 +91,10 @@ public class Variant implements IdentityRecord {
     return familyName;
   }
 
+  /**
+   * Sets the family name.
+   * @param familyName The family name to set.
+   */
   public void setFamilyName(String familyName) {
     this.familyName = familyName;
   }
@@ -91,6 +111,10 @@ public class Variant implements IdentityRecord {
     return phone;
   }
 
+  /**
+   * Sets the phone number.
+   * @param phone The phone number to set.
+   */
   public void setPhone(String phone) {
     this.phone = phone;
   }
@@ -107,6 +131,10 @@ public class Variant implements IdentityRecord {
     return addressLines;
   }
 
+  /**
+   * Sets the address lines.
+   * @param addressLines The address lines to set.
+   */
   public void setAddressLines(List<String> addressLines) {
     this.addressLines = addressLines;
   }
@@ -123,6 +151,10 @@ public class Variant implements IdentityRecord {
     return city;
   }
 
+  /**
+   * Sets the city.
+   * @param city The city to set.
+   */
   public void setCity(String city) {
     this.city = city;
   }
@@ -139,6 +171,10 @@ public class Variant implements IdentityRecord {
     return state;
   }
 
+  /**
+   * Sets the state.
+   * @param state The state to set.
+   */
   public void setState(String state) {
     this.state = state;
   }
@@ -155,6 +191,10 @@ public class Variant implements IdentityRecord {
     return zipCode;
   }
 
+  /**
+   * Sets the zip code.
+   * @param zipCode The zip code to set.
+   */
   public void setZipCode(String zipCode) {
     this.zipCode = zipCode;
   }
@@ -171,6 +211,10 @@ public class Variant implements IdentityRecord {
     return dateOfBirth;
   }
 
+  /**
+   * Sets the date of birth.
+   * @param dateOfBirth The date of birth to set.
+   */
   public void setDateOfBirth(LocalDate dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
   }
@@ -187,14 +231,26 @@ public class Variant implements IdentityRecord {
     return gender;
   }
 
+  /**
+   * Sets the gender.
+   * @param gender The gender to set.
+   */
   public void setGender(String gender) {
     this.gender = gender;
   }
 
+  /**
+   * Gets the seed associated with the variant.
+   * @return The seed associated with the variant.
+   */
   public Seed getSeed() {
     return seed;
   }
 
+  /**
+   * Sets the seed associated with the variant.
+   * @param seed The seed to set.
+   */
   public void setSeed(Seed seed) {
     this.seed = seed;
   }
@@ -213,6 +269,10 @@ public class Variant implements IdentityRecord {
     return socialSecurityNumber;
   }
 
+  /**
+   * Sets the social security number.
+   * @param socialSecurityNumber The social security number to set.
+   */
   public void setSocialSecurityNumber(String socialSecurityNumber) {
     this.socialSecurityNumber = socialSecurityNumber;
   }

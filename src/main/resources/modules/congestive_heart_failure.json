@@ -904,8 +904,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 19283009,
-        "display": "Rales (finding)"
+        "code": "48409008",
+        "display": "Respiratory crackles (finding)"
       },
       "direct_transition": "Initial Lab Work"
     },

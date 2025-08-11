@@ -49,18 +49,41 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class PediatricGrowthTrajectory implements Serializable {
 
-  // Sigma is approximated using a quadratic formula, with different weights based on sex
-  // The following constants are for those weights assuming a quadratic formula of:
-  // ax^2 + bx +c
+  /** Sigma is approximated using a quadratic formula, with different weights based on sex
+  * The following constants are for those weights assuming a quadratic formula of:
+  * ax^2 + bx +c
+  */
   public static double SIGMA_FEMALE_A = 0.0011;
+
+  /**
+   * Quadratic coefficient B for sigma calculation for females.
+   */
   public static double SIGMA_FEMALE_B = 0.3712;
+
+  /**
+   * Quadratic coefficient C for sigma calculation for females.
+   */
   public static double SIGMA_FEMALE_C = 0.8334;
 
+  /**
+   * Quadratic coefficient A for sigma calculation for males.
+   */
   public static double SIGMA_MALE_A = 0.0091;
+
+  /** Quadratic coefficient B for sigma calculation for males. */
   public static double SIGMA_MALE_B = 0.5196;
+
+  /** Quadratic coefficient C for sigma calculation for males. */
   public static double SIGMA_MALE_C = 0.3728;
 
+  /**
+   * The number of milliseconds in one year.
+   */
   public static long ONE_YEAR = Utilities.convertTime("years", 1);
+
+  /**
+   * The number of months in nineteen years.
+   */
   public static int NINETEEN_YEARS_IN_MONTHS = 228;
 
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
@@ -75,9 +98,9 @@ public class PediatricGrowthTrajectory implements Serializable {
    * Container for data on changes between years for BMI information.
    */
   public static class YearInformation {
-    // The correlation of extended BMI Z Score between the current year and the next year.
+    /** Correlation of extended BMI Z Score between the current year and the next year. */
     public double correlation;
-    // The difference in mean BMI between the current year and the next year.
+    /** Difference in mean BMI between the current year and the next year. */
     public double diff;
   }
 
@@ -85,17 +108,24 @@ public class PediatricGrowthTrajectory implements Serializable {
    * A representation of a point in the growth trajectory.
    */
   public class Point implements Serializable {
+    /** Age in months for the individual. */
     public int ageInMonths;
-    public long timeInSimulation;
+    /** Body Mass Index (BMI) of the individual. */
     public double bmi;
+
+    /** Time spent in the simulation. */
+    public long timeInSimulation;
 
     public String toString() {
       return String.format("{Age: %d, Time: %d, BMI: %f}", ageInMonths, timeInSimulation, bmi);
     }
   }
 
+  /** A sample from NHANES that is used to start the growth trajectory. */
   private NHANESSample initialSample;
+  /** The trajectory of the individual, kept as a list of points containing info like age and bmi */
   private List<Point> trajectory;
+  /** The seed for the random number generator */
   private long seed;
 
   /**

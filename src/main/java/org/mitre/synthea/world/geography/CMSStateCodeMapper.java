@@ -231,6 +231,7 @@ public class CMSStateCodeMapper {
    * Get the SSA county code for a given state and county.
    * @param state The abbreviation of the state.
    * @param countyName The name of the county.
+   * @param rand Random number generator, used if county name is not found.
    * @return The SSA county code.
    */
   public String stateCountyNameToCountyCode(String state, String countyName,

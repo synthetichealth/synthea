@@ -29,6 +29,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
+/**
+ * CPCDSExporter is a singleton class that exports health records
+ */
 public class CPCDSExporter {
 
   /**
@@ -77,10 +80,16 @@ public class CPCDSExporter {
   private static final String NEWLINE = System.lineSeparator();
 
   /**
-   * Trackers for Practitioner and Hospital outputs.
+   * Trackers for Practitioner outputs.
    */
   public ArrayList<String> exportedPractitioners = new ArrayList<String>();
+  /**
+   * Trackers for hospital outputs.
+   */
   public ArrayList<String> exportedHospitals = new ArrayList<String>();
+  /**
+   * Map of NPI numbers that have been overwritten.
+   */
   public Map<String, String> overwrittenNPIs = new HashMap<String, String>();
 
   /**

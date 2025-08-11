@@ -13,24 +13,34 @@ import org.mitre.synthea.world.concepts.Claim;
 public class PlanRecord implements Serializable {
   private static final long serialVersionUID = -547445624583743525L;
 
+  /** Unique identifier for the plan record. */
   public String id;
+  /** Start time of the plan record. */
   private final long start;
+  /** Stop time of the plan record. */
   private long stop;
+  /** Primary insurance plan associated with the record. */
   private InsurancePlan plan;
+  /** Secondary insurance plan associated with the record. */
   private InsurancePlan secondaryPlan;
+  /** Ownership type of the insurance plan. */
   public String ownership;
+  /** Name of the owner of the insurance plan. */
   public String ownerName;
+  /** Covered expenses for the plan record. */
   private BigDecimal coveredExpenses = Claim.ZERO_CENTS;
+  /** Remaining deductible for the plan record. */
   public BigDecimal remainingDeductible = Claim.ZERO_CENTS;
-  // Any healthcare expenses not covered by insurance and paid, out of pocket, by the patient.
+  /** Any healthcare expenses not covered by insurance and paid, out of pocket, by the patient. */
   private BigDecimal outOfPocketExpenses = Claim.ZERO_CENTS;
-  // The expenses associated with having an insurance plan: Premiums.
+  /** The expenses associated with having an insurance plan: Premiums. */
   private BigDecimal insuranceExpenses = Claim.ZERO_CENTS;
 
   /**
    * Create a new Plan with the given Payer.
    * @param time The time the plan starts.
    * @param plan The plan associated with the PlanRecord.
+   * @param nextEnrollmentPeriod The time of the next enrollment period.
    */
   public PlanRecord(long time, InsurancePlan plan, long nextEnrollmentPeriod) {
     this.start = time;
@@ -44,7 +54,9 @@ public class PlanRecord implements Serializable {
 
   /**
    * Pay monthly premiums associated with this plan.
-   * @return  Cost of the premiums.
+   * @param employerLevel The employer contribution level.
+   * @param income The income of the person.
+   * @return Cost of the premiums.
    */
   public BigDecimal payMonthlyPremiums(double employerLevel, int income) {
     BigDecimal premiumPaid = (this.plan.payMonthlyPremium(employerLevel, income))
@@ -53,6 +65,10 @@ public class PlanRecord implements Serializable {
     return premiumPaid;
   }
 
+  /**
+   * Update the stop time of the plan record.
+   * @param updatedStopTime The new stop time.
+   */
   public void updateStopTime(long updatedStopTime) {
     this.stop = updatedStopTime;
   }
@@ -67,39 +83,70 @@ public class PlanRecord implements Serializable {
     return sb.toString();
   }
 
+  /**
+   * Increment out-of-pocket expenses for the plan record.
+   * @param expenses The expenses to add.
+   */
   public void incrementOutOfPocketExpenses(BigDecimal expenses) {
     this.outOfPocketExpenses = this.outOfPocketExpenses.add(expenses);
     this.plan.addUncoveredCost(expenses);
   }
 
+  /**
+   * Increment primary coverage expenses for the plan record.
+   * @param coverage The coverage amount to add.
+   */
   public void incrementPrimaryCoverage(BigDecimal coverage) {
     this.coveredExpenses = this.coveredExpenses.add(coverage);
     this.plan.addCoveredCost(coverage);
   }
 
+  /**
+   * Increment secondary coverage expenses for the plan record.
+   * @param coverage The coverage amount to add.
+   */
   public void incrementSecondaryCoverage(BigDecimal coverage) {
     this.coveredExpenses = this.coveredExpenses.add(coverage);
     this.secondaryPlan.addCoveredCost(coverage);
   }
 
+  /**
+   * Get the out-of-pocket expenses for the plan record.
+   * @return The out-of-pocket expenses.
+   */
   public BigDecimal getOutOfPocketExpenses() {
     return this.outOfPocketExpenses;
   }
 
+  /**
+   * Get the covered expenses for the plan record.
+   * @return The covered expenses.
+   */
   public BigDecimal getCoveredExpenses() {
     return this.coveredExpenses;
   }
 
+  /**
+   * Get the insurance expenses for the plan record.
+   * @return The insurance expenses.
+   */
   public BigDecimal getInsuranceExpenses() {
     return this.insuranceExpenses;
   }
 
+  /**
+   * Get the primary insurance plan associated with the record.
+   * @return The primary insurance plan.
+   */
   public InsurancePlan getPlan() {
     return this.plan;
   }
 
   /**
    * Determines and returns what the ownership of the person's insurance at this age.
+   * @param time The age at which to determine ownership.
+   * @param person The person whose insurance ownership is being determined.
+   * @param prevRecord The previous insurance record for comparison.
    */
   public void determinePlanOwnership(long time, Person person, PlanRecord prevRecord) {
     Payer payer = plan.getPayer();
@@ -171,18 +218,34 @@ public class PlanRecord implements Serializable {
     this.ownerName = (String) person.attributes.get(Person.NAME);
   }
 
+  /**
+   * Get the start time of the plan record.
+   * @return The start time.
+   */
   public long getStartTime() {
     return this.start;
   }
 
+  /**
+   * Get the stop time of the plan record.
+   * @return The stop time.
+   */
   public long getStopTime() {
     return this.stop;
   }
 
+  /**
+   * Set the secondary insurance plan for the record.
+   * @param secondaryPlan The secondary insurance plan to set.
+   */
   public void setSecondaryPlan(InsurancePlan secondaryPlan) {
     this.secondaryPlan = secondaryPlan;
   }
 
+  /**
+   * Get the secondary insurance plan associated with the record.
+   * @return The secondary insurance plan.
+   */
   public InsurancePlan getSecondaryPlan() {
     return this.secondaryPlan;
   }

@@ -14,13 +14,19 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class TrendingValueGenerator extends ValueGenerator {
 
+  /** Standard deviation of the generated values. */
   private double standardDeviation;
+  /** Minimum bound for the generated values. */
   private Double minimumValue;
+  /** Maximum bound for the generated values. */
   private Double maximumValue;
-
+  /** Mean value at the beginning of the time range. */
   private double beginMean;
+  /** Mean value at the end of the time range. */
   private double endMean;
+  /** Start time for the value generation. */
   private long beginTime;
+  /** End time for the value generation. */
   private long endTime;
 
   /**
@@ -52,10 +58,18 @@ public class TrendingValueGenerator extends ValueGenerator {
     this.maximumValue = maximumValue;
   }
 
+  /**
+   * Get the begin time of the value generation.
+   * @return the begin time in milliseconds
+   */
   public long getBeginTime() {
     return this.beginTime;
   }
 
+  /**
+   * Get the end time of the value generation.
+   * @return the end time in milliseconds
+   */
   public long getEndTime() {
     return this.endTime;
   }

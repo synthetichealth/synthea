@@ -12,6 +12,13 @@ import org.hl7.fhir.r4.model.ValueSet;
  */
 public interface TerminologyClient extends IRestfulClient {
 
+  /**
+   * Expands a ValueSet based on the provided parameters.
+   * @param url the URI of the ValueSet to expand
+   * @param count the maximum number of items to include in the expansion
+   * @param offset the starting point for the expansion
+   * @return the expanded ValueSet
+   */
   @Operation(type = ValueSet.class, name = "$expand")
   ValueSet expand(@OperationParam(name = "url") UriType url,
       @OperationParam(name = "count") IntegerType count,
