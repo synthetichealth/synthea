@@ -56,7 +56,7 @@ else:
 
     # Sort by Patient and Admission Date
     df = df.sort_values(by=["Patient_ID", "Start_Date"])
-
+~
     # Identify Readmissions (within 30 days)
     df["Prev_Admission"] = df.groupby("Patient_ID")["Start_Date"].shift(1)
     df["Prev_Admission"] = pd.to_datetime(df["Prev_Admission"])  # Ensure datetime
