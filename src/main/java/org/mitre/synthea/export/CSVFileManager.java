@@ -78,25 +78,28 @@ public class CSVFileManager {
     return new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
   }
 
-  public OutputStreamWriter getWriter(String resourceKey) throws IOException {
-    OutputStreamWriter writer = writerMap.get(resourceKey);
-    if (writer == null) {
-      writer = getResourceWriter(resourceKey);
-      writerMap.put(resourceKey, writer);
-      if (!append) {
-        synchronized (writer) {
+  public synchronized OutputStreamWriter getWriter(String resourceKey) throws IOException {
+    synchronized (writerMap) {
+      OutputStreamWriter writer = writerMap.get(resourceKey);
+      if (writer == null) {
+        writer = getResourceWriter(resourceKey);
+        writerMap.put(resourceKey, writer);
+        if (!append) {
           writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
         }
       }
+
+      return writer;
     }
-    return writer;
   }
 
   public void flushWriters() throws IOException {
-    for (var entry : writerMap.entrySet()) {
-      OutputStreamWriter writer = entry.getValue();
-      if (entry != null) {
-        writer.flush();
+    synchronized (writerMap) {
+      for (var entry : writerMap.entrySet()) {
+        OutputStreamWriter writer = entry.getValue();
+        if (entry != null) {
+          writer.flush();
+        }
       }
     }
   }
