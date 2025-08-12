@@ -8,12 +8,10 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +28,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.CSVConstants;
 import org.mitre.synthea.export.CSVFileManager;
@@ -69,7 +66,6 @@ import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
  * procedures.csv, and immunizations.csv.
  */
 public class CSVExporter {
-  private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
    */
@@ -1413,7 +1409,7 @@ public class CSVExporter {
     } else {
       t.transferType = "1";
     }
-    // TODO: there are a bunch in here
+
     write(t.toString(), CSVConstants.CLAIM_TRANSACTION_KEY);
     chargeId = transactionId.getAndIncrement();
 
@@ -1548,8 +1544,8 @@ public class CSVExporter {
           claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.PAYMENT;
       PaymentMethod[] opts = { PaymentMethod.CASH,
-        PaymentMethod.CHECK,
-        PaymentMethod.CC};
+          PaymentMethod.CHECK,
+          PaymentMethod.CC};
       // a choice that "looks random" but is consistent when chargeID is consistent
       t.method = opts[(int)(chargeId % opts.length)];
       t.payment = remainder;
@@ -1768,7 +1764,7 @@ public class CSVExporter {
    * to make it a little easier to replace implementations.
    *
    * @param line   The line to write
-   * @param writer The place to write it
+   * @param resourceKey The key from CSVConstants for the resource
    * @throws IOException if an I/O error occurs
    */
   private void write(String line, String resourceKey) throws IOException {

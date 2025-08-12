@@ -16,7 +16,7 @@ import org.mitre.synthea.helpers.Config;
 
 public class CSVFileManager {
   /**
-   * Writer for patients.csv.
+   * Charset for specifying the character set of the output files.
    */
   private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
   private boolean append;
@@ -42,8 +42,16 @@ public class CSVFileManager {
   private static final OutputStreamWriter NO_OP =
       new OutputStreamWriter(NullOutputStream.NULL_OUTPUT_STREAM);
 
+  /**
+   * Constructor for CSVFileManager, which manages the creation of files for the
+   * CSV export.
+   * @param outputDirectory Parent directory for output csv files
+   * @param includedFiles List of filenames that should be included in output
+   * @param excludedFiles List of filenames that should not be included in output
+   * @param append True = append to an existing file, False = overwrite any existing files
+   */
   public CSVFileManager(Path outputDirectory, List<String> includedFiles,
-                         List<String> excludedFiles, boolean append) {
+                        List<String> excludedFiles, boolean append) {
     this.outputDirectory = outputDirectory;
     this.includedFiles = includedFiles;
     this.excludedFiles = excludedFiles;
@@ -51,16 +59,12 @@ public class CSVFileManager {
   }
 
   /**
-   * Helper method to get the writer for the given output file.
-   * Returns a "no-op" writer for any excluded files.
+   * Helper method to instantiate, if necessary, and return the writer for the
+   * resource type's CSV file. Returns a "no-op" writer for any excluded files.
    *
-   * @param outputDirectory Parent directory for output csv files
-   * @param filename Filename for the current file
-   * @param append True = append to an existing file, False = overwrite any existing files
-   * @param includedFiles List of filenames that should be included in output
-   * @param excludedFiles List of filenames that should not be included in output
+   * @param resourceKey Key from CSVConstants for the resource type being written
    *
-   * @return OutputStreamWriter for the given output file.
+   * @return OutputStreamWriter for the given resource type's CSV file
    */
   private OutputStreamWriter getResourceWriter(String resourceKey) throws IOException {
     String baseFilename = CSVConstants.BASE_FILENAME_MAP.get(resourceKey);
@@ -78,6 +82,13 @@ public class CSVFileManager {
     return new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
   }
 
+  /**
+   * Method to get the writer for the file for a particular resource type.
+   *
+   * @param resourceKey Key from CSVConstants for the resource type being written
+   *
+   * @return OutputStreamWriter for the given resource type's CSV file
+   */
   public synchronized OutputStreamWriter getWriter(String resourceKey) throws IOException {
     synchronized (writerMap) {
       OutputStreamWriter writer = writerMap.get(resourceKey);
@@ -93,6 +104,9 @@ public class CSVFileManager {
     }
   }
 
+  /**
+   * Flush all CSV export files.
+   */
   public void flushWriters() throws IOException {
     synchronized (writerMap) {
       for (var entry : writerMap.entrySet()) {
