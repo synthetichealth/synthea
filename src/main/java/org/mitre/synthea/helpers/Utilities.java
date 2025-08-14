@@ -48,6 +48,16 @@ import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
+
+  private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+
+  private static final ThreadLocal<Calendar> threadLocalCalendar = new ThreadLocal<Calendar>(){
+	  @Override
+	  protected Calendar initialValue() {
+		  return Calendar.getInstance(UTC_TIME_ZONE);
+	  }
+  };
+
   /**
    * Convert a quantity of time in a specified units into milliseconds.
    *
@@ -123,7 +133,7 @@ public class Utilities {
    * Get the year of a Unix timestamp.
    */
   public static int getYear(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Calendar calendar = threadLocalCalendar.get();
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
   }
@@ -132,7 +142,7 @@ public class Utilities {
    * Get the month of a Unix timestamp.
    */
   public static int getMonth(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Calendar calendar = threadLocalCalendar.get();
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.MONTH) + 1;
   }

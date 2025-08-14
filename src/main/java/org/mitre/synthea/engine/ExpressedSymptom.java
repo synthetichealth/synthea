@@ -2,8 +2,7 @@ package org.mitre.synthea.engine;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
 import org.mitre.synthea.export.JSONSkip;
 
 public class ExpressedSymptom implements Cloneable, Serializable {
@@ -67,7 +66,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      */
     public SymptomSource(String source) {
       this.source = source;
-      timeInfos = new ConcurrentHashMap<Long, ExpressedSymptom.SymptomInfo>();
+      timeInfos = new HashMap<Long, ExpressedSymptom.SymptomInfo>();
       resolved = false;
       lastUpdateTime = null;
     }
@@ -137,7 +136,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
 
   public ExpressedSymptom(String name) {
     this.name = name;
-    sources = new ConcurrentHashMap<String, SymptomSource>();
+    sources = new HashMap<String, SymptomSource>();
   }
 
   /**
@@ -153,13 +152,11 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     return sources;
   }
 
-  /** this method updates the data structure wit a symptom being onset from a module.
+  /** this method updates the data structure with a symptom being onset from a module.
    */
   public void onSet(String module, String cause, long time, int value, Boolean addressed) {
-    if (!sources.containsKey(module)) {
-      sources.put(module, new SymptomSource(module));
-    }
-    sources.get(module).addInfo(cause, time, value, addressed);
+    SymptomSource source = sources.computeIfAbsent(module, SymptomSource::new);
+    source.addInfo(cause, time, value, addressed);
   }
 
   /**
@@ -168,10 +165,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    */
   public int getSymptom() {
     int max = 0;
-    for (String module : sources.keySet()) {
-      Integer value = sources.get(module).getCurrentValue();
-      Boolean isResolved = sources.get(module).isResolved();
-      if (value != null && value.intValue() > max && !isResolved) {
+    for (SymptomSource source : sources.values()) {
+      Integer value = source.getCurrentValue();
+      if (value != null && value > max && !source.isResolved()) {
         max = value.intValue();
       }
     }
@@ -184,15 +180,15 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public String getSourceWithHighValue() {
     String result = null;
     int max = 0;
-    for (String module : sources.keySet()) {
-      Boolean isResolved = sources.get(module).isResolved();
-      Integer value = sources.get(module).getCurrentValue();
-      if (result == null && value != null && !isResolved) {
-        result = module;
-        max = value.intValue();
-      } else if (value != null && value.intValue() > max && !isResolved) {
-        result = module;
-        max = value.intValue();
+    for (Map.Entry<String, SymptomSource> entry : sources.entrySet()) {
+      SymptomSource source = entry.getValue();
+      Integer value = source.getCurrentValue();
+      if (value != null && result == null && !source.isResolved()) {
+        result = entry.getKey();
+        max = value;
+      } else if (value != null && value > max && !source.isResolved()) {
+        result = entry.getKey();
+        max = value;
       }
     }
     return result;
