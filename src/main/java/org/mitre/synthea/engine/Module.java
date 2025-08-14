@@ -72,7 +72,6 @@ public class Module implements Cloneable, Serializable {
     int submoduleCount = 0;
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
-    //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
@@ -104,7 +103,7 @@ public class Module implements Cloneable, Serializable {
    * @throws IOException if something goes wrong
    */
   public static List<Path> getModulePaths() throws URISyntaxException, IOException {
-    List<Path> paths = new ArrayList<Path>();
+    List<Path> paths = new ArrayList<>();
     Enumeration<URL> moduleURLs = Module.class.getClassLoader().getResources("modules");
     while (moduleURLs.hasMoreElements()) {
       URI uri = moduleURLs.nextElement().toURI();
@@ -144,8 +143,7 @@ public class Module implements Cloneable, Serializable {
         submoduleCount.getAndIncrement();
       }
       Path loadPath = localFiles ? t : basePath.relativize(t);
-      retVal.put(relativePath, new ModuleSupplier(submodule,
-          relativePath,
+      retVal.put(relativePath, new ModuleSupplier(submodule, relativePath,
           () -> loadFile(loadPath, submodule, overrides, localFiles)));
     });
     return submoduleCount.get();
@@ -200,8 +198,8 @@ public class Module implements Cloneable, Serializable {
           boolean localFiles) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
     String jsonString = localFiles
-            ? new String(Files.readAllBytes(path), StandardCharsets.UTF_8)
-            : Utilities.readResource(path.toString());
+        ? Files.readString(path, StandardCharsets.UTF_8)
+        : Utilities.readResource(path.toString());
     if (overrides != null) {
       jsonString = applyOverrides(jsonString, overrides, path.getFileName().toString());
     }
@@ -489,8 +487,9 @@ public class Module implements Cloneable, Serializable {
     public final boolean core;
     public final boolean submodule;
     public final String path;
+	  private final Object getLock = new Object();
 
-    private boolean loaded;
+    private volatile boolean loaded;
     private Callable<Module> loader;
     private Module module;
     private Throwable fault;
@@ -524,16 +523,18 @@ public class Module implements Cloneable, Serializable {
     }
 
     @Override
-    public synchronized Module get() {
+    public Module get() {
       if (!loaded) {
-        try {
-          module = loader.call();
-        } catch (Throwable e) {
-          e.printStackTrace();
-          fault = e;
-        } finally {
-          loaded = true;
-          loader = null;
+        synchronized (getLock) {
+          try {
+            module = loader.call();
+          } catch (Throwable e) {
+            e.printStackTrace();
+            fault = e;
+          } finally {
+            loaded = true;
+            loader = null;
+          }
         }
       }
       if (fault != null) {

@@ -10,10 +10,19 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait Until Exposure"
+      "direct_transition": "Date_Guard"
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Date_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Date",
+        "operator": ">=",
+        "year": 2020
+      },
+      "direct_transition": "Wait Until Exposure"
     },
     "Wait Until Exposure": {
       "type": "Delay",

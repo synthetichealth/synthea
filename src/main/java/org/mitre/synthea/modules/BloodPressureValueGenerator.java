@@ -6,6 +6,7 @@ import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -79,10 +80,11 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private long cacheTime;
 
   private SysDias sysDias;
-
+  private Set<Map.Entry<String, Range<Double>>> temp;
   public BloodPressureValueGenerator(Person person, SysDias sysDias) {
     super(person);
     this.sysDias = sysDias;
+    this.temp = HTN_DRUG_IMPACTS.column(this.sysDias).entrySet();
   }
 
   @Override
@@ -250,7 +252,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     double drugImpactDelta = 0.0;
     // see also LifecycleModule.calculateVitalSigns
 
-    for (Map.Entry<String, Range<Double>> e : HTN_DRUG_IMPACTS.column(this.sysDias).entrySet()) {
+    for (Map.Entry<String, Range<Double>> e : this.temp) {
       String medicationCode = e.getKey();
       Range<Double> impactRange = e.getValue();
       if (person.record.medicationActive(medicationCode)) {
