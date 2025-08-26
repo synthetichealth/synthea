@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
 import org.mitre.synthea.export.CSVConstants;
@@ -45,11 +48,8 @@ public class CSVFileManager {
   /**
    * Constructor for CSVFileManager, which manages the creation of files for the
    * CSV export.
-   * @param includedFiles List of filenames that should be included in output
-   * @param excludedFiles List of filenames that should not be included in output
    */
-  public CSVFileManager(List<String> includedFiles,
-                        List<String> excludedFiles) {
+  public CSVFileManager() {
     append = Config.getAsBoolean("exporter.csv.append_mode");
 
     File output = Exporter.getOutputFolder("csv", null);
@@ -64,8 +64,57 @@ public class CSVFileManager {
       outputDirectory.toFile().mkdirs();
     }
 
-    this.includedFiles = includedFiles;
-    this.excludedFiles = excludedFiles;
+    String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
+    String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
+
+    includedFiles = Collections.emptyList();
+    excludedFiles = Collections.emptyList();
+
+    if (!includedFilesStr.isEmpty() && !excludedFilesStr.isEmpty()) {
+      includedFiles = propStringToList(includedFilesStr);
+      excludedFiles = propStringToList(excludedFilesStr);
+
+      // Check if there is any overlap
+      for (String includedFile : includedFiles) {
+        if (excludedFiles.contains(includedFile)) {
+          System.err.println("ERROR! CSV exporter is set to include and exclude the same file: "
+                  + includedFile);
+          throw new IllegalArgumentException(
+                  "CSV exporter cannot include and exclude the same file: " + includedFile);
+        }
+      }
+    } else {
+      if (!includedFilesStr.isEmpty()) {
+        includedFiles = propStringToList(includedFilesStr);
+
+        if (!includedFiles.contains("patients.csv")) {
+          System.err.println("WARNING! CSV exporter is set to not include patients.csv!");
+          System.err.println("This is probably not what you want!");
+        }
+
+      } else {
+        excludedFiles = propStringToList(excludedFilesStr);
+      }
+    }
+  }
+
+  /**
+   * Helper function to convert a list of files directly from synthea.properties to filenames.
+   * @param fileListString String directly from Config, ex "patients.csv,conditions , procedures"
+   * @return normalized list of filenames as strings
+   */
+  private static List<String> propStringToList(String fileListString) {
+    List<String> files = Arrays.asList(fileListString.split(","));
+    // normalize filenames -- trim, lowercase, add .csv if not included
+    files = files.stream().map(f -> {
+      f = f.trim().toLowerCase();
+      if (!f.endsWith(".csv")) {
+        f = f + ".csv";
+      }
+      return f;
+    }).collect(Collectors.toList());
+
+    return files;
   }
 
   /**
