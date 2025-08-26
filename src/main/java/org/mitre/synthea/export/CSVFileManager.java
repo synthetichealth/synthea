@@ -34,7 +34,6 @@ public class CSVFileManager {
 
     map.putAll(CSVConstants.BASE_FILENAME_MAP);
 
-    // TODO: alter filenames if configured to use multiple files
     return map;
   }
 
