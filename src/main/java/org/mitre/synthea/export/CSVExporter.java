@@ -90,18 +90,6 @@ public class CSVExporter {
   }
 
   void init() {
-    File output = Exporter.getOutputFolder("csv", null);
-    output.mkdirs();
-    Path outputDirectory = output.toPath();
-
-    if (Config.getAsBoolean("exporter.csv.folder_per_run")) {
-      // we want a folder per run, so name it based on the timestamp
-      String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
-      String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
-      outputDirectory = outputDirectory.resolve(subfolderName);
-      outputDirectory.toFile().mkdirs();
-    }
-
     String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
     String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
 
@@ -135,7 +123,7 @@ public class CSVExporter {
       }
     }
 
-    fileManager = new CSVFileManager(outputDirectory, includedFiles, excludedFiles);
+    fileManager = new CSVFileManager(includedFiles, excludedFiles);
 
     this.transactionId = new AtomicLong();
   }

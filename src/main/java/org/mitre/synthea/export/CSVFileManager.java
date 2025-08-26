@@ -45,15 +45,25 @@ public class CSVFileManager {
   /**
    * Constructor for CSVFileManager, which manages the creation of files for the
    * CSV export.
-   * @param outputDirectory Parent directory for output csv files
    * @param includedFiles List of filenames that should be included in output
    * @param excludedFiles List of filenames that should not be included in output
    */
-  public CSVFileManager(Path outputDirectory, List<String> includedFiles,
+  public CSVFileManager(List<String> includedFiles,
                         List<String> excludedFiles) {
-    this.append = Config.getAsBoolean("exporter.csv.append_mode");
+    append = Config.getAsBoolean("exporter.csv.append_mode");
 
-    this.outputDirectory = outputDirectory;
+    File output = Exporter.getOutputFolder("csv", null);
+    output.mkdirs();
+    outputDirectory = output.toPath();
+
+    if (Config.getAsBoolean("exporter.csv.folder_per_run")) {
+      // we want a folder per run, so name it based on the timestamp
+      String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
+      String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
+      outputDirectory = outputDirectory.resolve(subfolderName);
+      outputDirectory.toFile().mkdirs();
+    }
+
     this.includedFiles = includedFiles;
     this.excludedFiles = excludedFiles;
   }
