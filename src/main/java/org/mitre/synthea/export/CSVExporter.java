@@ -135,8 +135,7 @@ public class CSVExporter {
       }
     }
 
-    boolean append = Config.getAsBoolean("exporter.csv.append_mode");
-    fileManager = new CSVFileManager(outputDirectory, includedFiles, excludedFiles, append);
+    fileManager = new CSVFileManager(outputDirectory, includedFiles, excludedFiles);
 
     this.transactionId = new AtomicLong();
   }

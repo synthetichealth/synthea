@@ -48,14 +48,14 @@ public class CSVFileManager {
    * @param outputDirectory Parent directory for output csv files
    * @param includedFiles List of filenames that should be included in output
    * @param excludedFiles List of filenames that should not be included in output
-   * @param append True = append to an existing file, False = overwrite any existing files
    */
   public CSVFileManager(Path outputDirectory, List<String> includedFiles,
-                        List<String> excludedFiles, boolean append) {
+                        List<String> excludedFiles) {
+    this.append = Config.getAsBoolean("exporter.csv.append_mode");
+
     this.outputDirectory = outputDirectory;
     this.includedFiles = includedFiles;
     this.excludedFiles = excludedFiles;
-    this.append = append;
   }
 
   /**
