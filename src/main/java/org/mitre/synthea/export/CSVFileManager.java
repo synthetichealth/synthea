@@ -50,8 +50,16 @@ public class CSVFileManager {
    * CSV export.
    */
   public CSVFileManager() {
-    append = Config.getAsBoolean("exporter.csv.append_mode");
+    initializeAppend();
+    initializeOutputDirectory();
+    initializeIncludedAndExcludedFiles();
+  }
 
+  private void initializeAppend() {
+    append = Config.getAsBoolean("exporter.csv.append_mode");
+  }
+
+  private void initializeOutputDirectory() {
     File output = Exporter.getOutputFolder("csv", null);
     output.mkdirs();
     outputDirectory = output.toPath();
@@ -63,7 +71,9 @@ public class CSVFileManager {
       outputDirectory = outputDirectory.resolve(subfolderName);
       outputDirectory.toFile().mkdirs();
     }
+  }
 
+  private void initializeIncludedAndExcludedFiles() {
     String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
     String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
 
