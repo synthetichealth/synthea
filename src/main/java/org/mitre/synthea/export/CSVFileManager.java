@@ -157,19 +157,17 @@ public class CSVFileManager {
    *
    * @return OutputStreamWriter for the given resource type's CSV file
    */
-  public synchronized OutputStreamWriter getWriter(String resourceKey) throws IOException {
-    synchronized (writerMap) {
-      OutputStreamWriter writer = writerMap.get(resourceKey);
-      if (writer == null) {
-        writer = getResourceWriter(resourceKey);
-        writerMap.put(resourceKey, writer);
-        if (!append) {
-          writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
-        }
+  public OutputStreamWriter getWriter(String resourceKey) throws IOException {
+    OutputStreamWriter writer = writerMap.get(resourceKey);
+    if (writer == null) {
+      writer = getResourceWriter(resourceKey);
+      writerMap.put(resourceKey, writer);
+      if (!append) {
+        writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
       }
-
-      return writer;
     }
+
+    return writer;
   }
 
   /**
@@ -183,6 +181,18 @@ public class CSVFileManager {
           writer.flush();
         }
       }
+    }
+  }
+
+  /**
+   * Write a line of CSV representing a resource to the appropriate CSV file.
+   *
+   * @param resourceLine Line of CSV representing a resource
+   * @param resourceKey Key from CSVConstants for the resource type being written
+   */
+  public void writeResourceLine(String resourceLine, String resourceKey) throws IOException {
+    synchronized (resourceKey) {
+      getWriter(resourceKey).write(resourceLine);
     }
   }
 }
