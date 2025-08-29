@@ -171,15 +171,15 @@ public class CSVFileManager {
   }
 
   /**
-   * Flush all CSV export files.
+   * Flush the writer for the given resource.
+   *
+   * @param resourceKey Key from CSVConstants for the resource type being flushed
    */
-  public void flushWriters() throws IOException {
-    synchronized (writerMap) {
-      for (var entry : writerMap.entrySet()) {
-        OutputStreamWriter writer = entry.getValue();
-        if (entry != null) {
-          writer.flush();
-        }
+  public void flushWriter(String resourceKey) throws IOException {
+    synchronized (resourceKey) {
+      OutputStreamWriter writer = getWriter(resourceKey);
+      if (writer != null) {
+        writer.flush();
       }
     }
   }

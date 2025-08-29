@@ -136,7 +136,8 @@ public class CSVExporter {
           }
         }
       }
-      fileManager.flushWriters();
+      fileManager.flushWriter(CSVConstants.ORGANIZATION_KEY);
+      fileManager.flushWriter(CSVConstants.PROVIDER_KEY);
     }
   }
 
@@ -150,11 +151,11 @@ public class CSVExporter {
     // Export All Payers
     for (Payer payer : PayerManager.getAllPayers()) {
       exportPayer(payer);
-      fileManager.flushWriters();
+      fileManager.flushWriter(CSVConstants.PAYER_KEY);
     }
     // Export No Insurance statistics
     exportPayer(PayerManager.getNoInsurancePlan().getPayer());
-    fileManager.flushWriters();
+    fileManager.flushWriter(CSVConstants.PAYER_KEY);
   }
 
   /**
@@ -173,7 +174,7 @@ public class CSVExporter {
         exportPayerTransition(person, planRecord);
       }
     }
-    fileManager.flushWriters();
+    fileManager.flushWriter(CSVConstants.PAYER_TRANSITION_KEY);
   }
 
   /**
@@ -192,7 +193,7 @@ public class CSVExporter {
         exportPatientExpense(person, planRecord);
       }
     }
-    fileManager.flushWriters();
+    fileManager.flushWriter(CSVConstants.PATIENT_EXPENSE_KEY);
   }
 
   /**
@@ -300,7 +301,21 @@ public class CSVExporter {
       }
     }
 
-    fileManager.flushWriters();
+    fileManager.flushWriter(CSVConstants.PATIENT_KEY);
+    fileManager.flushWriter(CSVConstants.ENCOUNTER_KEY);
+    fileManager.flushWriter(CSVConstants.CONDITION_KEY);
+    fileManager.flushWriter(CSVConstants.ALLERGY_KEY);
+    fileManager.flushWriter(CSVConstants.MEDICATION_KEY);
+    fileManager.flushWriter(CSVConstants.CAREPLAN_KEY);
+    fileManager.flushWriter(CSVConstants.OBSERVATION_KEY);
+    fileManager.flushWriter(CSVConstants.PROCEDURE_KEY);
+    fileManager.flushWriter(CSVConstants.IMMUNIZATION_KEY);
+    fileManager.flushWriter(CSVConstants.IMAGING_STUDY_KEY);
+    fileManager.flushWriter(CSVConstants.DEVICE_KEY);
+    fileManager.flushWriter(CSVConstants.SUPPLY_KEY);
+    fileManager.flushWriter(CSVConstants.CLAIM_KEY);
+    fileManager.flushWriter(CSVConstants.CLAIM_TRANSACTION_KEY);
+    fileManager.flushWriter(CSVConstants.PATIENT_EXPENSE_KEY);
   }
 
   /**
