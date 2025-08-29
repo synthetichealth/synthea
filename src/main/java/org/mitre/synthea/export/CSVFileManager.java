@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.NumberFormatException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ public class CSVFileManager {
   private List<String> excludedFiles;
   private Map<String, String> filenameMap = initializeFilenameMap();
   private Map<String, OutputStreamWriter> writerMap = new HashMap<>();
+  private int maxLinesPerFile;
 
   private Map<String, String> initializeFilenameMap() {
     HashMap<String, String> map = new HashMap<>();
@@ -50,12 +52,22 @@ public class CSVFileManager {
    */
   public CSVFileManager() {
     initializeAppend();
+    initializeMaxLinesPerFile();
     initializeOutputDirectory();
     initializeIncludedAndExcludedFiles();
   }
 
   private void initializeAppend() {
     append = Config.getAsBoolean("exporter.csv.append_mode");
+  }
+
+  private void initializeMaxLinesPerFile() {
+    try {
+      maxLinesPerFile = Config.getAsInteger("exporter.csv.max_lines_per_file", 0);
+    } catch (NumberFormatException ex) {
+      // if the property is present but not a numeric string
+      maxLinesPerFile = 0;
+    }
   }
 
   private void initializeOutputDirectory() {
