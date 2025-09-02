@@ -183,7 +183,8 @@ public class CSVFileManager {
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
 
-    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    OutputStreamWriter writer =
+        new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
     if (!append) {
       writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
     }
@@ -217,8 +218,8 @@ public class CSVFileManager {
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
 
-    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
-    System.out.println(resourceKey + " - " + resourceCount);
+    OutputStreamWriter writer =
+        new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
     if (!append || resourceCount % maxLinesPerFile == 1) {
       writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
     }
