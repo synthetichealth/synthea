@@ -27,26 +27,6 @@ public class CSVConstants {
   public static final String CLAIM_TRANSACTION_KEY = "claims_transactions";
   public static final String PATIENT_EXPENSE_KEY = "patient_expenses";
 
-  public static final String BASE_PATIENT_FILENAME = "patients.csv";
-  public static final String BASE_ALLERGY_FILENAME = "allergies.csv";
-  public static final String BASE_MEDICATION_FILENAME = "medications.csv";
-  public static final String BASE_CONDITION_FILENAME = "conditions.csv";
-  public static final String BASE_CAREPLAN_FILENAME = "careplans.csv";
-  public static final String BASE_OBSERVATION_FILENAME = "observations.csv";
-  public static final String BASE_PROCEDURE_FILENAME = "procedures.csv";
-  public static final String BASE_IMMUNIZATION_FILENAME = "immunizations.csv";
-  public static final String BASE_ENCOUNTER_FILENAME = "encounters.csv";
-  public static final String BASE_IMAGING_STUDY_FILENAME = "imaging_studies.csv";
-  public static final String BASE_DEVICE_FILENAME = "devices.csv";
-  public static final String BASE_SUPPLY_FILENAME = "supplies.csv";
-  public static final String BASE_ORGANIZATION_FILENAME = "organizations.csv";
-  public static final String BASE_PROVIDER_FILENAME = "providers.csv";
-  public static final String BASE_PAYER_FILENAME = "payers.csv";
-  public static final String BASE_PAYER_TRANSITION_FILENAME = "payer_transitions.csv";
-  public static final String BASE_CLAIM_FILENAME = "claims.csv";
-  public static final String BASE_CLAIM_TRANSACTION_FILENAME = "claims_transactions.csv";
-  public static final String BASE_PATIENT_EXPENSE_FILENAME = "patient_expenses.csv";
-
   public static final String PATIENT_HEADER_LINE =
       "Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
       + "PREFIX,FIRST,MIDDLE,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
@@ -130,34 +110,7 @@ public class CSVConstants {
       + "HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS"
       + NEWLINE;
 
-  public static final Map<String, String> BASE_FILENAME_MAP = initializeFilenameMap();
   public static final Map<String, String> HEADER_LINE_MAP = initializeHeaderMap();
-
-  private static Map<String, String> initializeFilenameMap() {
-    Map<String, String> map = new HashMap<>();
-
-    map.put(PATIENT_KEY, BASE_PATIENT_FILENAME);
-    map.put(ALLERGY_KEY, BASE_ALLERGY_FILENAME);
-    map.put(MEDICATION_KEY, BASE_MEDICATION_FILENAME);
-    map.put(CONDITION_KEY, BASE_CONDITION_FILENAME);
-    map.put(CAREPLAN_KEY, BASE_CAREPLAN_FILENAME);
-    map.put(OBSERVATION_KEY, BASE_OBSERVATION_FILENAME);
-    map.put(PROCEDURE_KEY, BASE_PROCEDURE_FILENAME);
-    map.put(IMMUNIZATION_KEY, BASE_IMMUNIZATION_FILENAME);
-    map.put(ENCOUNTER_KEY, BASE_ENCOUNTER_FILENAME);
-    map.put(IMAGING_STUDY_KEY, BASE_IMAGING_STUDY_FILENAME);
-    map.put(DEVICE_KEY, BASE_DEVICE_FILENAME);
-    map.put(SUPPLY_KEY, BASE_SUPPLY_FILENAME);
-    map.put(ORGANIZATION_KEY, BASE_ORGANIZATION_FILENAME);
-    map.put(PROVIDER_KEY, BASE_PROVIDER_FILENAME);
-    map.put(PAYER_KEY, BASE_PAYER_FILENAME);
-    map.put(PAYER_TRANSITION_KEY, BASE_PAYER_TRANSITION_FILENAME);
-    map.put(CLAIM_KEY, BASE_CLAIM_FILENAME);
-    map.put(CLAIM_TRANSACTION_KEY, BASE_CLAIM_TRANSACTION_FILENAME);
-    map.put(PATIENT_EXPENSE_KEY, BASE_PATIENT_EXPENSE_FILENAME);
-
-    return Collections.unmodifiableMap(map);
-  }
 
   private static Map<String, String> initializeHeaderMap() {
     Map<String, String> map = new HashMap<>();

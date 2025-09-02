@@ -27,17 +27,9 @@ public class CSVFileManager {
   private Path outputDirectory;
   private List<String> includedFiles;
   private List<String> excludedFiles;
-  private Map<String, String> filenameMap = initializeFilenameMap();
+  private Map<String, String> filenameMap = new HashMap<>();
   private Map<String, OutputStreamWriter> writerMap = new HashMap<>();
   private int maxLinesPerFile;
-
-  private Map<String, String> initializeFilenameMap() {
-    HashMap<String, String> map = new HashMap<>();
-
-    map.putAll(CSVConstants.BASE_FILENAME_MAP);
-
-    return map;
-  }
 
   /**
    * "No-op" writer to use to prevent writing to excluded files.
@@ -82,6 +74,14 @@ public class CSVFileManager {
       outputDirectory = outputDirectory.resolve(subfolderName);
       outputDirectory.toFile().mkdirs();
     }
+  }
+
+  private boolean multipleFilesPerResource() {
+    return maxLinesPerFile > 0;
+  }
+
+  private String filename(String resourceKey) {
+    return resourceKey + ".csv";
   }
 
   private void initializeIncludedAndExcludedFiles() {
@@ -147,14 +147,20 @@ public class CSVFileManager {
    * @return OutputStreamWriter for the given resource type's CSV file
    */
   private OutputStreamWriter getResourceWriter(String resourceKey) throws IOException {
-    String baseFilename = CSVConstants.BASE_FILENAME_MAP.get(resourceKey);
+    String baseFilename = filename(resourceKey);
     boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(baseFilename))
         || excludedFiles.contains(baseFilename);
     if (excluded) {
       return NO_OP;
     }
 
-    String filename = filenameMap.get(resourceKey);
+    String filename;
+    if (multipleFilesPerResource()) {
+      // TODO
+      filename = null;
+    } else {
+      filename = filename(resourceKey);
+    }
     File file = outputDirectory.resolve(filename).toFile();
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
