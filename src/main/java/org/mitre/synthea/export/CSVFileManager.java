@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.NumberFormatException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.output.NullOutputStream;
 import org.mitre.synthea.export.CSVConstants;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
 
 public class CSVFileManager {
   /**
@@ -181,7 +183,12 @@ public class CSVFileManager {
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
 
-    return new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    if (!append) {
+      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    }
+
+    return writer;
   }
 
   /**
@@ -198,6 +205,11 @@ public class CSVFileManager {
       return NO_OP;
     }
 
+    if (append && resourceCount == 1) {
+      resourceCount = getResourceCount(resourceKey) + 1;
+      resourceCountMap.put(resourceKey, resourceCount);
+    }
+
     int fileNumber = resourceCount / maxLinesPerFile  + 1;
     String filename = filename(resourceKey, fileNumber);
 
@@ -205,7 +217,42 @@ public class CSVFileManager {
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
 
-    return new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    System.out.println(resourceKey + " - " + resourceCount);
+    if (!append || resourceCount % maxLinesPerFile == 1) {
+      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    }
+
+    return writer;
+  }
+
+  private int getResourceCount(String resourceKey) throws IOException {
+    int fileNumber = 1;
+
+    String currentFilename = filename(resourceKey, fileNumber);
+    File file = outputDirectory.resolve(currentFilename).toFile();
+
+    if (file.exists()) {
+      do {
+        fileNumber++;
+        currentFilename = filename(resourceKey, fileNumber);
+        file = outputDirectory.resolve(currentFilename).toFile();
+      } while ((file.exists()));
+
+      fileNumber--;
+    }
+
+    currentFilename = filename(resourceKey, fileNumber);
+    file = outputDirectory.resolve(currentFilename).toFile();
+
+    int resourceCount = (fileNumber - 1) * maxLinesPerFile;
+
+    if (file.exists()) {
+      String csvData = new String(Files.readAllBytes(file.toPath()));
+      resourceCount += SimpleCSV.parse(csvData).size();
+    }
+
+    return resourceCount;
   }
 
   /**
@@ -224,9 +271,6 @@ public class CSVFileManager {
     if (writer == null) {
       writer = initializeResourceWriter(resourceKey);
       writerMap.put(resourceKey, writer);
-      if (!append) {
-        writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
-      }
     }
 
     return writer;
@@ -247,7 +291,6 @@ public class CSVFileManager {
       }
 
       writer = initializeResourceWriter(resourceKey, resourceCount);
-      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
       writerMap.put(resourceKey, writer);
     }
 
