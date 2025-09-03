@@ -7,6 +7,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -73,9 +76,13 @@ public class CSVExporterTest {
 
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
 
+    List<String> expectedResourceFiles = new ArrayList(CSVConstants.HEADER_LINE_MAP.keySet());
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
-      if (!csvFile.getName().endsWith(".csv")) {
+      String filename = csvFile.getName();
+
+      if (!filename.endsWith(".csv")) {
         continue;
       }
 
@@ -86,11 +93,22 @@ public class CSVExporterTest {
       SimpleCSV.parse(csvData);
       assertTrue("CSV Validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
+      int lastSeparatorIndex = filename.lastIndexOf(File.pathSeparator);
+      String resourceKey = filename.substring(lastSeparatorIndex + 1, filename.length() - 4);
+
+      expectedResourceFiles.remove(resourceKey);
+
       count++;
     }
 
-    assertEquals("Expected " + NUMBER_OF_FILES
-        + " CSV files in the output directory, found " + count, NUMBER_OF_FILES, count);
+    // patient may not have allergies, so don't fail if allergies isn't generated
+    if (expectedResourceFiles.size() == 1 && expectedResourceFiles.contains("allergies")) {
+      count++;
+    }
+
+    assertEquals("Expected " + NUMBER_OF_FILES + " CSV files in the output directory, but found: "
+                 + count + "\nMissing resource files:\n " + String.join(", ", expectedResourceFiles)
+                 + "\n", NUMBER_OF_FILES, count);
   }
 
   @Test
@@ -190,9 +208,18 @@ public class CSVExporterTest {
     boolean foundProviders = false;
     boolean foundExpenses = false;
 
+    List<String> expectedResourceFiles = new ArrayList(CSVConstants.HEADER_LINE_MAP.keySet());
+    expectedResourceFiles.remove("patients");
+    expectedResourceFiles.remove("medications");
+    expectedResourceFiles.remove("payers");
+    expectedResourceFiles.remove("providers");
+    expectedResourceFiles.remove("patient_expenses");
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
-      if (!csvFile.getName().endsWith(".csv")) {
+      String filename = csvFile.getName();
+
+      if (!filename.endsWith(".csv")) {
         continue;
       }
 
@@ -223,6 +250,11 @@ public class CSVExporterTest {
       SimpleCSV.parse(csvData);
       assertTrue("CSV validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
+      int lastSeparatorIndex = filename.lastIndexOf(File.pathSeparator);
+      String resourceKey = filename.substring(lastSeparatorIndex + 1, filename.length() - 4);
+
+      expectedResourceFiles.remove(resourceKey);
+
       count++;
     }
 
@@ -232,9 +264,14 @@ public class CSVExporterTest {
     assertTrue("payers.csv is present but should have been excluded", !foundPayers);
     assertTrue("providers.csv is present but should have been excluded", !foundProviders);
     assertTrue("patient_expoenses.csv is present but should have been excluded", !foundExpenses);
-    assertEquals("Expected " + expected + " CSV files in the output directory, found " + count,
-        expected, count);
 
+    // patient may not have allergies, so don't fail if allergies isn't generated
+    if (expectedResourceFiles.size() == 1 && expectedResourceFiles.contains("allergies")) {
+      count++;
+    }
+    assertEquals("Expected " + expected + " CSV files in the output directory, but found: "
+                 + count + "\nMissing resource files:\n " + String.join(", ", expectedResourceFiles)
+                 + "\n", expected, count);
   }
 
   @Test
