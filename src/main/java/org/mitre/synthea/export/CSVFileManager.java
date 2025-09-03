@@ -211,7 +211,7 @@ public class CSVFileManager {
       resourceCountMap.put(resourceKey, resourceCount);
     }
 
-    int fileNumber = resourceCount / maxLinesPerFile  + 1;
+    int fileNumber = (resourceCount - 1) / maxLinesPerFile  + 1;
     String filename = filename(resourceKey, fileNumber);
 
     File file = outputDirectory.resolve(filename).toFile();
