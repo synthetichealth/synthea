@@ -55,6 +55,7 @@ public class CSVExporterTest {
   public void testDeferredCSVExport() throws Exception {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "");
+    Config.set("exporter.csv.max_lines_per_file", "");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -115,6 +116,7 @@ public class CSVExporterTest {
   public void testCSVExportIncludes() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv,medications.csv,procedures.csv");
     Config.set("exporter.csv.excluded_files", "");
+    Config.set("exporter.csv.max_lines_per_file", "");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -181,6 +183,7 @@ public class CSVExporterTest {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers,"
         + "patient_expenses.csv");
+    Config.set("exporter.csv.max_lines_per_file", "");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -272,6 +275,61 @@ public class CSVExporterTest {
     assertEquals("Expected " + expected + " CSV files in the output directory, but found: "
                  + count + "\nMissing resource files:\n " + String.join(", ", expectedResourceFiles)
                  + "\n", expected, count);
+  }
+
+  @Test
+  public void testCSVExportMultipleFiles() throws Exception {
+    Config.set("exporter.csv.included_files", "patients.csv");
+    Config.set("exporter.csv.max_lines_per_file", "2");
+    Config.set("exporter.csv.excluded_files", "");
+    CSVExporter.getInstance().init();
+
+    int numberOfPeople = 3;
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    exportOpts.deferExports = true;
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = numberOfPeople;
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    generator.options.overflow = false;
+    for (int i = 0; i < numberOfPeople; i++) {
+      generator.generatePerson(i);
+    }
+    // Adding post completion exports to generate organizations and providers CSV files
+    Exporter.runPostCompletionExports(generator, exportOpts);
+
+    // if we get here we at least had no exceptions
+
+    File expectedExportFolder = exportDir.toPath().resolve("csv").toFile();
+
+    assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+    File patientFile1 = expectedExportFolder.toPath().resolve("patients-1.csv").toFile();
+    File patientFile2 = expectedExportFolder.toPath().resolve("patients-2.csv").toFile();
+    File patientFile3 = expectedExportFolder.toPath().resolve("patients-3.csv").toFile();
+
+    assertTrue("No patient export file found.", patientFile1.exists());
+    assertTrue("Second patient export file found.", patientFile2.exists());
+    assertTrue("Third patient export file should not exist.", !patientFile3.exists());
+
+    String patientDataString1 = new String(Files.readAllBytes(patientFile1.toPath()));
+
+    List patientData1 = SimpleCSV.parse(patientDataString1);
+
+    assertTrue("CSV validation: " + patientFile1.getName(), SimpleCSV.isValid(patientDataString1));
+
+    int length1 = patientData1.size();
+    assertTrue("Expected two Patients in the first export file, but found " + length1,
+               length1 == 2);
+
+    String patientDataString2 = new String(Files.readAllBytes(patientFile2.toPath()));
+
+    List patientData2 = SimpleCSV.parse(patientDataString2);
+
+    assertTrue("CSV validation: " + patientFile2.getName(), SimpleCSV.isValid(patientDataString2));
+
+    int length2 = patientData2.size();
+    assertTrue("Expected one Patient in the second export file, but found " + length2,
+               length2 == 1);
   }
 
   @Test
