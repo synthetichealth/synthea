@@ -16,7 +16,7 @@ buildscript {
   repositories {
     mavenCentral()
     maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
+      url = "https://oss.sonatype.org/content/repositories/snapshots"
     }
   }
   dependencies {
@@ -46,7 +46,7 @@ java {
 repositories {
   mavenCentral()
   maven {
-    url "https://oss.sonatype.org/content/repositories/snapshots"
+    url = "https://oss.sonatype.org/content/repositories/snapshots"
   }
 }
 
@@ -56,12 +56,12 @@ repositories {
 // }
 
 checkstyle {
-  toolVersion '8.4'
+  toolVersion = '8.4'
   //showViolations = true
 }
 
 jacoco {
-  toolVersion '0.8.7'
+  toolVersion = '0.8.7'
 }
 
 dependencies {
@@ -180,8 +180,8 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
-  group 'Application'
-  description 'Generate rule visualization'
+  group = 'Application'
+  description = 'Generate rule visualization'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "Graphviz"
 }
@@ -200,15 +200,15 @@ tasks.javadoc {
 }
 
 task rifMinimize(type: JavaExec) {
-  group 'Application'
-  description 'Filter exported RIF files to produce minimal set that covers all claim types'
+  group = 'Application'
+  description = 'Filter exported RIF files to produce minimal set that covers all claim types'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFMinimizer"
 }
 
 task rif2CCW(type: JavaExec) {
-  group 'Application'
-  description 'Convert exported RIF files from BB2 format to CCW format'
+  group = 'Application'
+  description = 'Convert exported RIF files from BB2 format to CCW format'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.export.rif.tools.BB2RIF2CCW"
 }
@@ -219,15 +219,15 @@ if (project.hasProperty("args")) {
     ext.cmdLineArgs = ""
 }
 task rifBeneSplit(type: JavaExec) {
-  group 'Application'
-  description 'Split original 3  RIF file bene export into one file per year'
+  group = 'Application'
+  description = 'Split original 3  RIF file bene export into one file per year'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFBeneSplitter"
   args cmdLineArgs.split()
 }
 
 shadowJar {
-  zip64 true
+  zip64 = true
   def versionFile = new File("$projectDir/src/main/resources/version.txt")
   def versionText = "N/A"
   if (versionFile.exists()) {
@@ -252,8 +252,8 @@ task uberJar() {
 }
 
 task flexporter(type: JavaExec) {
-  group 'Application'
-  description 'Apply transformations to FHIR'
+  group = 'Application'
+  description = 'Apply transformations to FHIR'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "RunFlexporter"
   // args are called "arams" because they are called with -P,
@@ -265,31 +265,31 @@ task flexporter(type: JavaExec) {
 }
 
 task concepts(type: JavaExec) {
-  group 'Application'
-  description 'Create a list of simulated concepts'
+  group = 'Application'
+  description = 'Create a list of simulated concepts'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.helpers.Concepts"
   args 'false'
 }
 
 task conceptswithoutcosts(type: JavaExec) {
-  group 'Application'
-  description 'Create a list of simulated concepts without costs'
+  group = 'Application'
+  description = 'Create a list of simulated concepts without costs'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.helpers.Concepts"
   args 'true'
 }
 
 task attributes(type: JavaExec) {
-  group 'Application'
-  description 'Create a list of patient attributes'
+  group = 'Application'
+  description = 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.helpers.Attributes"
 }
 
 task overrides(type: JavaExec) {
-  group 'Application'
-  description 'Create a list of modules parameters in module override format'
+  group = 'Application'
+  description = 'Create a list of modules parameters in module override format'
   classpath sourceSets.main.runtimeClasspath
   mainClass = "org.mitre.synthea.helpers.ModuleOverrides"
   doFirst {
@@ -304,15 +304,15 @@ task overrides(type: JavaExec) {
 }
 
 task physiology(type: JavaExec) {
-    group 'Application'
-    description 'Test a physiology simulation'
+    group = 'Application'
+    description = 'Test a physiology simulation'
     classpath sourceSets.main.runtimeClasspath
     mainClass = "org.mitre.synthea.engine.PhysiologySimulator"
 }
 
 task versionTxt() {
-  group 'Build'
-  description 'Generates a version file.'
+  group = 'Build'
+  description = 'Generates a version file.'
   doLast {
     try {
       // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
@@ -383,8 +383,8 @@ def mavenVersion = '3.3.1-SNAPSHOT'
 publishing {
     publications {
         synthea(MavenPublication) {
-            groupId mavenGroup
-            version mavenVersion
+            groupId = mavenGroup
+            version = mavenVersion
             from components.java
 
             artifact(sourceJar) {
@@ -423,18 +423,18 @@ publishing {
         maven {
             def snapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
             def releaseUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            url mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
+            url = mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
                 def user = project.hasProperty('ossToken') ? ossToken : ''
                 def pw = project.hasProperty('ossTokenPassword') ? ossTokenPassword : ''
-                username user
-                password pw
+                username = user
+                password = pw
             }
         }
     }
 }
 
 signing {
-  required { project.hasProperty('signing.keyId') }
+  required = { project.hasProperty('signing.keyId') }
   sign publishing.publications.synthea
 }
