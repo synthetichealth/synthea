@@ -49,6 +49,7 @@ public class CSVFileManager {
   public CSVFileManager() {
     initializeAppend();
     initializeMaxLinesPerFile();
+    initializeFileNumberDigits();
     initializeOutputDirectory();
     initializeIncludedAndExcludedFiles();
   }
@@ -98,8 +99,13 @@ public class CSVFileManager {
   }
 
   private String filename(String resourceKey, int fileNumber) {
-    // TODO: format with leading zeroes
-    return resourceKey + "-" + fileNumber + ".csv";
+    String formattedNumber = String.valueOf(fileNumber);
+
+    if (fileNumberDigits > 1) {
+      formattedNumber = String.format("%0" + fileNumberDigits + "d", fileNumber);
+    }
+
+    return resourceKey + "-" + formattedNumber + ".csv";
   }
 
   private void initializeIncludedAndExcludedFiles() {
