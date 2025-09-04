@@ -33,6 +33,7 @@ public class CSVFileManager {
   private Map<String, OutputStreamWriter> writerMap = new HashMap<>();
   private Map<String, Integer> resourceCountMap = new HashMap<>();
   private int maxLinesPerFile;
+  private int fileNumberDigits;
 
   /**
    * "No-op" writer to use to prevent writing to excluded files.
@@ -62,6 +63,15 @@ public class CSVFileManager {
     } catch (NumberFormatException ex) {
       // if the property is present but not a numeric string
       maxLinesPerFile = 0;
+    }
+  }
+
+  private void initializeFileNumberDigits() {
+    try {
+      fileNumberDigits = Config.getAsInteger("exporter.csv.file_number_digits", 1);
+    } catch (NumberFormatException ex) {
+      // if the property is present but not a numeric string
+      fileNumberDigits = 1;
     }
   }
 
