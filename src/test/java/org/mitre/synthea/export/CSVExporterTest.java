@@ -53,6 +53,7 @@ public class CSVExporterTest {
     Config.set("exporter.csv.excluded_files", "");
     Config.set("exporter.csv.max_lines_per_file", "");
     Config.set("exporter.csv.append_mode", "false");
+    Config.set("exporter.csv.file_number_digits", "");
   }
 
   @Test
@@ -403,6 +404,37 @@ public class CSVExporterTest {
     int length3 = patientData3.size();
     assertTrue("Expected one Patient in the third export file, but found " + length3,
                length3 == 1);
+  }
+
+  @Test
+  public void testCSVExportFileNumberDigits() throws Exception {
+    Config.set("exporter.csv.included_files", "patients.csv");
+    Config.set("exporter.csv.max_lines_per_file", "2");
+    Config.set("exporter.csv.file_number_digits", "3");
+    CSVExporter.getInstance().init();
+
+    int numberOfPeople = 1;
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    exportOpts.deferExports = true;
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = numberOfPeople;
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    generator.options.overflow = false;
+    for (int i = 0; i < numberOfPeople; i++) {
+      generator.generatePerson(i);
+    }
+    // Adding post completion exports to generate organizations and providers CSV files
+    Exporter.runPostCompletionExports(generator, exportOpts);
+
+    // if we get here we at least had no exceptions
+
+    File expectedExportFolder = exportDir.toPath().resolve("csv").toFile();
+
+    assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+    File patientFile1 = expectedExportFolder.toPath().resolve("patients-001.csv").toFile();
+
+    assertTrue("No patient export file found.", patientFile1.exists());
   }
 
   @Test
