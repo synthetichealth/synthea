@@ -1,6 +1,6 @@
 /*
  * This file defines the steps to build Synthea using Gradle. Full documentation of the syntax
- * can be found at https://docs.gradle.org/6.5/userguide/java_plugin.html
+ * can be found at https://docs.gradle.org/8.9/userguide/java_plugin.html
  */
 
 buildscript {
