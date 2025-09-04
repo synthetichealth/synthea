@@ -6,7 +6,6 @@
 buildscript {
   repositories {
     mavenCentral()
-    gradlePluginPortal()
   }
   dependencies {
     classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.9'
@@ -27,23 +26,19 @@ buildscript {
     // of commons-csv in the primary dependencies above
   }
 }
-plugins {
-    id 'java'
-    id 'com.gradleup.shadow' version '8.3.9'
-}
-// apply plugin: 'com.gradleup.shadow:8.3.8'
 
-// Apply the java plugin to add support for Java
-// apply plugin: 'java'
+plugins {
+  id 'java'
+  id 'com.gradleup.shadow' version '8.3.9'
+  id 'application'
+  id 'eclipse'
+  id 'checkstyle'
+  id 'jacoco'
+  id 'maven-publish'
+  id 'signing'
+}
 
 sourceCompatibility = '11'
-
-apply plugin: 'application'
-apply plugin: 'eclipse'
-apply plugin: 'checkstyle'
-apply plugin: 'jacoco'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
