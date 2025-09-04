@@ -49,14 +49,14 @@ public class CSVExporterTest {
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
 
-  }
-
-  @Test
-  public void testDeferredCSVExport() throws Exception {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "");
     Config.set("exporter.csv.max_lines_per_file", "");
     Config.set("exporter.csv.append_mode", "false");
+  }
+
+  @Test
+  public void testDeferredCSVExport() throws Exception {
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -116,9 +116,6 @@ public class CSVExporterTest {
   @Test
   public void testCSVExportIncludes() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv,medications.csv,procedures.csv");
-    Config.set("exporter.csv.excluded_files", "");
-    Config.set("exporter.csv.max_lines_per_file", "");
-    Config.set("exporter.csv.append_mode", "false");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -182,11 +179,8 @@ public class CSVExporterTest {
 
   @Test
   public void testCSVExportExcludes() throws Exception {
-    Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers,"
         + "patient_expenses.csv");
-    Config.set("exporter.csv.max_lines_per_file", "");
-    Config.set("exporter.csv.append_mode", "false");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
@@ -284,8 +278,6 @@ public class CSVExporterTest {
   public void testCSVExportMultipleFiles() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv");
     Config.set("exporter.csv.max_lines_per_file", "2");
-    Config.set("exporter.csv.excluded_files", "");
-    Config.set("exporter.csv.append_mode", "false");
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 3;
@@ -340,7 +332,6 @@ public class CSVExporterTest {
   public void testCSVExportAppendMultipleFiles() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv");
     Config.set("exporter.csv.max_lines_per_file", "2");
-    Config.set("exporter.csv.excluded_files", "");
     Config.set("exporter.csv.append_mode", "true");
     CSVExporter.getInstance().init();
 
