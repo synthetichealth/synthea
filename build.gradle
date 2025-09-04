@@ -5,18 +5,36 @@
 
 buildscript {
   repositories {
+    mavenCentral()
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath 'com.gradleup.shadow:shadow-gradle-plugin:8.3.9'
+  }
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
     maven {
-      url "https://plugins.gradle.org/m2/"
+      url "https://oss.sonatype.org/content/repositories/snapshots"
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+    // commons-io used in getting the version id below
+    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    // note that commons-io is already a dependency
+    // of commons-csv in the primary dependencies above
   }
 }
-apply plugin: "com.github.johnrengelman.shadow"
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.9'
+}
+// apply plugin: 'com.gradleup.shadow:8.3.8'
 
 // Apply the java plugin to add support for Java
-apply plugin: 'java'
+// apply plugin: 'java'
 
 sourceCompatibility = '11'
 
@@ -152,21 +170,6 @@ test {
   maxHeapSize = "6144m"
   jacoco {
     includes = ["org.mitre.*"]
-  }
-}
-
-buildscript {
-  repositories {
-    mavenCentral()
-    maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-  }
-  dependencies {
-    // commons-io used in getting the version id below
-    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
-    // note that commons-io is already a dependency
-    // of commons-csv in the primary dependencies above
   }
 }
 
