@@ -344,7 +344,9 @@ task cleanOutput {
 }
 
 // Define the main class for the application
-mainClassName = 'App'
+application {
+  mainClass = 'App'
+}
 
 run {
   // args are called "arams" because they are called with -P,
