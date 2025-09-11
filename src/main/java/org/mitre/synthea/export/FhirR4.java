@@ -1651,7 +1651,7 @@ public class FhirR4 {
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
-      if (useUSCore5() || useUSCore6()) {
+      if (useUSCore5() || useUSCore6() || useUSCore7()) {
         meta.addProfile(
             "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis");
       } else {
