@@ -1416,6 +1416,7 @@ public class FhirR4 {
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 
+    // TODO: Make Coverage separate resources for US Core 6 & 7?
     // Get the insurance info at the time that the encounter occurred.
     Payer payer = claim.getPayer();
     Coverage coverage = new Coverage();
