@@ -145,6 +145,8 @@ public class Generator {
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = initializeReferenceTime();
+    /** Format for reference time */
+    public static SimpleDateFormat dateFormat = initializeDateFormat();
     /** End time of Synthea simulation. By default equal to the current system time. */
     public long endTime = referenceTime;
     /** Actual time the run started. */
@@ -188,12 +190,20 @@ public class Generator {
     public Path keepPatientsModulePath;
 
     /**
+     * Initialize the date formatter used for reference time
+     */
+    private static SimpleDateFormat initializeDateFormat() {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+      return dateFormat;
+    }
+
+    /**
      * Initialize referenceTime so that it is precise to the day.
      */
     private long initializeReferenceTime() {
       try {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.parse(dateFormat.format(new Date())).getTime();
       } catch (ParseException ex) {
         // This will be precise to the millisecond rather than the day, but it
@@ -350,10 +360,13 @@ public class Generator {
     } else {
       locationName = options.city + ", " + options.state;
     }
+
+    String formattedReferenceTime =
+        GeneratorOptions.dateFormat.format(new Date(options.referenceTime));
     System.out.println("Running with options:");
     System.out.println(String.format(
-        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
-        options.population, options.seed, options.clinicianSeed, options.referenceTime,
+        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %s\nLocation: %s",
+        options.population, options.seed, options.clinicianSeed, formattedReferenceTime,
         locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d", options.minAge, options.maxAge));
     if (options.gender != null) {
