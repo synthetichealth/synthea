@@ -1967,8 +1967,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
