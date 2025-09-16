@@ -753,7 +753,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -910,7 +910,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -1067,7 +1067,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [

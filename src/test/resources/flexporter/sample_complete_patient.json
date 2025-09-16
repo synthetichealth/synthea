@@ -22166,9 +22166,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        "text": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
