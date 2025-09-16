@@ -73,7 +73,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit [Volume Fraction] of Blood by calculation"
                   }
                 ],
                 "operator": "<=",
@@ -101,7 +101,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit [Volume Fraction] of Blood by calculation"
                   }
                 ],
                 "operator": "<=",
@@ -321,7 +321,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -499,7 +499,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -678,7 +678,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -858,7 +858,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -1078,7 +1078,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -1121,7 +1121,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
