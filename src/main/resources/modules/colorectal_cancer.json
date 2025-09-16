@@ -2013,7 +2013,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
