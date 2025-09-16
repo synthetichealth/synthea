@@ -21946,9 +21946,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92130-4",
-          "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21991,9 +21991,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92134-6",
-          "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22202,10 +22202,10 @@
         "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:a875f91f-6a7b-353a-4f86-43694d1ef522",
-        "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:f9579e3c-7b9a-3f2b-ef8f-8faa9fa25173",
-        "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:07af7b8d-2545-ca33-a137-f38d18ce21a1",
         "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"

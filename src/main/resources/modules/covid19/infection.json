@@ -860,7 +860,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -876,7 +876,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1017,7 +1017,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1033,7 +1033,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1174,7 +1174,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1190,7 +1190,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
