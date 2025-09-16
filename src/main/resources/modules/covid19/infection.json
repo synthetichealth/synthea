@@ -796,7 +796,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -953,7 +953,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1110,7 +1110,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
