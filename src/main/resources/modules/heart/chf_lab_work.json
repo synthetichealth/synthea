@@ -475,7 +475,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"

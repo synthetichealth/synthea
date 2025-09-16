@@ -7660,7 +7660,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2571-8",
-          "display": "Triglycerides"
+          "display": "Triglyceride [Mass/volume] in Serum or Plasma"
         } ],
         "text": "Triglycerides"
       },
