@@ -22036,9 +22036,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "94040-3",
-          "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22208,7 +22208,7 @@
         "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:07af7b8d-2545-ca33-a137-f38d18ce21a1",
-        "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
       } ]
     },
     "request": {
