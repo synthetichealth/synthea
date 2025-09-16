@@ -764,7 +764,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -921,7 +921,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1078,7 +1078,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {

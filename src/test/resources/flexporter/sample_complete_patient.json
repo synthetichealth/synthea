@@ -21676,9 +21676,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92142-9",
-          "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22184,7 +22184,7 @@
       } ],
       "result": [ {
         "reference": "urn:uuid:6ebdb3c3-4136-ff9e-691e-bdcf5b641215",
-        "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:7c02d7f0-e1ac-e57a-b4ab-8e95a102c378",
         "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
