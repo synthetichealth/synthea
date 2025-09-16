@@ -2207,7 +2207,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -2386,7 +2386,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
