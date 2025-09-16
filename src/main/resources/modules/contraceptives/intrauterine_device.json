@@ -251,7 +251,7 @@
         {
           "system": "RxNorm",
           "code": "807283",
-          "display": "Mirena 52 MG Intrauterine System"
+          "display": "levonorgestrel 0.000833 MG/HR Intrauterine System [Mirena]"
         }
       ],
       "direct_transition": "End_Consultation_Encounter",
