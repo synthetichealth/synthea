@@ -102,7 +102,7 @@
     "code": {
       "system": "http://hl7.org/fhir/sid/cvx",
       "code": "140",
-      "display": "Influenza, seasonal, injectable, preservative free"
+      "display": "Influenza, split virus, trivalent, PF"
     },
     "remark": "This should really only happen Aug - Feb (preferring earlier). That may take some trickery. Since this is annual administration just populate the array with every 12 months, starting at 6 months.",
     "at_months": [
