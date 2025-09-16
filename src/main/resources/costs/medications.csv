@@ -13,7 +13,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 389221,25.75,51.5,103,Etonogestrel 68 MG Drug Implant
 1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
 807283,19.63,21.92,24.17,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
-1605257,800,1000,1494,levonorgestrel 0.000813 MG/HR Intrauterine System [Liletta]
+1605257,800,1000,1494,Liletta 52 MG Intrauterine System
 1856546,21.96,22.05,22.14,Kyleena 19.5 MG Intrauterine System
 748962,15,35,50,Camila 28 Day Pack -- all pills est at 15-50 based on https://money.usnews.com/money/blogs/alpha-consumer/2012/03/05/the-real-cost-of-birth-control
 831533,15,35,50,Errin 28 Day Pack
@@ -22,11 +22,11 @@ CODE,MIN,MODE,MAX,COMMENTS
 749882,15,35,50,Norinyl 1+50 28 Day Pack
 1359133,15,35,50,Estrostep Fe 28 Day Pack
 749785,15,35,50,Ortho Tri-Cyclen 28 Day Pack
-751905,15,35,50,{7 (ethinyl estradiol 0.035 MG / norgestimate 0.18 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.215 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet) / 7 (inert ingredients 1 MG Oral Tablet) } Pack [Trinessa 28 Day]
+751905,15,35,50,Trinessa 28 Day Pack
 749762,15,35,50,Seasonique 91 Day Pack
 748856,15,35,50,Yaz 28 Day Pack
-978950,15,35,50,{5 (dienogest 2 MG / estradiol valerate 2 MG Oral Tablet) / 17 (dienogest 3 MG / estradiol valerate 2 MG Oral Tablet) / 2 (estradiol valerate 1 MG Oral Tablet) / 2 (estradiol valerate 3 MG Oral Tablet) / 2 (inert ingredients 1 MG Oral Tablet) } Pack [Natazia 28 Day]
-748879,15,35,50,{21 (ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet) / 7 (inert ingredients 1 MG Oral Tablet) } Pack [Levora 0.15/30 28 Day]
+978950,15,35,50,Natazia 28 Day Pack
+748879,15,35,50,Levora 0.15/30 28 Day Pack
 1534809,15,35,50,168 HR Ethinyl Estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System - same source as pills
 1367439,15,40,50,NuvaRing 0.12/0.015 MG per 24HR 21 Day Vaginal Ring - est from https://www.plannedparenthood.org/learn/birth-control/birth-control-vaginal-ring-nuvaring/how-do-i-get-nuvaring
 896209,6,20,60,60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler
