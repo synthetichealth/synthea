@@ -1619,7 +1619,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL"

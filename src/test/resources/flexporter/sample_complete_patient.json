@@ -7703,7 +7703,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "18262-6",
-          "display": "Low Density Lipoprotein Cholesterol"
+          "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
         } ],
         "text": "Low Density Lipoprotein Cholesterol"
       },
@@ -8195,7 +8195,7 @@
         "display": "Triglycerides"
       }, {
         "reference": "urn:uuid:56f69817-ed4f-2fb2-b6ef-68851664eea2",
-        "display": "Low Density Lipoprotein Cholesterol"
+        "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
       }, {
         "reference": "urn:uuid:221d9173-89c1-037a-ce1a-7f882b6c3e1f",
         "display": "High Density Lipoprotein Cholesterol"
