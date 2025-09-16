@@ -213,7 +213,7 @@
         {
           "system": "RxNorm",
           "code": "757594",
-          "display": "Jolivette 28 Day Pack"
+          "display": "{28 (norethindrone 0.35 MG Oral Tablet) } Pack [Jolivette 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -407,7 +407,7 @@
         {
           "system": "RxNorm",
           "code": "749882",
-          "display": "Norinyl 1+50 28 Day Pack"
+          "display": "{7 (inert ingredients 1 MG Oral Tablet) / 21 (mestranol 0.05 MG / norethindrone 1 MG Oral Tablet) } Pack [Norinyl 1+50 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
