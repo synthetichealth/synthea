@@ -812,7 +812,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -828,7 +828,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -844,7 +844,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -969,7 +969,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -985,7 +985,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1001,7 +1001,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1126,7 +1126,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1142,7 +1142,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1158,7 +1158,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {

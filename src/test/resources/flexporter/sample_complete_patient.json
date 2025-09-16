@@ -21811,9 +21811,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92140-3",
-          "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21856,9 +21856,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92139-5",
-          "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21901,9 +21901,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92138-7",
-          "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22193,13 +22193,13 @@
         "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:43c4bd38-b795-8b9d-e1be-1c2a9f8231d5",
-        "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:9241628c-cafd-b8a0-d189-c7686d26d86f",
-        "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:c976d6ae-f979-8f70-d9df-bc2c40764644",
-        "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:a875f91f-6a7b-353a-4f86-43694d1ef522",
         "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
