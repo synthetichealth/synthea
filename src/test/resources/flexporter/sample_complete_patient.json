@@ -7110,9 +7110,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "33914-3",
-          "display": "Estimated Glomerular Filtration Rate"
+          "display": "Estimated Glomerular Filtration Rate rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
         } ],
-        "text": "Estimated Glomerular Filtration Rate"
+        "text": "Estimated Glomerular Filtration Rate rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
