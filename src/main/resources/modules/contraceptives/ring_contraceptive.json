@@ -69,8 +69,7 @@
         {
           "system": "RxNorm",
           "code": "1367439",
-          "display": "
-NuvaRing 0.12 MG / 0.015 MG per 24HR 3 Week Vaginal System"
+          "display": "NuvaRing 0.12 MG / 0.015 MG per 24HR 3 Week Vaginal System"
         }
       ],
       "direct_transition": "End_Consultation_Encounter"
