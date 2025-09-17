@@ -175,7 +175,7 @@
             {
               "system": "LOINC",
               "code": "788-0",
-              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+              "display": "Erythrocyte distribution [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
