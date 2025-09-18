@@ -898,7 +898,7 @@
         {
           "system": "SNOMED-CT",
           "code": "57676002",
-          "display": "Joint pain (finding)"
+          "display": "Joint pain"
         }
       ],
       "direct_transition": "Determine Chills"
