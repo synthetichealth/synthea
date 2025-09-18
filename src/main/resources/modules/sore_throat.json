@@ -680,7 +680,7 @@
         {
           "system": "RxNorm",
           "code": 284215,
-          "display": "Clindamycin 300mg"
+          "display": "clindamycin 300 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Encounter",
