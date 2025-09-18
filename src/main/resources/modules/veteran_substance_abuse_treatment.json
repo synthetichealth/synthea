@@ -198,7 +198,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5602001",
-          "display": "Opioid abuse (disorder)"
+          "display": "Opioid abuse"
         }
       ],
       "direct_transition": "encounter_end"
