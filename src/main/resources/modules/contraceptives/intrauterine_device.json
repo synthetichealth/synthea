@@ -277,7 +277,7 @@
         {
           "system": "RxNorm",
           "code": "1856546",
-          "display": "Kyleena 19.5 MG Intrauterine System"
+          "display": "levonorgestrel 0.000729 MG/HR Intrauterine System [Kyleena]"
         }
       ],
       "direct_transition": "End_Consultation_Encounter",
