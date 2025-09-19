@@ -979,7 +979,7 @@
             {
               "system": "LOINC",
               "code": "10834-0",
-              "display": "Globulin"
+              "display": "Globulin [Mass/volume] in Serum by calculation"
             }
           ],
           "range": {
