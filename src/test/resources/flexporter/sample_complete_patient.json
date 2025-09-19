@@ -7574,7 +7574,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "20565-8",
-          "display": "Carbon Dioxide"
+          "display": "Carbon dioxide, total [Moles/volume] in Blood"
         } ],
         "text": "Carbon Dioxide"
       },
