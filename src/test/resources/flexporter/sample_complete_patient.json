@@ -7005,7 +7005,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -8635,7 +8635,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -9113,7 +9113,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -9591,7 +9591,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -10069,7 +10069,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -10547,7 +10547,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11025,7 +11025,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11503,7 +11503,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11981,7 +11981,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -12976,7 +12976,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -13454,7 +13454,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -14493,7 +14493,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -14971,7 +14971,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -15449,7 +15449,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -15927,7 +15927,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -16405,7 +16405,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -16883,7 +16883,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -17361,7 +17361,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -17839,7 +17839,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -21565,7 +21565,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },

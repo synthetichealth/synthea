@@ -248,7 +248,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -293,7 +293,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -483,7 +483,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -591,7 +591,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
