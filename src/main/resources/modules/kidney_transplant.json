@@ -291,7 +291,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -765,7 +765,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1516,7 +1516,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1700,7 +1700,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
