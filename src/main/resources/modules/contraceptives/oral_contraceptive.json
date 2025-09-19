@@ -419,7 +419,7 @@
         {
           "system": "RxNorm",
           "code": "1359133",
-          "display": "Estrostep Fe 28 Day Pack"
+          "display": "{5 (ethinyl estradiol 0.02 MG / norethindrone acetate 1 MG Oral Tablet) / 7 (ethinyl estradiol 0.03 MG / norethindrone acetate 1 MG Oral Tablet) / 9 (ethinyl estradiol 0.035 MG / norethindrone acetate 1 MG Oral Tablet) / 7 (ferrous fumarate 75 MG Oral Tablet) } Pack [Estrostep Fe 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
