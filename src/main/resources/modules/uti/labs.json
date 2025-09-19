@@ -479,7 +479,7 @@
             {
               "system": "LOINC",
               "code": "5769-5",
-              "display": "Bacteria"
+              "display": "Bacteria [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "value_code": {
