@@ -742,7 +742,7 @@
         {
           "system": "LOINC",
           "code": "24321-2",
-          "display": "Basic Metabolic 2000 Panel"
+          "display": "Basic Metabolic 2000 Panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -1493,7 +1493,7 @@
         {
           "system": "LOINC",
           "code": "24321-2",
-          "display": "Basic Metabolic 2000 Panel"
+          "display": "Basic Metabolic 2000 Panel - Serum or Plasma"
         }
       ],
       "observations": [
