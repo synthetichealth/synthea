@@ -934,7 +934,7 @@
             {
               "system": "LOINC",
               "code": "33037-3",
-              "display": "Anion Gap"
+              "display": "Anion gap in Serum or Plasma by calculation"
             }
           ],
           "range": {
