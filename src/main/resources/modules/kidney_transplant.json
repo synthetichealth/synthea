@@ -895,7 +895,7 @@
             {
               "system": "LOINC",
               "code": "5767-9",
-              "display": "Odor of Urine"
+              "display": "Appearance of Urine"
             }
           ],
           "unit": "{nominal}",
@@ -1240,7 +1240,7 @@
             {
               "system": "LOINC",
               "code": "5767-9",
-              "display": "Odor of Urine"
+              "display": "Appearance of Urine"
             }
           ],
           "unit": "{nominal}",
