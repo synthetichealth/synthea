@@ -211,7 +211,7 @@
             {
               "system": "LOINC",
               "code": "5905-5",
-              "display": "Monocytes/100 leukocytes in Blood by Automated count"
+              "display": "Monocytes/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
