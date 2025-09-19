@@ -7273,7 +7273,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2339-0",
-          "display": "Glucose"
+          "display": "Glucose [Mass/volume] in Blood"
         } ],
         "text": "Glucose"
       },

@@ -130,7 +130,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
