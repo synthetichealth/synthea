@@ -7488,7 +7488,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "6298-4",
-          "display": "Potassium"
+          "display": "Potassium [Moles/volume] in Blood"
         } ],
         "text": "Potassium"
       },
