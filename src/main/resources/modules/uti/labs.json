@@ -402,7 +402,7 @@
             {
               "system": "LOINC",
               "code": "5821-4",
-              "display": "WBCs"
+              "display": "Leukocytes [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
