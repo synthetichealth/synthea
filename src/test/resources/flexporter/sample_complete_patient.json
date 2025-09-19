@@ -7359,7 +7359,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "38483-4",
-          "display": "Creatinine"
+          "display": "Creatinine [Mass/volume] in Blood"
         } ],
         "text": "Creatinine"
       },
