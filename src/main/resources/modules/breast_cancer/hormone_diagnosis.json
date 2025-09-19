@@ -392,7 +392,7 @@
         {
           "system": "LOINC",
           "code": "85318-4",
-          "display": "HER2 [Presence] in Breast cancer specimen by FISH"
+          "display": "ERBB2 gene duplication [Presence] in Breast cancer specimen by FISH"
         }
       ],
       "direct_transition": "HER2-",
@@ -413,7 +413,7 @@
         {
           "system": "LOINC",
           "code": "85318-4",
-          "display": "HER2 [Presence] in Breast cancer specimen by FISH"
+          "display": "ERBB2 gene duplication [Presence] in Breast cancer specimen by FISH"
         }
       ],
       "direct_transition": "HER2+",
