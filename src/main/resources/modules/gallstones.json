@@ -994,7 +994,7 @@
             {
               "system": "LOINC",
               "code": "6768-6",
-              "display": "Alkaline Phosphatase"
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
