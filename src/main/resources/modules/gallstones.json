@@ -823,7 +823,7 @@
             {
               "system": "LOINC",
               "code": "1920-8",
-              "display": "AST (Elevated)"
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
