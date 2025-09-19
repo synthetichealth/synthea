@@ -417,7 +417,7 @@
             {
               "system": "LOINC",
               "code": "13945-1",
-              "display": "RBCs"
+              "display": "Erythrocytes [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
