@@ -793,7 +793,7 @@
             {
               "system": "LOINC",
               "code": "42719-5",
-              "display": "Total Bilirubin (Elevated)"
+              "display": "Bilirubin.total [Mass/volume] in Blood"
             }
           ],
           "range": {
