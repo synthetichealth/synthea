@@ -7402,7 +7402,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "49765-1",
-          "display": "Calcium"
+          "display": "Calcium [Mass/volume] in Blood"
         } ],
         "text": "Calcium"
       },
