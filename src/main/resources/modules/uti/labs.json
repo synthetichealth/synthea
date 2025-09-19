@@ -463,7 +463,7 @@
             {
               "system": "LOINC",
               "code": "8247-9",
-              "display": "Mucus Threads"
+              "display": "Mucus [Presence] in Urine sediment by Light microscopy"
             }
           ],
           "value_code": {
