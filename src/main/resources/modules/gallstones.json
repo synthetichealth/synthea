@@ -1103,7 +1103,7 @@
             {
               "system": "LOINC",
               "code": "30385-9",
-              "display": "RBC Distribution Width"
+              "display": "Erythrocyte [DistWidth] in Blood"
             }
           ],
           "range": {
