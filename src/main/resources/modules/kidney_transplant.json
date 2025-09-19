@@ -268,7 +268,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         }
       ],
       "observations": [
@@ -1677,7 +1677,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         }
       ],
       "observations": [

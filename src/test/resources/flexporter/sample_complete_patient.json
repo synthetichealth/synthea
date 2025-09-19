@@ -8105,7 +8105,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         } ],
         "text": "Basic Metabolic Panel"
       },
