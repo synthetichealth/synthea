@@ -432,7 +432,7 @@
             {
               "system": "LOINC",
               "code": "5787-7",
-              "display": "Epithelial Cells"
+              "display": "Epithelial cells [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
