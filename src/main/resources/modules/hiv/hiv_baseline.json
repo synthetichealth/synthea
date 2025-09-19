@@ -760,7 +760,7 @@
             {
               "system": "LOINC",
               "code": "706-2",
-              "display": "Basophils/100 leukocytes in Blood by Automated count"
+              "display": "Basophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
