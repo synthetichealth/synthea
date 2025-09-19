@@ -964,7 +964,7 @@
             {
               "system": "LOINC",
               "code": "1751-7",
-              "display": "Albumin"
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
