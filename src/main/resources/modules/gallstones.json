@@ -1088,7 +1088,7 @@
             {
               "system": "LOINC",
               "code": "30428-7",
-              "display": "MCV"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells"
             }
           ],
           "range": {
