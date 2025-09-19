@@ -949,7 +949,7 @@
             {
               "system": "LOINC",
               "code": "2885-2",
-              "display": "Protein"
+              "display": "Protein [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
