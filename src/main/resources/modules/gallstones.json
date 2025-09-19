@@ -1118,7 +1118,7 @@
             {
               "system": "LOINC",
               "code": "26515-7",
-              "display": "Platelet Count"
+              "display": "Platelets [#/volume] in Blood"
             }
           ],
           "range": {
