@@ -7531,7 +7531,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2069-3",
-          "display": "Chloride"
+          "display": "Chloride [Moles/volume] in Blood"
         } ],
         "text": "Chloride"
       },
