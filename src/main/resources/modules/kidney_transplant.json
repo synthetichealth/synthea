@@ -254,7 +254,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "direct_transition": "Followup Care",
@@ -1620,7 +1620,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "reason": "Awaiting Transplant",
@@ -1663,7 +1663,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "reason": "History of Transplant",
