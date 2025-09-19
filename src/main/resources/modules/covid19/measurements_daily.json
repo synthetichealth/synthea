@@ -196,7 +196,7 @@
             {
               "system": "LOINC",
               "code": "736-9",
-              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
+              "display": "Lymphocytes/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
