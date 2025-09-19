@@ -154,7 +154,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -173,7 +173,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -192,7 +192,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -211,7 +211,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -230,7 +230,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
