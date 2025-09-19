@@ -226,7 +226,7 @@
             {
               "system": "LOINC",
               "code": "713-8",
-              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
+              "display": "Eosinophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
