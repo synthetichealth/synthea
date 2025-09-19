@@ -700,7 +700,7 @@
             {
               "system": "LOINC",
               "code": "770-8",
-              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
+              "display": "Neutrophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
