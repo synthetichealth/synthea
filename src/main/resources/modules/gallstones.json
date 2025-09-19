@@ -1058,7 +1058,7 @@
             {
               "system": "LOINC",
               "code": "718-7",
-              "display": "Hemoglobin"
+              "display": "Hemoglobin [Mass/volume] in Blood"
             }
           ],
           "range": {
