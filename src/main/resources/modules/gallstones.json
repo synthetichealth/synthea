@@ -808,7 +808,7 @@
             {
               "system": "LOINC",
               "code": "1742-6",
-              "display": "ALT (Elevated)"
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
