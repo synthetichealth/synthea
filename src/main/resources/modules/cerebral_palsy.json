@@ -1332,7 +1332,7 @@
         {
           "system": "RxNorm",
           "code": 1190766,
-          "display": "atropine sulfate 0.31 MG/ML Ophthalmic Solution (used Sublingual)"
+          "display": "atropine sulfate 0.31 MG/ML Ophthalmic Solution"
         }
       ],
       "direct_transition": "End_Cerebral_Palsy_Encounter1",
