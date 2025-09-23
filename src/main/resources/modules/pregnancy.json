@@ -63,6 +63,19 @@
           "display": "Normal pregnancy (finding)"
         }
       ],
+      "direct_transition": "Pregnancy_Status_Observation"
+    },
+    "Pregnancy_Status_Observation": {
+      "type": "Observation",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "82810-3",
+          "display": "Pregnancy status"
+        }
+      ],
+      "category": "social-history",
+      "value": true,
       "direct_transition": "Delay_Eight_Weeks"
     },
     "Delay_Eight_Weeks": {
