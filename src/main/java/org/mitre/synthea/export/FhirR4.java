@@ -1880,6 +1880,10 @@ public class FhirR4 {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
 
+      if ((useUSCore6() || useUSCore7()) && code.code.equals("82810-3")) {
+        meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-pregnancystatus");
+      }
+
       if (observation.category != null) {
         if (useUSCore6() || useUSCore7()) {
           switch (observation.category) {
