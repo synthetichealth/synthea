@@ -1880,9 +1880,6 @@ public class FhirR4 {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
 
-      if ((useUSCore6() || useUSCore7()) && code.code.equals("82810-3")) {
-        meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-pregnancystatus");
-      }
 
       if (observation.category != null) {
         if (useUSCore6() || useUSCore7()) {
@@ -1891,7 +1888,12 @@ public class FhirR4 {
               meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result");
               break;
             case "social-history":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-simple-observation");
+              if (code.code.equals("82810-3")) {
+                meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-pregnancystatus");
+              } else {
+                meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-simple-observation");
+              }
+
               break;
             case "survey":
               meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment");
