@@ -69,13 +69,17 @@
       "type": "Observation",
       "codes": [
         {
-          "system": "http://loinc.org",
+          "system": "LOINC",
           "code": "82810-3",
           "display": "Pregnancy status"
         }
       ],
       "category": "social-history",
-      "value": true,
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "77386006",
+        "display": "Pregnant"
+      },
       "direct_transition": "Delay_Eight_Weeks"
     },
     "Delay_Eight_Weeks": {
