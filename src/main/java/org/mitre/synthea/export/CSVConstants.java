@@ -1,0 +1,187 @@
+package org.mitre.synthea.export;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CSVConstants {
+  private static final String NEWLINE = System.lineSeparator();
+
+  public static final String PATIENT_KEY = "patients";
+  public static final String ALLERGY_KEY = "allergies";
+  public static final String MEDICATION_KEY = "medications";
+  public static final String CONDITION_KEY = "conditions";
+  public static final String CAREPLAN_KEY = "careplans";
+  public static final String OBSERVATION_KEY = "observations";
+  public static final String PROCEDURE_KEY = "procedures";
+  public static final String IMMUNIZATION_KEY = "immunizations";
+  public static final String ENCOUNTER_KEY = "encounters";
+  public static final String IMAGING_STUDY_KEY = "imaging_studies";
+  public static final String DEVICE_KEY = "devices";
+  public static final String SUPPLY_KEY = "supplies";
+  public static final String ORGANIZATION_KEY = "organizations";
+  public static final String PROVIDER_KEY = "providers";
+  public static final String PAYER_KEY = "payers";
+  public static final String PAYER_TRANSITION_KEY = "payer_transitions";
+  public static final String CLAIM_KEY = "claims";
+  public static final String CLAIM_TRANSACTION_KEY = "claims_transactions";
+  public static final String PATIENT_EXPENSE_KEY = "patient_expenses";
+
+  public static final String BASE_PATIENT_FILENAME = "patients.csv";
+  public static final String BASE_ALLERGY_FILENAME = "allergies.csv";
+  public static final String BASE_MEDICATION_FILENAME = "medications.csv";
+  public static final String BASE_CONDITION_FILENAME = "conditions.csv";
+  public static final String BASE_CAREPLAN_FILENAME = "careplans.csv";
+  public static final String BASE_OBSERVATION_FILENAME = "observations.csv";
+  public static final String BASE_PROCEDURE_FILENAME = "procedures.csv";
+  public static final String BASE_IMMUNIZATION_FILENAME = "immunizations.csv";
+  public static final String BASE_ENCOUNTER_FILENAME = "encounters.csv";
+  public static final String BASE_IMAGING_STUDY_FILENAME = "imaging_studies.csv";
+  public static final String BASE_DEVICE_FILENAME = "devices.csv";
+  public static final String BASE_SUPPLY_FILENAME = "supplies.csv";
+  public static final String BASE_ORGANIZATION_FILENAME = "organizations.csv";
+  public static final String BASE_PROVIDER_FILENAME = "providers.csv";
+  public static final String BASE_PAYER_FILENAME = "payers.csv";
+  public static final String BASE_PAYER_TRANSITION_FILENAME = "payer_transitions.csv";
+  public static final String BASE_CLAIM_FILENAME = "claims.csv";
+  public static final String BASE_CLAIM_TRANSACTION_FILENAME = "claims_transactions.csv";
+  public static final String BASE_PATIENT_EXPENSE_FILENAME = "patient_expenses.csv";
+
+  public static final String PATIENT_HEADER_LINE =
+      "Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
+      + "PREFIX,FIRST,MIDDLE,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
+      + "ADDRESS,CITY,STATE,COUNTY,FIPS,ZIP,LAT,LON,"
+      + "HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME"
+      + NEWLINE;
+  public static final String ALLERGY_HEADER_LINE =
+      "START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
+      + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2"
+      + NEWLINE;
+  public static final String MEDICATION_HEADER_LINE =
+      "START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,"
+      + "TOTALCOST,REASONCODE,REASONDESCRIPTION"
+      + NEWLINE;
+  public static final String CONDITION_HEADER_LINE =
+      "START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION"
+      + NEWLINE;
+  public static final String CAREPLAN_HEADER_LINE =
+      "Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION"
+      + NEWLINE;
+  public static final String OBSERVATION_HEADER_LINE =
+      "DATE,PATIENT,ENCOUNTER,CATEGORY,CODE,DESCRIPTION,VALUE,UNITS,TYPE"
+      + NEWLINE;
+  public static final String PROCEDURE_HEADER_LINE =
+      "START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION,BASE_COST,"
+      + "REASONCODE,REASONDESCRIPTION"
+      + NEWLINE;
+  public static final String IMMUNIZATION_HEADER_LINE =
+      "DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST"
+      + NEWLINE;
+  public static final String ENCOUNTER_HEADER_LINE =
+      "Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,"
+      + "BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION"
+      + NEWLINE;
+  public static final String IMAGING_STUDY_HEADER_LINE =
+      "Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
+      + "MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,"
+      + "PROCEDURE_CODE"
+      + NEWLINE;
+  public static final String DEVICE_HEADER_LINE =
+      "START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI"
+      + NEWLINE;
+  public static final String SUPPLY_HEADER_LINE =
+      "DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY"
+      + NEWLINE;
+  public static final String ORGANIZATION_HEADER_LINE =
+      "Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION"
+      + NEWLINE;
+  public static final String PROVIDER_HEADER_LINE =
+      "Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
+      + "ENCOUNTERS,PROCEDURES"
+      + NEWLINE;
+  public static final String PAYER_HEADER_LINE =
+      "Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
+      + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
+      + "UNCOVERED_MEDICATIONS,COVERED_PROCEDURES,UNCOVERED_PROCEDURES,"
+      + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
+      + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS"
+      + NEWLINE;
+  public static final String PAYER_TRANSITION_HEADER_LINE =
+      "PATIENT,MEMBERID,START_DATE,END_DATE,PAYER,SECONDARY_PAYER,"
+      + "PLAN_OWNERSHIP,OWNER_NAME"
+      + NEWLINE;
+  public static final String CLAIM_HEADER_LINE =
+      "Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,"
+      + "DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,"
+      + "DIAGNOSIS5,DIAGNOSIS6,DIAGNOSIS7,DIAGNOSIS8,REFERRINGPROVIDERID,APPOINTMENTID,"
+      + "CURRENTILLNESSDATE,SERVICEDATE,SUPERVISINGPROVIDERID,STATUS1,STATUS2,STATUSP,"
+      + "OUTSTANDING1,OUTSTANDING2,OUTSTANDINGP,LASTBILLEDDATE1,LASTBILLEDDATE2,LASTBILLEDDATEP,"
+      + "HEALTHCARECLAIMTYPEID1,HEALTHCARECLAIMTYPEID2"
+      + NEWLINE;
+  public static final String CLAIM_TRANSACTION_HEADER_LINE =
+      "ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,"
+      + "PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,"
+      + "DIAGNOSISREF3,DIAGNOSISREF4,UNITS,DEPARTMENTID,NOTES,UNITAMOUNT,TRANSFEROUTID,"
+      + "TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,"
+      + "PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID"
+      + NEWLINE;
+  public static final String PATIENT_EXPENSE_HEADER_LINE =
+      "PATIENT_ID,YEAR,PAYER_ID,"
+      + "HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS"
+      + NEWLINE;
+
+  public static final Map<String, String> BASE_FILENAME_MAP = initializeFilenameMap();
+  public static final Map<String, String> HEADER_LINE_MAP = initializeHeaderMap();
+
+  private static Map<String, String> initializeFilenameMap() {
+    Map<String, String> map = new HashMap<>();
+
+    map.put(PATIENT_KEY, BASE_PATIENT_FILENAME);
+    map.put(ALLERGY_KEY, BASE_ALLERGY_FILENAME);
+    map.put(MEDICATION_KEY, BASE_MEDICATION_FILENAME);
+    map.put(CONDITION_KEY, BASE_CONDITION_FILENAME);
+    map.put(CAREPLAN_KEY, BASE_CAREPLAN_FILENAME);
+    map.put(OBSERVATION_KEY, BASE_OBSERVATION_FILENAME);
+    map.put(PROCEDURE_KEY, BASE_PROCEDURE_FILENAME);
+    map.put(IMMUNIZATION_KEY, BASE_IMMUNIZATION_FILENAME);
+    map.put(ENCOUNTER_KEY, BASE_ENCOUNTER_FILENAME);
+    map.put(IMAGING_STUDY_KEY, BASE_IMAGING_STUDY_FILENAME);
+    map.put(DEVICE_KEY, BASE_DEVICE_FILENAME);
+    map.put(SUPPLY_KEY, BASE_SUPPLY_FILENAME);
+    map.put(ORGANIZATION_KEY, BASE_ORGANIZATION_FILENAME);
+    map.put(PROVIDER_KEY, BASE_PROVIDER_FILENAME);
+    map.put(PAYER_KEY, BASE_PAYER_FILENAME);
+    map.put(PAYER_TRANSITION_KEY, BASE_PAYER_TRANSITION_FILENAME);
+    map.put(CLAIM_KEY, BASE_CLAIM_FILENAME);
+    map.put(CLAIM_TRANSACTION_KEY, BASE_CLAIM_TRANSACTION_FILENAME);
+    map.put(PATIENT_EXPENSE_KEY, BASE_PATIENT_EXPENSE_FILENAME);
+
+    return Collections.unmodifiableMap(map);
+  }
+
+  private static Map<String, String> initializeHeaderMap() {
+    Map<String, String> map = new HashMap<>();
+
+    map.put(PATIENT_KEY, PATIENT_HEADER_LINE);
+    map.put(ALLERGY_KEY, ALLERGY_HEADER_LINE);
+    map.put(MEDICATION_KEY, MEDICATION_HEADER_LINE);
+    map.put(CONDITION_KEY, CONDITION_HEADER_LINE);
+    map.put(CAREPLAN_KEY, CAREPLAN_HEADER_LINE);
+    map.put(OBSERVATION_KEY, OBSERVATION_HEADER_LINE);
+    map.put(PROCEDURE_KEY, PROCEDURE_HEADER_LINE);
+    map.put(IMMUNIZATION_KEY, IMMUNIZATION_HEADER_LINE);
+    map.put(ENCOUNTER_KEY, ENCOUNTER_HEADER_LINE);
+    map.put(IMAGING_STUDY_KEY, IMAGING_STUDY_HEADER_LINE);
+    map.put(DEVICE_KEY, DEVICE_HEADER_LINE);
+    map.put(SUPPLY_KEY, SUPPLY_HEADER_LINE);
+    map.put(ORGANIZATION_KEY, ORGANIZATION_HEADER_LINE);
+    map.put(PROVIDER_KEY, PROVIDER_HEADER_LINE);
+    map.put(PAYER_KEY, PAYER_HEADER_LINE);
+    map.put(PAYER_TRANSITION_KEY, PAYER_TRANSITION_HEADER_LINE);
+    map.put(CLAIM_KEY, CLAIM_HEADER_LINE);
+    map.put(CLAIM_TRANSACTION_KEY, CLAIM_TRANSACTION_HEADER_LINE);
+    map.put(PATIENT_EXPENSE_KEY, PATIENT_EXPENSE_HEADER_LINE);
+
+    return Collections.unmodifiableMap(map);
+  }
+}
