@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.NumberFormatException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.output.NullOutputStream;
 import org.mitre.synthea.export.CSVConstants;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
 
 public class CSVFileManager {
   /**
@@ -26,16 +29,11 @@ public class CSVFileManager {
   private Path outputDirectory;
   private List<String> includedFiles;
   private List<String> excludedFiles;
-  private Map<String, String> filenameMap = initializeFilenameMap();
+  private Map<String, String> filenameMap = new HashMap<>();
   private Map<String, OutputStreamWriter> writerMap = new HashMap<>();
-
-  private Map<String, String> initializeFilenameMap() {
-    HashMap<String, String> map = new HashMap<>();
-
-    map.putAll(CSVConstants.BASE_FILENAME_MAP);
-
-    return map;
-  }
+  private Map<String, Integer> resourceCountMap = new HashMap<>();
+  private int maxLinesPerFile;
+  private int fileNumberDigits;
 
   /**
    * "No-op" writer to use to prevent writing to excluded files.
@@ -50,12 +48,32 @@ public class CSVFileManager {
    */
   public CSVFileManager() {
     initializeAppend();
+    initializeMaxLinesPerFile();
+    initializeFileNumberDigits();
     initializeOutputDirectory();
     initializeIncludedAndExcludedFiles();
   }
 
   private void initializeAppend() {
     append = Config.getAsBoolean("exporter.csv.append_mode");
+  }
+
+  private void initializeMaxLinesPerFile() {
+    try {
+      maxLinesPerFile = Config.getAsInteger("exporter.csv.max_lines_per_file", 0);
+    } catch (NumberFormatException ex) {
+      // if the property is present but not a numeric string
+      maxLinesPerFile = 0;
+    }
+  }
+
+  private void initializeFileNumberDigits() {
+    try {
+      fileNumberDigits = Config.getAsInteger("exporter.csv.file_number_digits", 1);
+    } catch (NumberFormatException ex) {
+      // if the property is present but not a numeric string
+      fileNumberDigits = 1;
+    }
   }
 
   private void initializeOutputDirectory() {
@@ -70,6 +88,24 @@ public class CSVFileManager {
       outputDirectory = outputDirectory.resolve(subfolderName);
       outputDirectory.toFile().mkdirs();
     }
+  }
+
+  private boolean multipleFilesPerResource() {
+    return maxLinesPerFile > 0;
+  }
+
+  private String filename(String resourceKey) {
+    return resourceKey + ".csv";
+  }
+
+  private String filename(String resourceKey, int fileNumber) {
+    String formattedNumber = String.valueOf(fileNumber);
+
+    if (fileNumberDigits > 1) {
+      formattedNumber = String.format("%0" + fileNumberDigits + "d", fileNumber);
+    }
+
+    return resourceKey + "-" + formattedNumber + ".csv";
   }
 
   private void initializeIncludedAndExcludedFiles() {
@@ -126,6 +162,25 @@ public class CSVFileManager {
     return files;
   }
 
+  private int incrementResourceCount(String resourceKey) {
+    Integer resourceCount = resourceCountMap.get(resourceKey);
+
+    if (resourceCount == null) {
+      resourceCount = 0;
+    }
+
+    resourceCount++;
+    resourceCountMap.put(resourceKey, resourceCount);
+
+    return resourceCount;
+  }
+
+  private boolean resourceIsExcluded(String resourceKey) {
+    String baseFilename = filename(resourceKey);
+    return (!includedFiles.isEmpty() && !includedFiles.contains(baseFilename))
+      || excludedFiles.contains(baseFilename);
+  }
+
   /**
    * Helper method to instantiate, if necessary, and return the writer for the
    * resource type's CSV file. Returns a "no-op" writer for any excluded files.
@@ -134,20 +189,87 @@ public class CSVFileManager {
    *
    * @return OutputStreamWriter for the given resource type's CSV file
    */
-  private OutputStreamWriter getResourceWriter(String resourceKey) throws IOException {
-    String baseFilename = CSVConstants.BASE_FILENAME_MAP.get(resourceKey);
-    boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(baseFilename))
-        || excludedFiles.contains(baseFilename);
-    if (excluded) {
+  private OutputStreamWriter initializeResourceWriter(String resourceKey) throws IOException {
+    if (resourceIsExcluded(resourceKey)) {
       return NO_OP;
     }
 
-    String filename = filenameMap.get(resourceKey);
+    String filename = filename(resourceKey);
     File file = outputDirectory.resolve(filename).toFile();
     // file writing may fail if we tell it to append to a file that doesn't already exist
     boolean appendToThisFile = append && file.exists();
 
-    return new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    OutputStreamWriter writer =
+        new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    if (!append) {
+      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    }
+
+    return writer;
+  }
+
+  /**
+   * Helper method to instantiate, if necessary, and return the writer for the
+   * resource type's CSV file. Returns a "no-op" writer for any excluded files.
+   *
+   * @param resourceKey Key from CSVConstants for the resource type being written
+   *
+   * @return OutputStreamWriter for the given resource type's CSV file
+   */
+  private OutputStreamWriter initializeResourceWriter(String resourceKey, int resourceCount)
+      throws IOException {
+    if (resourceIsExcluded(resourceKey)) {
+      return NO_OP;
+    }
+
+    if (append && resourceCount == 1) {
+      resourceCount = getResourceCount(resourceKey) + 1;
+      resourceCountMap.put(resourceKey, resourceCount);
+    }
+
+    int fileNumber = (resourceCount - 1) / maxLinesPerFile  + 1;
+    String filename = filename(resourceKey, fileNumber);
+
+    File file = outputDirectory.resolve(filename).toFile();
+    // file writing may fail if we tell it to append to a file that doesn't already exist
+    boolean appendToThisFile = append && file.exists();
+
+    OutputStreamWriter writer =
+        new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
+    if (!append || resourceCount % maxLinesPerFile == 1) {
+      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    }
+
+    return writer;
+  }
+
+  private int getResourceCount(String resourceKey) throws IOException {
+    int fileNumber = 1;
+
+    String currentFilename = filename(resourceKey, fileNumber);
+    File file = outputDirectory.resolve(currentFilename).toFile();
+
+    if (file.exists()) {
+      do {
+        fileNumber++;
+        currentFilename = filename(resourceKey, fileNumber);
+        file = outputDirectory.resolve(currentFilename).toFile();
+      } while ((file.exists()));
+
+      fileNumber--;
+    }
+
+    currentFilename = filename(resourceKey, fileNumber);
+    file = outputDirectory.resolve(currentFilename).toFile();
+
+    int resourceCount = (fileNumber - 1) * maxLinesPerFile;
+
+    if (file.exists()) {
+      String csvData = new String(Files.readAllBytes(file.toPath()));
+      resourceCount += SimpleCSV.parse(csvData).size();
+    }
+
+    return resourceCount;
   }
 
   /**
@@ -158,13 +280,35 @@ public class CSVFileManager {
    * @return OutputStreamWriter for the given resource type's CSV file
    */
   public OutputStreamWriter getWriter(String resourceKey) throws IOException {
+    if (multipleFilesPerResource()) {
+      return getWriterForMultipleFiles(resourceKey);
+    }
+
     OutputStreamWriter writer = writerMap.get(resourceKey);
     if (writer == null) {
-      writer = getResourceWriter(resourceKey);
+      writer = initializeResourceWriter(resourceKey);
       writerMap.put(resourceKey, writer);
-      if (!append) {
-        writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    }
+
+    return writer;
+  }
+
+  private OutputStreamWriter getWriterForMultipleFiles(String resourceKey) throws IOException {
+    if (resourceIsExcluded(resourceKey)) {
+      return NO_OP;
+    }
+
+    int resourceCount = incrementResourceCount(resourceKey);
+
+    OutputStreamWriter writer = writerMap.get(resourceKey);
+
+    if (resourceCount % maxLinesPerFile == 1) {
+      if (writer != null) {
+        writer.flush();
       }
+
+      writer = initializeResourceWriter(resourceKey, resourceCount);
+      writerMap.put(resourceKey, writer);
     }
 
     return writer;
@@ -177,7 +321,7 @@ public class CSVFileManager {
    */
   public void flushWriter(String resourceKey) throws IOException {
     synchronized (resourceKey) {
-      OutputStreamWriter writer = getWriter(resourceKey);
+      OutputStreamWriter writer = writerMap.get(resourceKey);
       if (writer != null) {
         writer.flush();
       }
