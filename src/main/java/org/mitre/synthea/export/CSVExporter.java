@@ -271,7 +271,7 @@ public class CSVExporter {
       cutOff = Calendar.getInstance();
       cutOff.set(cutOff.get(Calendar.YEAR) - yearsOfHistory, 0, 1);
     }
-    CSVExporter.getInstance().exportPayerTransitions(person, cutOff.getTimeInMillis(), time);
+    CSVExporter.getInstance().exportPayerTransitions(person, 0L, time);
     CSVExporter.getInstance().exportPatientExpenses(person, cutOff.getTimeInMillis(), time);
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();
@@ -1681,7 +1681,7 @@ public class CSVExporter {
       s.append(',');
       // PATIENTINSURANCEID
       if (memberId != null) {
-        s.append(patientId);
+        s.append(memberId);
       }
       s.append(',');
       // TODO FEESCHEDULEID
