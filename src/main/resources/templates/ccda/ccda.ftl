@@ -118,7 +118,7 @@
       <#else>
         <#include "procedures_no_current.ftl" parse=false>
       </#if>
-	    <#if ehr_encounters?has_content>
+      <#if ehr_encounters?has_content>
         <#include "encounters.ftl">
       </#if>
       <#if ehr_vital_signs?has_content>
@@ -143,6 +143,17 @@
       <#if ehr_functional_statuses?has_content>
         <#include "functional_status.ftl">
       </#if>
+
+      <!-- 🔧 Fix for Issue #570 -->
+      <component>
+        <section>
+          <title>Explanation Of Benefit</title>
+          <text>
+            <resourceType>${ehr_explanationofbenefit.resourceType}</resourceType>
+          </text>
+        </section>
+      </component>
+
     </structuredBody>
   </component>
 </ClinicalDocument>
