@@ -26,26 +26,6 @@ jobs:
       - name: Compile with Gradle
         run: ./gradlew assemble
   
-      - name: Slack Notification
-        uses: 8398a7/action-slack@v3
-        if: always() && env.SLACK_WEBHOOK_URL
-        with:
-          status: custom
-          job_name: Java 17
-          author_name: Java 17 Build
-          fields: workflow,commit,repo,author,took
-          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
-          custom_payload: |
-            {
-              attachments: [{
-                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${{ github.head_ref || github.ref }} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
-              }]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  
   check_java11:
     runs-on: ubuntu-latest
     name: Java 11
@@ -77,21 +57,3 @@ jobs:
       - name: Code coverage
         uses: codecov/codecov-action@v3
 
-      - name: Slack Notification
-        uses: 8398a7/action-slack@v3
-        if: always() && env.SLACK_WEBHOOK_URL
-        with:
-          status: custom
-          job_name: Java 11
-          author_name: Java 11 Build/Test
-          fields: workflow,commit,repo,author,took
-          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
-          custom_payload: |
-            {
-              attachments: [{
-                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${{ github.head_ref || github.ref }} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
-              }]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
