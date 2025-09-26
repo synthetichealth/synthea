@@ -218,7 +218,7 @@
     },
     "Question_1": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
