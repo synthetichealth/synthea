@@ -30,7 +30,8 @@ These instructions are intended for those wishing to examine the Synthea source 
 Synthea<sup>TM</sup> requires Java JDK 11 or newer. We strongly recommend using a Long-Term Support (LTS) release of Java, 11 or 17, as issues may occur with more recent non-LTS versions.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
-```
+
+```bash
 git clone https://github.com/synthetichealth/synthea.git
 cd synthea
 ./gradlew build check test
@@ -38,27 +39,54 @@ cd synthea
 
 ### Changing the default properties
 
-
 The default properties file values can be found at `src/main/resources/synthea.properties`.
 By default, synthea does not generate CCDA, CPCDA, CSV, or Bulk FHIR (ndjson). You'll need to
 adjust this file to activate these features.  See the [wiki](https://github.com/synthetichealth/synthea/wiki)
 for more details, or use our [guided customizer tool](https://synthetichealth.github.io/spt/#/customizer).
 
-
-
 ### Generate Synthetic Patients
-Generating the population one at a time...
+
+## Web Interface
+
+Requirements: Python 3.8 or higher
+
+Run the Makefile in a terminal:
+
+```bash
+make
 ```
+
+Open browser to `http://localhost:8000/` or `http://127.0.0.1:8000/`
+
+Enter the desired inputs and hit the generate button at the bottom of the form. An alert will pop up; copy all except "Command to run:" into a terminal.
+
+Example alert:
+
+```text
+Localhost:8000 says
+
+Command to run: ./run_synthea "New York" "New York" -p 10 -s 42 -cs 12345 -r 20240830 -g M -a 1-99 -o 5 --exporter.baseDirectory="./output"
+```
+
+To end program Ctrl+c in the terminal.
+
+## Command Line
+
+Generating the population one at a time...
+
+```bash
 ./run_synthea
 ```
 
 Command-line arguments may be provided to specify a state, city, population size, or seed for randomization.
-```
+
+```bash
 run_synthea [-s seed] [-p populationSize] [state [city]]
 ```
 
 Full usage info can be printed by passing the `-h` option.
-```
+
+```bash
 $ ./run_synthea -h     
 
 > Task :run
@@ -104,7 +132,8 @@ Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 
 ### Concepts and Attributes
 Generate a list of concepts (used in the records) or attributes (variables on each patient).
-```
+
+```bash
 ./gradlew concepts
 ./gradlew attributes
 ```
