@@ -908,7 +908,7 @@
         {
           "system": "RxNorm",
           "code": 999999,
-          "display": "Lenzilumab 200 MG IV"
+          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
         }
       ],
       "administration": true,
@@ -972,7 +972,7 @@
         {
           "system": "RxNorm",
           "code": 999999,
-          "display": "CM4620 Injectable Emulsion"
+          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
         }
       ],
       "administration": true,
@@ -997,7 +997,7 @@
         {
           "system": "RxNorm",
           "code": 999999,
-          "display": "Aviptadil Infusion"
+          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
         }
       ],
       "administration": true,
