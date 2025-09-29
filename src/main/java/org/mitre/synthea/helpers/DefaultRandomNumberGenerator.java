@@ -70,7 +70,7 @@ public class DefaultRandomNumberGenerator implements RandomNumberGenerator, Seri
 
   @Override
   public UUID randUUID() {
-    return new UUID(randLong(), randLong());
+    return new UUID(seed, randLong());
   }
 
   @Override
