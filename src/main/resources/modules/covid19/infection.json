@@ -325,7 +325,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -336,7 +336,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -354,7 +354,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -365,7 +365,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -514,7 +514,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -525,7 +525,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -543,7 +543,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -554,7 +554,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {

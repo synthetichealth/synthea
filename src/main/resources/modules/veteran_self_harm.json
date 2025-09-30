@@ -252,7 +252,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287193009",
-          "display": "Suicide - firearms (event)"
+          "display": "Suicide using firearm (event)"
         }
       ],
       "direct_transition": "Death"
@@ -265,7 +265,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287191006",
-          "display": "Suicide - suffocation (event)"
+          "display": "Suicide by suffocation"
         }
       ],
       "direct_transition": "Death"
