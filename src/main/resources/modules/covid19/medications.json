@@ -907,8 +907,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -971,8 +971,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -996,8 +996,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -1041,8 +1041,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Amlodipine / Hydrochlorothiazide / Olmesartan medoxomil Oral Tablet [Tribenzor 40/5/12.5]"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
