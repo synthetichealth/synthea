@@ -398,7 +398,7 @@
               {
                 "system": "LOINC",
                 "code": "4548-4",
-                "display": "Hemoglobin A1c total in Blood"
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
               }
             ],
             "operator": "<",

@@ -761,7 +761,7 @@
         {
           "system": "RxNorm",
           "code": 999998,
-          "display": "Leronlimab 700 MG Injection"
+          "display": "amlodipine 5 MG / hydrochlorothiazide 12.5 MG / olmesartan medoxomil 40 MG [Tribenzor]"
         }
       ],
       "administration": true,
@@ -907,8 +907,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Lenzilumab 200 MG IV"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -971,8 +971,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "CM4620 Injectable Emulsion"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -996,8 +996,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "Aviptadil Infusion"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,
@@ -1041,8 +1041,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999999,
-          "display": "CD24Fc 480 MG IV"
+          "code": 999970,
+          "display": "amlodipine / hydrochlorothiazide / olmesartan Oral Tablet [Tribenzor]"
         }
       ],
       "administration": true,

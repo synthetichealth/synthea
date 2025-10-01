@@ -254,7 +254,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "direct_transition": "Followup Care",
@@ -268,7 +268,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         }
       ],
       "observations": [
@@ -279,7 +279,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -291,7 +291,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -303,7 +303,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -315,7 +315,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -327,7 +327,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -339,7 +339,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -351,7 +351,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -363,7 +363,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -378,7 +378,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -449,7 +449,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -479,7 +479,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -493,8 +493,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -539,7 +539,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -742,7 +742,7 @@
         {
           "system": "LOINC",
           "code": "24321-2",
-          "display": "Basic Metabolic 2000 Panel"
+          "display": "Basic Metabolic 2000 Panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -753,7 +753,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -765,7 +765,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -776,7 +776,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -792,7 +792,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -804,7 +804,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -816,7 +816,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -828,7 +828,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -840,7 +840,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -852,7 +852,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -895,7 +895,7 @@
             {
               "system": "LOINC",
               "code": "5767-9",
-              "display": "Odor of Urine"
+              "display": "Appearance of Urine"
             }
           ],
           "unit": "{nominal}",
@@ -1240,7 +1240,7 @@
             {
               "system": "LOINC",
               "code": "5767-9",
-              "display": "Odor of Urine"
+              "display": "Appearance of Urine"
             }
           ],
           "unit": "{nominal}",
@@ -1493,7 +1493,7 @@
         {
           "system": "LOINC",
           "code": "24321-2",
-          "display": "Basic Metabolic 2000 Panel"
+          "display": "Basic Metabolic 2000 Panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -1504,7 +1504,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1516,7 +1516,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1527,7 +1527,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -1543,7 +1543,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1555,7 +1555,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1567,7 +1567,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1579,7 +1579,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1591,7 +1591,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1603,7 +1603,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -1620,7 +1620,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "reason": "Awaiting Transplant",
@@ -1663,7 +1663,7 @@
         {
           "system": "RxNorm",
           "code": 108515,
-          "display": "1 ML tacrolimus 5 MG/ML Injection"
+          "display": "1 ML tacrolimus 5 MG/ML Injection [Prograf]"
         }
       ],
       "reason": "History of Transplant",
@@ -1677,7 +1677,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         }
       ],
       "observations": [
@@ -1688,7 +1688,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1700,7 +1700,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1712,7 +1712,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1724,7 +1724,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1736,7 +1736,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1748,7 +1748,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1760,7 +1760,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1772,7 +1772,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1787,7 +1787,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -1858,7 +1858,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1888,7 +1888,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1902,8 +1902,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1948,7 +1948,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1985,7 +1985,7 @@
         {
           "system": "RxNorm",
           "code": 1664463,
-          "display": "24 HR tacrolimus 1 MG Extended Release Oral Tablet"
+          "display": "24 HR tacrolimus 1 MG Extended Release Oral Tablet [Envarsus]"
         }
       ],
       "reason": "History of Transplant",
@@ -2078,7 +2078,7 @@
         {
           "system": "RxNorm",
           "code": 1431987,
-          "display": "24 HR tacrolimus 5 MG Extended Release Oral Capsule"
+          "display": "24 HR tacrolimus 5 MG Extended Release Oral Capsule [Astagraf]"
         }
       ],
       "reason": "History of Transplant",

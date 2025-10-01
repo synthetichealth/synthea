@@ -118,7 +118,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -133,7 +133,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL",
@@ -340,7 +340,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -593,7 +593,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -740,7 +740,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -755,7 +755,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL",

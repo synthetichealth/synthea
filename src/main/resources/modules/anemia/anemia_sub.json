@@ -73,7 +73,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit [Volume Fraction] of Blood by calculation"
                   }
                 ],
                 "operator": "<=",
@@ -101,7 +101,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit [Volume Fraction] of Blood by calculation"
                   }
                 ],
                 "operator": "<=",
@@ -321,7 +321,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -366,7 +366,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -396,7 +396,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -410,8 +410,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -456,7 +456,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -499,7 +499,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -544,7 +544,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -574,7 +574,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -588,8 +588,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -634,7 +634,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -678,7 +678,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -723,7 +723,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -753,7 +753,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -767,8 +767,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -813,7 +813,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -858,7 +858,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -903,7 +903,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -933,7 +933,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -947,8 +947,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -993,7 +993,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1078,7 +1078,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -1121,7 +1121,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit [Volume Fraction] of Blood"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {

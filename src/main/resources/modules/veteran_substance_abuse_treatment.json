@@ -57,7 +57,7 @@
         {
           "system": "RxNorm",
           "code": 198031,
-          "display": "nicotine 7 MG/Day 24HR Transdermal System"
+          "display": "24 HR nicotine 0.292 MG/HR Transdermal System"
         }
       ],
       "direct_transition": "Alcohol Check",
@@ -198,7 +198,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5602001",
-          "display": "Opioid abuse (disorder)"
+          "display": "Opioid abuse"
         }
       ],
       "direct_transition": "encounter_end"

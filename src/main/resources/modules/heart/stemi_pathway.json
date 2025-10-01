@@ -31,7 +31,7 @@
         {
           "system": "SNOMED-CT",
           "code": "415070008",
-          "display": "Percutaneous coronary intervention (procedure)"
+          "display": "Percutaneous coronary intervention"
         }
       ],
       "duration": {

@@ -189,7 +189,7 @@
         {
           "system": "RxNorm",
           "code": "748962",
-          "display": "Camila 28 Day Pack"
+          "display": "{28 (norethindrone 0.35 MG Oral Tablet) } Pack [Camila 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -201,7 +201,7 @@
         {
           "system": "RxNorm",
           "code": "831533",
-          "display": "Errin 28 Day Pack"
+          "display": "{28 (norethindrone 0.35 MG Oral Tablet) } Pack [Errin 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -213,7 +213,7 @@
         {
           "system": "RxNorm",
           "code": "757594",
-          "display": "Jolivette 28 Day Pack"
+          "display": "{28 (norethindrone 0.35 MG Oral Tablet) } Pack [Jolivette 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -407,7 +407,7 @@
         {
           "system": "RxNorm",
           "code": "749882",
-          "display": "Norinyl 1+50 28 Day Pack"
+          "display": "{7 (inert ingredients 1 MG Oral Tablet) / 21 (mestranol 0.05 MG / norethindrone 1 MG Oral Tablet) } Pack [Norinyl 1+50 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -419,7 +419,7 @@
         {
           "system": "RxNorm",
           "code": "1359133",
-          "display": "Estrostep Fe 28 Day Pack"
+          "display": "{5 (ethinyl estradiol 0.02 MG / norethindrone acetate 1 MG Oral Tablet) / 7 (ethinyl estradiol 0.03 MG / norethindrone acetate 1 MG Oral Tablet) / 9 (ethinyl estradiol 0.035 MG / norethindrone acetate 1 MG Oral Tablet) / 7 (ferrous fumarate 75 MG Oral Tablet) } Pack [Estrostep Fe 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -431,7 +431,7 @@
         {
           "system": "RxNorm",
           "code": "749785",
-          "display": "Ortho Tri-Cyclen 28 Day Pack"
+          "display": "{7 (ethinyl estradiol 0.035 MG / norgestimate 0.18 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.215 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet) / 7 (inert ingredients 1 MG Oral Tablet) } Pack [Ortho Tri-Cyclen 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -443,7 +443,7 @@
         {
           "system": "RxNorm",
           "code": "751905",
-          "display": "Trinessa 28 Day Pack"
+          "display": "{7 (ethinyl estradiol 0.035 MG / norgestimate 0.18 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.215 MG Oral Tablet) / 7 (ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet) / 7 (inert ingredients 1 MG Oral Tablet) } Pack [Trinessa 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -458,7 +458,7 @@
         {
           "system": "RxNorm",
           "code": "749762",
-          "display": "Seasonique 91 Day Pack"
+          "display": "{7 (ethinyl estradiol 0.01 MG Oral Tablet) / 84 (ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet) } Pack [Seasonique]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -470,7 +470,7 @@
         {
           "system": "RxNorm",
           "code": "748856",
-          "display": "Yaz 28 Day Pack"
+          "display": "{24 (drospirenone 3 MG / ethinyl estradiol 0.02 MG Oral Tablet) / 4 (inert ingredients 1 MG Oral Tablet) } Pack [Yaz 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -482,7 +482,7 @@
         {
           "system": "RxNorm",
           "code": "978950",
-          "display": "Natazia 28 Day Pack"
+          "display": "{5 (dienogest 2 MG / estradiol valerate 2 MG Oral Tablet) / 17 (dienogest 3 MG / estradiol valerate 2 MG Oral Tablet) / 2 (estradiol valerate 1 MG Oral Tablet) / 2 (estradiol valerate 3 MG Oral Tablet) / 2 (inert ingredients 1 MG Oral Tablet) } Pack [Natazia 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -494,7 +494,7 @@
         {
           "system": "RxNorm",
           "code": "748879",
-          "display": "Levora 0.15/30 28 Day Pack"
+          "display": "{21 (ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet) / 7 (inert ingredients 1 MG Oral Tablet) } Pack [Levora 0.15/30 28 Day]"
         }
       ],
       "direct_transition": "End_Encounter"
