@@ -108,6 +108,14 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 ./gradlew concepts
 ./gradlew attributes
 ```
+## 🐳 Running Synthea in Docker
+
+Synthea can now be built and run inside a Docker container — no local Java setup required.
+
+### Build the image
+```bash
+docker build -t synthea-dev .
+
 
 # License
 
