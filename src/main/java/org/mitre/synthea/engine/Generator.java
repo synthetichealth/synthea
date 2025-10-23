@@ -478,10 +478,11 @@ public class Generator {
             totalGeneratedPopulation.get(),
             ANSI_RESET);
     System.out.printf("Like what we're doing? Synthea is an open-source project, and your support helps us keep building.\n");
-    System.out.printf("Please consider %s%s%s.\n\n", 
+    System.out.printf("Please consider %s%s%s (%s).\n\n",
             ANSI_BLUE,
-            FORMATTED_DONATION_LINK, 
-            ANSI_RESET);
+            FORMATTED_DONATION_LINK,
+            ANSI_RESET,
+            DONATION_LINK);
   }
 
   /**
