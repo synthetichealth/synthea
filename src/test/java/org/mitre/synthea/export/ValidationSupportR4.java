@@ -82,6 +82,9 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
             if (usCoreVersion != FhirR4.USCoreVersion.v610 && f.toString().contains("uscore6")) {
               return;
             }
+            if (usCoreVersion != FhirR4.USCoreVersion.v700 && f.toString().contains("uscore7")) {
+              return;
+            }
 
             IBaseResource resource = jsonParser.parseResource(new FileReader(f.toFile()));
             handleResource(resource);

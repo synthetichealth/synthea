@@ -119,7 +119,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         }
       ],
       "observations": [
@@ -130,7 +130,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -142,7 +142,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea Nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -154,7 +154,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -214,7 +214,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -252,7 +252,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -264,7 +264,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL"
@@ -309,7 +309,7 @@
         {
           "system": "LOINC",
           "code": "33914-3",
-          "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+          "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
         }
       ],
       "unit": "mL/min/{1.73_m2}",

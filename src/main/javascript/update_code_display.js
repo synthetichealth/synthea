@@ -31,7 +31,7 @@ const codeDictionary = {};
 // codeDictionary[system][code] = "display to use"
 
 // systems to skip because tx.fhir.org doesn't know about them
-const SYSTEMS_TO_SKIP = ['NUBC', 'DICOM-DCM', 'DICOM-SOP'];
+const SYSTEMS_TO_SKIP = ['NUBC', 'DICOM-DCM', 'DICOM-SOP', 'NullFlavor'];
 
 // codes used in Synthea as placeholders that we know aren't real
 const PLACEHOLDER_CODES = ['999999',

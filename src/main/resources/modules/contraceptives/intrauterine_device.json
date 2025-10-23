@@ -251,7 +251,7 @@
         {
           "system": "RxNorm",
           "code": "807283",
-          "display": "Mirena 52 MG Intrauterine System"
+          "display": "levonorgestrel 0.000833 MG/HR Intrauterine System [Mirena]"
         }
       ],
       "direct_transition": "End_Consultation_Encounter",
@@ -264,7 +264,7 @@
         {
           "system": "RxNorm",
           "code": "1605257",
-          "display": "Liletta 52 MG Intrauterine System"
+          "display": "levonorgestrel 0.000813 MG/HR Intrauterine System [Liletta]"
         }
       ],
       "direct_transition": "End_Consultation_Encounter",
@@ -277,7 +277,7 @@
         {
           "system": "RxNorm",
           "code": "1856546",
-          "display": "Kyleena 19.5 MG Intrauterine System"
+          "display": "levonorgestrel 0.000729 MG/HR Intrauterine System [Kyleena]"
         }
       ],
       "direct_transition": "End_Consultation_Encounter",

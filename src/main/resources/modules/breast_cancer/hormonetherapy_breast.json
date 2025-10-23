@@ -302,7 +302,7 @@
         {
           "system": "RxNorm",
           "code": 2119714,
-          "display": "5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab 120 MG/ML Injection"
+          "display": "5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab-oysk 120 MG/ML Injection"
         }
       ],
       "direct_transition": "HER2_medication_end",
@@ -352,7 +352,7 @@
         {
           "system": "RxNorm",
           "code": 1946840,
-          "display": "Verzenio 100 MG Oral Tablet"
+          "display": "abemaciclib 100 MG Oral Tablet [Verzenio]"
         }
       ],
       "direct_transition": "ER_PR_medication_end",

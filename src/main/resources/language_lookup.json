@@ -47,7 +47,7 @@
   "russian": {
     "code": "ru-RU",
     "system": "urn:ietf:bcp:47",
-    "display": "Russian (Russia)"
+    "display": "Russian (Region=Russian Federation)"
   },
   "vietnamese": {
     "code": "vi",

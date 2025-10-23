@@ -793,7 +793,7 @@
             {
               "system": "LOINC",
               "code": "42719-5",
-              "display": "Total Bilirubin (Elevated)"
+              "display": "Bilirubin.total [Mass/volume] in Blood"
             }
           ],
           "range": {
@@ -808,7 +808,7 @@
             {
               "system": "LOINC",
               "code": "1742-6",
-              "display": "ALT (Elevated)"
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -823,7 +823,7 @@
             {
               "system": "LOINC",
               "code": "1920-8",
-              "display": "AST (Elevated)"
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -934,7 +934,7 @@
             {
               "system": "LOINC",
               "code": "33037-3",
-              "display": "Anion Gap"
+              "display": "Anion gap in Serum or Plasma by calculation"
             }
           ],
           "range": {
@@ -949,7 +949,7 @@
             {
               "system": "LOINC",
               "code": "2885-2",
-              "display": "Protein"
+              "display": "Protein [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -964,7 +964,7 @@
             {
               "system": "LOINC",
               "code": "1751-7",
-              "display": "Albumin"
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -979,7 +979,7 @@
             {
               "system": "LOINC",
               "code": "10834-0",
-              "display": "Globulin"
+              "display": "Globulin [Mass/volume] in Serum by calculation"
             }
           ],
           "range": {
@@ -994,7 +994,7 @@
             {
               "system": "LOINC",
               "code": "6768-6",
-              "display": "Alkaline Phosphatase"
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -1058,7 +1058,7 @@
             {
               "system": "LOINC",
               "code": "718-7",
-              "display": "Hemoglobin"
+              "display": "Hemoglobin [Mass/volume] in Blood"
             }
           ],
           "range": {
@@ -1073,7 +1073,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit"
+              "display": "Hematocrit [Volume Fraction] of Blood by calculation"
             }
           ],
           "range": {
@@ -1088,7 +1088,7 @@
             {
               "system": "LOINC",
               "code": "30428-7",
-              "display": "MCV"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells"
             }
           ],
           "range": {
@@ -1103,7 +1103,7 @@
             {
               "system": "LOINC",
               "code": "30385-9",
-              "display": "RBC Distribution Width"
+              "display": "Erythrocyte [DistWidth] in Blood"
             }
           ],
           "range": {
@@ -1118,7 +1118,7 @@
             {
               "system": "LOINC",
               "code": "26515-7",
-              "display": "Platelet Count"
+              "display": "Platelets [#/volume] in Blood"
             }
           ],
           "range": {

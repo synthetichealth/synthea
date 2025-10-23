@@ -402,7 +402,7 @@
             {
               "system": "LOINC",
               "code": "5821-4",
-              "display": "WBCs"
+              "display": "Leukocytes [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
@@ -417,7 +417,7 @@
             {
               "system": "LOINC",
               "code": "13945-1",
-              "display": "RBCs"
+              "display": "Erythrocytes [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
@@ -432,7 +432,7 @@
             {
               "system": "LOINC",
               "code": "5787-7",
-              "display": "Epithelial Cells"
+              "display": "Epithelial cells [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "range": {
@@ -447,7 +447,7 @@
             {
               "system": "LOINC",
               "code": "24124-0",
-              "display": "Casts"
+              "display": "Casts [Presence] in Urine sediment by Light microscopy"
             }
           ],
           "value_code": {
@@ -463,7 +463,7 @@
             {
               "system": "LOINC",
               "code": "8247-9",
-              "display": "Mucus Threads"
+              "display": "Mucus [Presence] in Urine sediment by Light microscopy"
             }
           ],
           "value_code": {
@@ -479,7 +479,7 @@
             {
               "system": "LOINC",
               "code": "5769-5",
-              "display": "Bacteria"
+              "display": "Bacteria [#/area] in Urine sediment by Microscopy high power field"
             }
           ],
           "value_code": {

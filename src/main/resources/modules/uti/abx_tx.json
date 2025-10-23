@@ -279,7 +279,7 @@
         {
           "system": "RxNorm",
           "code": 1648756,
-          "display": "nitrofurantoin, macrocrystals 25 MG / nitrofurantoin, monohydrate 75 MG Oral Capsule",
+          "display": "nitrofurantoin, macrocrystals 25 MG / nitrofurantoin, monohydrate 75 MG [Macrobid]",
           "value_set": ""
         }
       ],
@@ -305,7 +305,7 @@
         {
           "system": "RxNorm",
           "code": 808917,
-          "display": "fosfomycin 3000 MG Powder",
+          "display": "fosfomycin 3000 MG Granules for Oral Solution",
           "value_set": ""
         }
       ],
@@ -1019,7 +1019,7 @@
                   {
                     "system": "RxNorm",
                     "code": 197511,
-                    "display": "Cipro 250"
+                    "display": "ciprofloxacin 250 MG Oral Tablet"
                   }
                 ]
               },
@@ -1029,7 +1029,7 @@
                   {
                     "system": "RxNorm",
                     "code": 309309,
-                    "display": "Cipro 500"
+                    "display": "ciprofloxacin 500 MG Oral Tablet"
                   }
                 ]
               }
