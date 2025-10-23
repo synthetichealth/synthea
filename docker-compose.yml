@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  synthea:
+    build: .
+    container_name: synthea_dev
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: bash
+    stdin_open: true
+    tty: true
