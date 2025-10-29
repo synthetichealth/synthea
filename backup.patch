@@ -1,0 +1,188 @@
+diff --git a/.gitignore b/.gitignore
+index 176efc3e4..ae28c828b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -51,3 +51,5 @@ src/main/resources/export/outpatient_rev_cntr_code_map.json
+ 
+ # VS Code plugin files
+ .history
++
++/.nondex/
+diff --git a/build.gradle b/build.gradle
+index 209359b45..1185f2a26 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -36,6 +36,7 @@ plugins {
+   id 'jacoco'
+   id 'maven-publish'
+   id 'signing'
++  id 'edu.illinois.nondex' version '2.1.7'
+ }
+ 
+ java {
+diff --git a/src/main/java/org/mitre/synthea/engine/State.java b/src/main/java/org/mitre/synthea/engine/State.java
+index 064122c79..3bbbda2d6 100644
+--- a/src/main/java/org/mitre/synthea/engine/State.java
++++ b/src/main/java/org/mitre/synthea/engine/State.java
+@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+ import java.io.Serializable;
+ import java.util.ArrayList;
++import java.util.Comparator;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+@@ -1088,8 +1089,11 @@ public abstract class State implements Cloneable, Serializable {
+       List<Medication> renewedMedications =
+           new ArrayList<Medication>(person.chronicMedications.values().size());
+ 
+-      // Go through each chronic medication and "reorder"
+-      for (Medication chronicMedication : person.chronicMedications.values()) {
++      // Go through each chronic medication and "reorder" (sorted for deterministic behavior)
++      for (Medication chronicMedication : person.chronicMedications.values().stream()
++          .sorted(Comparator.comparing((Medication m) -> m.type)
++                           .thenComparing(m -> m.uuid))
++          .collect(Collectors.toList())) {
+         // RxNorm code
+         String primaryCode = chronicMedication.type;
+ 
+diff --git a/src/main/java/org/mitre/synthea/export/ClinicalNoteExporter.java b/src/main/java/org/mitre/synthea/export/ClinicalNoteExporter.java
+index 7de534f13..3e186516b 100644
+--- a/src/main/java/org/mitre/synthea/export/ClinicalNoteExporter.java
++++ b/src/main/java/org/mitre/synthea/export/ClinicalNoteExporter.java
+@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
+ 
+ import java.io.StringWriter;
+ import java.util.HashSet;
++import java.util.LinkedHashSet;
+ import java.util.Set;
+ 
+ import org.mitre.synthea.modules.LifecycleModule;
+@@ -67,10 +68,10 @@ public class ClinicalNoteExporter {
+   public static String export(Person person, Encounter encounter) {
+     // The export templates fill in the record by accessing the attributes
+     // of the Person, so we add a few attributes just for the purposes of export.
+-    Set<String> activeAllergies = new HashSet<String>();
+-    Set<String> activeConditions = new HashSet<String>();
+-    Set<String> activeMedications = new HashSet<String>();
+-    Set<String> activeProcedures = new HashSet<String>();
++    Set<String> activeAllergies = new LinkedHashSet<String>();
++    Set<String> activeConditions = new LinkedHashSet<String>();
++    Set<String> activeMedications = new LinkedHashSet<String>();
++    Set<String> activeProcedures = new LinkedHashSet<String>();
+ 
+     // need to loop through record until THIS encounter
+     // to get previous data, since "present" is what is present
+diff --git a/src/main/java/org/mitre/synthea/export/Exporter.java b/src/main/java/org/mitre/synthea/export/Exporter.java
+index 943b33d9f..e1f0f5196 100644
+--- a/src/main/java/org/mitre/synthea/export/Exporter.java
++++ b/src/main/java/org/mitre/synthea/export/Exporter.java
+@@ -240,7 +240,10 @@ public abstract class Exporter {
+       }
+       if (person.hasMultipleRecords) {
+         int i = 0;
+-        for (String key : person.records.keySet()) {
++        // Sort keys to ensure deterministic iteration order
++        List<String> sortedKeys = new ArrayList<>(person.records.keySet());
++        Collections.sort(sortedKeys);
++        for (String key : sortedKeys) {
+           person.record = person.records.get(key);
+           if (person.attributes.get(Person.ENTITY) != null) {
+             Entity entity = (Entity) person.attributes.get(Person.ENTITY);
+@@ -691,7 +694,10 @@ public abstract class Exporter {
+     //filtered.record = original.record.clone();
+ 
+     if (filtered.hasMultipleRecords) {
+-      for (String key : filtered.records.keySet()) {
++      // Sort keys to ensure deterministic iteration order
++      List<String> sortedKeys = new ArrayList<>(filtered.records.keySet());
++      Collections.sort(sortedKeys);
++      for (String key : sortedKeys) {
+         HealthRecord record = filtered.records.get(key);
+         filterForExport(record, yearsToKeep, endTime);
+       }
+diff --git a/src/main/java/org/mitre/synthea/world/concepts/HealthRecord.java b/src/main/java/org/mitre/synthea/world/concepts/HealthRecord.java
+index 05a3df040..477047dd4 100644
+--- a/src/main/java/org/mitre/synthea/world/concepts/HealthRecord.java
++++ b/src/main/java/org/mitre/synthea/world/concepts/HealthRecord.java
+@@ -15,6 +15,7 @@ import java.time.Instant;
+ import java.util.ArrayList;
+ import java.util.Date;
+ import java.util.HashMap;
++import java.util.LinkedHashMap;
+ import java.util.HashSet;
+ import java.util.Iterator;
+ import java.util.LinkedHashSet;
+@@ -1054,7 +1055,7 @@ public class HealthRecord implements Serializable {
+   public HealthRecord(Person person) {
+     this.person = person;
+     encounters = new ArrayList<Encounter>();
+-    present = new HashMap<String, Entry>();
++    present = new LinkedHashMap<String, Entry>();
+     if (person.attributes.get(Person.HOUSEHOLD) != null) {
+       this.demographicsAtRecordCreation = new HashMap<String,Object>(person.attributes);
+     }
+diff --git a/src/main/java/org/mitre/synthea/world/geography/Demographics.java b/src/main/java/org/mitre/synthea/world/geography/Demographics.java
+index 01a96bf5f..ea6c14c9b 100644
+--- a/src/main/java/org/mitre/synthea/world/geography/Demographics.java
++++ b/src/main/java/org/mitre/synthea/world/geography/Demographics.java
+@@ -7,6 +7,7 @@ import java.io.IOException;
+ import java.io.Serializable;
+ import java.util.Arrays;
+ import java.util.HashMap;
++import java.util.LinkedHashMap;
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -266,7 +267,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
+   public int pickIncome(RandomNumberGenerator random) {
+     // lazy-load in case this randomcollection isn't necessary
+     if (incomeDistribution == null) {
+-      Map<String, Double> tempIncome = new HashMap<>(income);
++      Map<String, Double> tempIncome = new LinkedHashMap<>(income);
+       tempIncome.remove("mean");
+       tempIncome.remove("median");
+       incomeDistribution = buildRandomCollectionFromMap(tempIncome);
+@@ -486,7 +487,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
+     d.state = line.get("STNAME");
+     d.county = line.get("CTYNAME");
+ 
+-    d.ages = new HashMap<String, Double>();
++    d.ages = new LinkedHashMap<String, Double>();
+ 
+     int i = 1;
+     for (String ageGroup : CSV_AGE_GROUPS) {
+@@ -497,13 +498,13 @@ public class Demographics implements Comparable<Demographics>, Serializable {
+     }
+     nonZeroDefaults(d.ages);
+ 
+-    d.gender = new HashMap<String, Double>();
++    d.gender = new LinkedHashMap<String, Double>();
+     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
+     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
+     nonZeroDefaults(d.gender);
+ 
+     double percentageTotal = 0;
+-    d.race = new HashMap<String, Double>();
++    d.race = new LinkedHashMap<String, Double>();
+     for (String race : CSV_RACES) {
+       double percentage = Double.parseDouble(line.get(race));
+       d.race.put(race.toLowerCase(), percentage);
+@@ -524,7 +525,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
+     }
+     nonZeroDefaults(d.race);
+ 
+-    d.income = new HashMap<String, Double>();
++    d.income = new LinkedHashMap<String, Double>();
+     for (String income : CSV_INCOMES) {
+       String incomeString = line.get(income);
+       if (incomeString.isEmpty()) {
+@@ -536,7 +537,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
+     }
+     nonZeroDefaults(d.income);
+ 
+-    d.education = new HashMap<String, Double>();
++    d.education = new LinkedHashMap<String, Double>();
+     for (String education : CSV_EDUCATIONS) {
+       String educationString = line.get(education);
+       if (educationString.isEmpty()) {

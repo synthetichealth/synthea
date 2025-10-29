@@ -36,6 +36,7 @@ plugins {
   id 'jacoco'
   id 'maven-publish'
   id 'signing'
+  id 'edu.illinois.nondex' version '2.1.7'
 }
 
 java {
