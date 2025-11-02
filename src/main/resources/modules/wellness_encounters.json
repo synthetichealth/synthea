@@ -1,7 +1,7 @@
 {
   "name": "Wellness Encounters",
   "remarks": [
-    "migrated observations from Lifecycle and Metabolic Syndrome ruby modules"
+    "Migrated observations from Lifecycle and Metabolic Syndrome ruby modules"
   ],
   "states": {
     "Initial": {
