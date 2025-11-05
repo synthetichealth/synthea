@@ -129,7 +129,7 @@ public class Generator {
   Predicate<String> modulePredicate;
 
   private static final String TARGET_AGE = "target_age";
-  
+
   // ANSI color codes for terminal output. Used to color the donation request at the end of a run.
   private static final String ANSI_GREEN = "\u001B[32m";
   private static final String ANSI_BLUE = "\u001B[34m";
@@ -137,10 +137,11 @@ public class Generator {
 
   // Link to donation page used in the donation request at the end of a run.
   private static final String DONATION_LINK = "https://github.com/sponsors/synthetichealth";
-  
+
   // Special formatting for terminal hyperlinks
   // Format: \033]8;;URL\007LINK_TEXT\033]8;;\007
-  private static final String FORMATTED_DONATION_LINK = "\033]8;;" + DONATION_LINK + "\007making a donation\033]8;;\007";
+  private static final String FORMATTED_DONATION_LINK = "\033]8;;" + DONATION_LINK
+          + "\007making a donation\033]8;;\007";
 
   /**
    * Helper class following the "Parameter Object" pattern.
@@ -378,6 +379,7 @@ public class Generator {
   /**
    * Generate the population, using the currently set configuration settings.
    */
+  @SuppressWarnings("LineLength")
   public void run() {
 
     // Import the fixed patient demographics records file, if a file path is given.
@@ -472,12 +474,14 @@ public class Generator {
             stats.get("alive").get(), stats.get("dead").get());
     System.out.printf("RNG=%d\n", this.populationRandom.getCount());
     System.out.printf("Clinician RNG=%d\n", this.clinicianRandom.getCount());
-    
-    System.out.printf("\n%sYou've just generated %d patients!%s We're happy to know Synthea is helping you with your project.\n", 
+
+    System.out.printf(
+            "\n%sYou've just generated %d patients!%s We're happy to know Synthea is helping you with your project.\n",
             ANSI_GREEN,
             totalGeneratedPopulation.get(),
             ANSI_RESET);
-    System.out.printf("Like what we're doing? Synthea is an open-source project, and your support helps us keep building.\n");
+    System.out.printf(
+            "Like what we're doing? Synthea is an open-source project, and your support helps us keep building.\n");
     System.out.printf("Please consider %s%s%s (%s).\n\n",
             ANSI_BLUE,
             FORMATTED_DONATION_LINK,
