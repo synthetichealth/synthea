@@ -378,7 +378,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.4.0'
+def mavenVersion = '3.4.1-SNAPSHOT'
 
 publishing {
     publications {
@@ -421,8 +421,8 @@ publishing {
     }
     repositories {
         maven {
-            def snapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
-            def releaseUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
+            def releaseUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
             url = mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
                 def user = project.hasProperty('ossToken') ? ossToken : ''
