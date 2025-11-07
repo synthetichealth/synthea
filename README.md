@@ -59,7 +59,7 @@ run_synthea [-s seed] [-p populationSize] [state [city]]
 
 Full usage info can be printed by passing the `-h` option.
 ```
-$ ./run_synthea -h     
+$ ./run_synthea -h
 
 > Task :run
 Usage: run_synthea [options] [state [city]]
@@ -111,7 +111,7 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 
 # License
 
-Copyright 2017-2023 The MITRE Corporation
+Copyright 2017-2025 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
