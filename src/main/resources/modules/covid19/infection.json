@@ -325,7 +325,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -336,7 +336,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -354,7 +354,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -365,7 +365,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -514,7 +514,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -525,7 +525,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -543,7 +543,7 @@
         {
           "system": "LOINC",
           "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+          "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -554,7 +554,7 @@
             {
               "system": "LOINC",
               "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+              "display": "SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -753,7 +753,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -764,7 +764,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -780,7 +780,7 @@
             {
               "system": "LOINC",
               "code": "92141-1",
-              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -796,7 +796,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -812,7 +812,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -828,7 +828,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -844,7 +844,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -860,7 +860,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -876,7 +876,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -892,7 +892,7 @@
             {
               "system": "LOINC",
               "code": "94040-3",
-              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -910,7 +910,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -921,7 +921,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -937,7 +937,7 @@
             {
               "system": "LOINC",
               "code": "92141-1",
-              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -953,7 +953,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -969,7 +969,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -985,7 +985,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1001,7 +1001,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1017,7 +1017,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1033,7 +1033,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1049,7 +1049,7 @@
             {
               "system": "LOINC",
               "code": "94040-3",
-              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1067,7 +1067,7 @@
         {
           "system": "LOINC",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         }
       ],
       "observations": [
@@ -1078,7 +1078,7 @@
             {
               "system": "LOINC",
               "code": "92142-9",
-              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1094,7 +1094,7 @@
             {
               "system": "LOINC",
               "code": "92141-1",
-              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1110,7 +1110,7 @@
             {
               "system": "LOINC",
               "code": "92131-2",
-              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1126,7 +1126,7 @@
             {
               "system": "LOINC",
               "code": "92140-3",
-              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1142,7 +1142,7 @@
             {
               "system": "LOINC",
               "code": "92139-5",
-              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1158,7 +1158,7 @@
             {
               "system": "LOINC",
               "code": "92138-7",
-              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1174,7 +1174,7 @@
             {
               "system": "LOINC",
               "code": "92130-4",
-              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1190,7 +1190,7 @@
             {
               "system": "LOINC",
               "code": "92134-6",
-              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {
@@ -1206,7 +1206,7 @@
             {
               "system": "LOINC",
               "code": "94040-3",
-              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
             }
           ],
           "value_code": {

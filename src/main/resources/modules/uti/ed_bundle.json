@@ -154,7 +154,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -173,7 +173,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -192,7 +192,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -211,7 +211,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -230,7 +230,7 @@
         {
           "system": "LOINC",
           "code": "75636-1",
-          "display": "Emergency severity index",
+          "display": "Emergency severity index [ESI]",
           "value_set": ""
         }
       ],
@@ -248,7 +248,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -293,7 +293,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -483,7 +483,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -591,7 +591,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure",
+          "display": "Blood Pressure panel with all children optional",
           "value_set": ""
         }
       ],
@@ -952,7 +952,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count",
+          "display": "CBC panel - Blood by Automated count",
           "value_set": ""
         }
       ],
@@ -1024,7 +1024,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1054,7 +1054,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1068,8 +1068,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1114,7 +1114,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1132,7 +1132,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count",
+          "display": "CBC panel - Blood by Automated count",
           "value_set": ""
         }
       ],
@@ -1204,7 +1204,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1234,7 +1234,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -1248,8 +1248,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "21000-5",
-              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+              "code": "788-0",
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1294,7 +1294,7 @@
             {
               "system": "LOINC",
               "code": "32623-1",
-              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+              "display": "Platelet [Entitic mean volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1613,7 +1613,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -1831,7 +1831,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -2049,7 +2049,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {
@@ -2177,7 +2177,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {

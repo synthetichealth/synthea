@@ -108,7 +108,7 @@
         {
           "system": "LOINC",
           "code": "2106-3",
-          "display": "Choriogonadotropin (pregnancy test) [Presence] in Urine",
+          "display": "Choriogonadotropin [Presence] in Urine",
           "value_set": ""
         }
       ],
@@ -127,7 +127,7 @@
         {
           "system": "LOINC",
           "code": "2106-3",
-          "display": "Choriogonadotropin (pregnancy test) [Presence] in Urine",
+          "display": "Choriogonadotropin [Presence] in Urine",
           "value_set": ""
         }
       ],

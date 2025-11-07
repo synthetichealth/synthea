@@ -221,7 +221,7 @@
         {
           "system": "RxNorm",
           "code": 542347,
-          "display": "isoflurane 99.9 % Inhalation Solution"
+          "display": "isoflurane 999 MG/ML Inhalation Solution"
         }
       ],
       "direct_transition": "Isoflurane_End",

@@ -173,7 +173,7 @@
         {
           "system": "LOINC",
           "code": "600-7",
-          "display": "Blood Culture, Routine"
+          "display": "Bacteria identified in Blood by Culture"
         }
       ],
       "observations": [

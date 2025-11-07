@@ -668,7 +668,7 @@
         {
           "system": "RxNorm",
           "code": 212446,
-          "display": "Azithromycin 250mg"
+          "display": "azithromycin 250 MG Oral Tablet [Zithromax]"
         }
       ],
       "assign_to_attribute": "Sore Throat Antibiotic",
@@ -680,7 +680,7 @@
         {
           "system": "RxNorm",
           "code": 284215,
-          "display": "Clindamycin 300mg"
+          "display": "clindamycin 300 MG Oral Capsule"
         }
       ],
       "direct_transition": "End_Encounter",
