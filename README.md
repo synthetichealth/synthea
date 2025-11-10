@@ -53,6 +53,7 @@ Generating the population one at a time...
 ```
 
 Command-line arguments may be provided to specify a state, city, population size, or seed for randomization.
+
 ```
 run_synthea [-s seed] [-p populationSize] [state [city]]
 ```
