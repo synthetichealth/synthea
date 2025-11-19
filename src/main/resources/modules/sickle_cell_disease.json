@@ -1,0 +1,214 @@
+{
+  "name": "sickle_cell_disease",
+  "remarks": [
+    "Simplified sickle cell disease (SCD) natural history for Synthea.",
+    "This is a starter module intended for refinement.",
+    "It oversamples SCD to ensure enough cases in small populations."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Decide_SCD"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    },
+
+    "Decide_SCD": {
+      "type": "Simple",
+      "remarks": [
+        "In reality SCD prevalence depends heavily on ancestry.",
+        "Here we oversample: 10% of patients get SCD to make testing easier.",
+        "Adjust the distributions to match true prevalence later."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.90,
+          "transition": "No_SCD"
+        },
+        {
+          "distribution": 0.10,
+          "transition": "SCD_Diagnosis"
+        }
+      ]
+    },
+
+    "No_SCD": {
+      "type": "Simple",
+      "remarks": [
+        "Patients without SCD simply exit this module."
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "SCD_Diagnosis": {
+      "type": "ConditionOnset",
+      "remarks": [
+        "Onset of sickle cell disease, assumed identified early in life.",
+        "SNOMED: 127040003 |Sickle cell anemia (disorder)| is used here."
+      ],
+      "target_encounter": "SCD_Newborn_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127040003",
+          "display": "Sickle cell anemia (disorder)"
+        }
+      ],
+      "direct_transition": "SCD_Newborn_Encounter"
+    },
+
+    "SCD_Newborn_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "remarks": [
+        "Newborn / early childhood encounter when SCD is recognized.",
+        "Could be a screening visit after newborn screening."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for screening for other specified conditions"
+        }
+      ],
+      "direct_transition": "Enter_Chronic_SCD"
+    },
+
+    "Enter_Chronic_SCD": {
+      "type": "SetAttribute",
+      "attribute": "scd_has_had_crisis",
+      "value": false,
+      "direct_transition": "Chronic_SCD"
+    },
+
+    "Chronic_SCD": {
+      "type": "Delay",
+      "remarks": [
+        "Represents time between potential vaso-occlusive crises.",
+        "Average one event every ~1-2 years for this simplified model.",
+        "Adjust the range or add age-based logic to refine."
+      ],
+      "range": {
+        "low": 6,
+        "high": 24,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.70,
+          "transition": "No_Crisis_This_Period"
+        },
+        {
+          "distribution": 0.30,
+          "transition": "Pain_Crisis_Encounter"
+        }
+      ]
+    },
+
+    "No_Crisis_This_Period": {
+      "type": "Simple",
+      "remarks": [
+        "Time passes with no crisis; loop back to Chronic_SCD.",
+        "You could add chronic complications (nephropathy, stroke risk, etc.) here later."
+      ],
+      "direct_transition": "Chronic_SCD"
+    },
+
+    "Pain_Crisis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "remarks": [
+        "Vaso-occlusive pain crisis leading to an ED encounter.",
+        "Could extend with labs, imaging, or inpatient admission."
+      ],
+      "reason": "SCD_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "443620000",
+          "display": "Sickle cell crisis (disorder)"
+        }
+      ],
+      "direct_transition": "Pain_Crisis_Treatment"
+    },
+
+    "Pain_Crisis_Treatment": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "Generic pain management for crisis.",
+        "Very simplified: a single opioid order.",
+        "Swap this RxNorm code for one that matches your formulary if desired."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 8640,
+          "display": "Morphine sulfate 10 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Mark_First_Crisis"
+    },
+
+    "Mark_First_Crisis": {
+      "type": "SetAttribute",
+      "remarks": [
+        "Flag that patient has had at least one crisis.",
+        "We then decide whether to initiate hydroxyurea."
+      ],
+      "attribute": "scd_has_had_crisis",
+      "value": true,
+      "distributed_transition": [
+        {
+          "distribution": 0.50,
+          "transition": "Hydroxyurea_Start"
+        },
+        {
+          "distribution": 0.50,
+          "transition": "Post_Crisis_Recovery"
+        }
+      ]
+    },
+
+    "Hydroxyurea_Start": {
+      "type": "MedicationOrder",
+      "remarks": [
+        "Start chronic hydroxyurea therapy after first crisis (simplified)."
+      ],
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 36567,
+          "display": "Hydroxyurea 500 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Post_Crisis_Recovery"
+    },
+
+    "Post_Crisis_Recovery": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "End of the crisis encounter; patient returns to chronic state.",
+        "We could add increased mortality risk by sending some proportion to SCD_Death instead."
+      ],
+      "direct_transition": "Chronic_SCD"
+    },
+
+    "SCD_Death": {
+      "type": "Death",
+      "remarks": [
+        "Optional: SCD-attributable death.",
+        "Not wired into the flow yet; you can add conditional transitions to this state based on age, number of crises, etc."
+      ],
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "D57.1",
+          "display": "Sickle-cell disease without crisis"
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}
