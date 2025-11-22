@@ -77,7 +77,6 @@
     "Position_of_Body_and_Posture": {
       "type": "Observation",
       "category": "exam",
-      "unit": "points",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -387,7 +386,6 @@
     "Cobb_21_25_R_0_2": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -410,7 +408,6 @@
     "Cobb_11_15_R_0_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -433,7 +430,6 @@
     "Cobb_16_20_R_3_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -456,7 +452,6 @@
     "Cobb_16_20_R_0_2": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -479,7 +474,6 @@
     "Cobb_21_25_R_3_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -502,7 +496,6 @@
     "Cobb_26_45_R_4_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -525,7 +518,6 @@
     "Cobb_31_35_R_0_3": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -548,7 +540,6 @@
     "Cobb_26_30_R_0_3": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -571,7 +562,6 @@
     "Cobb_36_45_R_0_1": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -594,7 +584,6 @@
     "Cobb_46_50_R_0_1": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -617,7 +606,6 @@
     "Cobb_46_50_R_2_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -640,7 +628,6 @@
     "Cobb_36_45_R_2_3": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -663,7 +650,6 @@
     "Cobb_51_65_R_0_5": {
       "type": "Observation",
       "category": "exam",
-      "unit": "degrees",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -686,7 +672,6 @@
     "Risser_0_2_C_16_20": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -709,7 +694,6 @@
     "Risser_0_5_C_11_15": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -732,7 +716,6 @@
     "Risser_3_5_C_16_20": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -755,7 +738,6 @@
     "Risser_3_5_C_21_25": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -778,7 +760,6 @@
     "Risser_4_5_C_26_45": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -801,7 +782,6 @@
     "Risser_0_3_C_31_35": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -824,7 +804,6 @@
     "Risser_0_3_C_26_30": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -847,7 +826,6 @@
     "Risser_0_1_C_36_45": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -870,7 +848,6 @@
     "Risser_0_1_C_46_50": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -893,7 +870,6 @@
     "Risser_2_5_C_46_50": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -916,7 +892,6 @@
     "Risser_2_3_C_36_45": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -939,7 +914,6 @@
     "Risser_0_5_C_51_65": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -962,7 +936,6 @@
     "Risser_0_2_C_21_25": {
       "type": "Observation",
       "category": "exam",
-      "unit": "stage",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1456,4 +1429,3 @@
   },
   "gmf_version": 2
 }
-
