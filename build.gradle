@@ -86,9 +86,9 @@ dependencies {
   implementation 'guru.nidi:graphviz-java:0.18.1'
   // JavaScript engine included for graphviz. It gets used
   // if someone does not have graphviz installed in their environment
-  implementation 'org.graalvm.js:js:22.3.3'
-  implementation 'org.graalvm.js:js-scriptengine:22.3.3'
-  implementation 'org.graalvm.sdk:graal-sdk:22.3.3'
+  implementation 'org.graalvm.js:js:25.0.1'
+  implementation 'org.graalvm.js:js-scriptengine:25.0.1'
+  implementation 'org.graalvm.sdk:graal-sdk:25.0.1'
 
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'

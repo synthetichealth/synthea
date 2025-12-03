@@ -12,7 +12,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'zulu'
 
       - name: Gradle cache
@@ -21,9 +21,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk17-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk11
+            ${{ runner.os }}-gradle-jdk17
             
       - name: Create Artifacts
         run: |
