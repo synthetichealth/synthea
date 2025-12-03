@@ -166,7 +166,7 @@
         {
           "system": "LOINC",
           "code": "33762-6",
-          "display": "NT-proBNP"
+          "display": "Natriuretic peptide.B prohormone N-Terminal [Mass/volume] in Serum or Plasma"
         }
       ],
       "range": {

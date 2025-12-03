@@ -51,7 +51,7 @@
             {
               "system": "LOINC",
               "code": "56051-6",
-              "display": "Do you consider yourself Hispanic/Latino?"
+              "display": "Hispanic or Latino"
             }
           ],
           "attribute": "prapare_a1"
@@ -75,7 +75,7 @@
             {
               "system": "LOINC",
               "code": "93035-4",
-              "display": "At any point in the past 2 years, has season or migrant farm work been your or your family's main source of income?"
+              "display": "Has season or migrant farm work been your or your family's main source of income at any point in past 2 years [PRAPARE]"
             }
           ],
           "attribute": "prapare_a3"
@@ -87,7 +87,7 @@
             {
               "system": "LOINC",
               "code": "93034-7",
-              "display": "Have you been discharged from the armed forces of the United States?"
+              "display": "Discharged from the U.S. Armed Forces"
             }
           ],
           "attribute": "prapare_a4"
@@ -111,7 +111,7 @@
             {
               "system": "LOINC",
               "code": "63512-8",
-              "display": "How many people are living or staying at this address?"
+              "display": "How many people are living or staying at this address [#]"
             }
           ],
           "attribute": "household_size"
@@ -135,7 +135,7 @@
             {
               "system": "LOINC",
               "code": "93033-9",
-              "display": "Are you worried about losing your housing?"
+              "display": "Are you worried about losing your housing [PRAPARE]"
             }
           ],
           "attribute": "prapare_a8"
@@ -195,7 +195,7 @@
             {
               "system": "LOINC",
               "code": "63586-2",
-              "display": "What was your best estimate of the total income of all family members from all sources, before taxes, in last year?"
+              "display": "What was your best estimate of the total income of all family members from all sources, before taxes, in last year [PhenX]"
             }
           ],
           "attribute": "income"
@@ -207,7 +207,7 @@
             {
               "system": "LOINC",
               "code": "93031-3",
-              "display": "In the past year, have you or any family members you live with been unable to get any of the following when it was really needed?"
+              "display": "Have you or any family members you live with been unable to get any of the following when it was really needed in past 1 year [PRAPARE]"
             }
           ],
           "attribute": "prapare_a14"
@@ -231,7 +231,7 @@
             {
               "system": "LOINC",
               "code": "93029-7",
-              "display": "How often do you see or talk to people that you care about and feel close to (For example: talking to friends on the phone, visiting friends or family, going to church or club meetings)?"
+              "display": "How often do you see or talk to people that you care about and feel close to [PRAPARE]"
             }
           ],
           "attribute": "prapare_a16"
@@ -255,7 +255,7 @@
             {
               "system": "LOINC",
               "code": "93028-9",
-              "display": "In the past year, have you spent more than 2 nights in a row in a jail, prison, detention center, or juvenile correctional facility?"
+              "display": "Have you spent more than 2 nights in a row in a jail, prison, detention center, or juvenile correctional facility in past 1 year [PRAPARE]"
             }
           ],
           "attribute": "prapare_a18"
@@ -267,7 +267,7 @@
             {
               "system": "LOINC",
               "code": "93027-1",
-              "display": "Are you a refugee?"
+              "display": "Are you a refugee"
             }
           ],
           "attribute": "prapare_a19"
@@ -279,7 +279,7 @@
             {
               "system": "LOINC",
               "code": "93026-3",
-              "display": "Do you feel physically and emotionally safe where you currently live?"
+              "display": "Do you feel physically and emotionally safe where you currently live [PRAPARE]"
             }
           ],
           "attribute": "prapare_a20"
@@ -291,7 +291,7 @@
             {
               "system": "LOINC",
               "code": "76501-6",
-              "display": "Within the last year, have you been afraid of your partner or ex-partner?"
+              "display": "Within the last year, have you been afraid of your partner or ex-partner"
             }
           ],
           "attribute": "prapare_a21"

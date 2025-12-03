@@ -217,8 +217,43 @@
       ]
     },
     "Question_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Question_1_Heterosexual",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexual_orientation",
+            "operator": "==",
+            "value": "heterosexual"
+          }
+        },
+        {
+          "transition": "Question_1_Homosexual",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexual_orientation",
+            "operator": "==",
+            "value": "homosexual"
+          }
+        },
+        {
+          "transition": "Question_1_Bisexual",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexual_orientation",
+            "operator": "==",
+            "value": "bisexual"
+          }
+        },
+        {
+          "transition": "Question_1_Unknown"
+        }
+      ]
+    },
+    "Question_1_Heterosexual": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -226,8 +261,62 @@
           "display": "Sexual orientation"
         }
       ],
-      "attribute": "sexual_orientation",
-      "unit": "{nominal}",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "20430005",
+        "display": "Heterosexual (finding)"
+      },
+      "direct_transition": "Question_2"
+    },
+    "Question_1_Homosexual": {
+      "type": "Observation",
+      "category": "social-history",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "76690-7",
+          "display": "Sexual orientation"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "38628009",
+        "display": "Homosexual (finding)"
+      },
+      "direct_transition": "Question_2"
+    },
+    "Question_1_Bisexual": {
+      "type": "Observation",
+      "category": "social-history",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "76690-7",
+          "display": "Sexual orientation"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "42035005",
+        "display": "Bisexual (finding)"
+      },
+      "direct_transition": "Question_2"
+    },
+    "Question_1_Unknown": {
+      "type": "Observation",
+      "category": "social-history",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "76690-7",
+          "display": "Sexual orientation"
+        }
+      ],
+      "value_code": {
+        "system": "NullFlavor",
+        "code": "UNK",
+        "display": "unknown"
+      },
       "direct_transition": "Question_2"
     },
     "Question_2": {

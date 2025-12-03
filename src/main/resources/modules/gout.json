@@ -78,7 +78,7 @@
         {
           "system": "SNOMED-CT",
           "code": "90560007",
-          "display": "Inflammatory disorder due to increased blood urate level (disorder)"
+          "display": "Gout"
         }
       ],
       "direct_transition": "Gout_Symptom1"

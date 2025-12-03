@@ -279,7 +279,7 @@
         {
           "system": "LOINC",
           "code": "91148-7",
-          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+          "display": "Pain intensity, Enjoyment of life, General activity scale [PEG]"
         }
       ],
       "observations": [
@@ -975,7 +975,7 @@
         {
           "system": "LOINC",
           "code": "91148-7",
-          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+          "display": "Pain intensity, Enjoyment of life, General activity scale [PEG]"
         }
       ],
       "observations": [
@@ -1342,7 +1342,7 @@
         {
           "system": "LOINC",
           "code": "91148-7",
-          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+          "display": "Pain intensity, Enjoyment of life, General activity scale [PEG]"
         }
       ],
       "direct_transition": "End follow up with positive test",
@@ -2569,7 +2569,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5602001",
-          "display": "Opioid abuse (disorder)"
+          "display": "Opioid abuse"
         }
       ],
       "distributed_transition": [
@@ -2641,7 +2641,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5602001",
-          "display": "Opioid abuse (disorder)"
+          "display": "Opioid abuse"
         }
       ],
       "direct_transition": "Enter_Treatment_Options"
@@ -2843,7 +2843,7 @@
         {
           "system": "LOINC",
           "code": "91148-7",
-          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+          "display": "Pain intensity, Enjoyment of life, General activity scale [PEG]"
         }
       ],
       "observations": [

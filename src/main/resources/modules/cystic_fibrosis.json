@@ -689,7 +689,7 @@
         {
           "system": "RxNorm",
           "code": 1243052,
-          "display": "Kalydeco 150 MG Oral Tablet"
+          "display": "ivacaftor 150 MG Oral Tablet [Kalydeco]"
         }
       ],
       "direct_transition": "Prescribe_Mucus_Thinner",
@@ -705,7 +705,7 @@
         {
           "system": "RxNorm",
           "code": 205532,
-          "display": "Pulmozyme (Dornase Alfa)"
+          "display": "dornase alfa 1 MG/ML Inhalation Solution [Pulmozyme]"
         }
       ],
       "reason": "Cystic_Fibrosis",

@@ -7005,7 +7005,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -7110,9 +7110,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "33914-3",
-          "display": "Estimated Glomerular Filtration Rate"
+          "display": "Estimated Glomerular Filtration Rate rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
         } ],
-        "text": "Estimated Glomerular Filtration Rate"
+        "text": "Estimated Glomerular Filtration Rate rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -7273,7 +7273,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2339-0",
-          "display": "Glucose"
+          "display": "Glucose [Mass/volume] in Blood"
         } ],
         "text": "Glucose"
       },
@@ -7316,7 +7316,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "6299-2",
-          "display": "Urea Nitrogen"
+          "display": "Urea Nitrogen [Mass/volume] in Blood"
         } ],
         "text": "Urea Nitrogen"
       },
@@ -7359,7 +7359,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "38483-4",
-          "display": "Creatinine"
+          "display": "Creatinine [Mass/volume] in Blood"
         } ],
         "text": "Creatinine"
       },
@@ -7402,7 +7402,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "49765-1",
-          "display": "Calcium"
+          "display": "Calcium [Mass/volume] in Blood"
         } ],
         "text": "Calcium"
       },
@@ -7445,7 +7445,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2947-0",
-          "display": "Sodium"
+          "display": "Sodium [Moles/volume] in Blood"
         } ],
         "text": "Sodium"
       },
@@ -7488,7 +7488,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "6298-4",
-          "display": "Potassium"
+          "display": "Potassium [Moles/volume] in Blood"
         } ],
         "text": "Potassium"
       },
@@ -7531,7 +7531,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2069-3",
-          "display": "Chloride"
+          "display": "Chloride [Moles/volume] in Blood"
         } ],
         "text": "Chloride"
       },
@@ -7574,7 +7574,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "20565-8",
-          "display": "Carbon Dioxide"
+          "display": "Carbon dioxide, total [Moles/volume] in Blood"
         } ],
         "text": "Carbon Dioxide"
       },
@@ -7660,7 +7660,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "2571-8",
-          "display": "Triglycerides"
+          "display": "Triglyceride [Mass/volume] in Serum or Plasma"
         } ],
         "text": "Triglycerides"
       },
@@ -7703,7 +7703,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "18262-6",
-          "display": "Low Density Lipoprotein Cholesterol"
+          "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
         } ],
         "text": "Low Density Lipoprotein Cholesterol"
       },
@@ -8105,7 +8105,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic Metabolic Panel - Blood"
         } ],
         "text": "Basic Metabolic Panel"
       },
@@ -8195,7 +8195,7 @@
         "display": "Triglycerides"
       }, {
         "reference": "urn:uuid:56f69817-ed4f-2fb2-b6ef-68851664eea2",
-        "display": "Low Density Lipoprotein Cholesterol"
+        "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
       }, {
         "reference": "urn:uuid:221d9173-89c1-037a-ce1a-7f882b6c3e1f",
         "display": "High Density Lipoprotein Cholesterol"
@@ -8635,7 +8635,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -9113,7 +9113,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -9591,7 +9591,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -10069,7 +10069,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -10547,7 +10547,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11025,7 +11025,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11503,7 +11503,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -11981,7 +11981,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -12976,7 +12976,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -13454,7 +13454,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -14493,7 +14493,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -14971,7 +14971,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -15449,7 +15449,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -15927,7 +15927,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -16405,7 +16405,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -16883,7 +16883,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -17361,7 +17361,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -17839,7 +17839,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -21565,7 +21565,7 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood Pressure panel with all children optional"
         } ],
         "text": "Blood Pressure"
       },
@@ -21676,9 +21676,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92142-9",
-          "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21721,9 +21721,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92141-1",
-          "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21766,9 +21766,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92131-2",
-          "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21811,9 +21811,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92140-3",
-          "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21856,9 +21856,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92139-5",
-          "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21901,9 +21901,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92138-7",
-          "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21946,9 +21946,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92130-4",
-          "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -21991,9 +21991,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92134-6",
-          "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22036,9 +22036,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "94040-3",
-          "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+          "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "text": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22166,9 +22166,9 @@
         "coding": [ {
           "system": "http://loinc.org",
           "code": "92143-7",
-          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
         } ],
-        "text": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        "text": "Respiratory pathogens DNA and RNA panel - Respiratory system specimen by NAA with probe detection"
       },
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552"
@@ -22184,31 +22184,31 @@
       } ],
       "result": [ {
         "reference": "urn:uuid:6ebdb3c3-4136-ff9e-691e-bdcf5b641215",
-        "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Influenza virus A RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:7c02d7f0-e1ac-e57a-b4ab-8e95a102c378",
-        "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Influenza virus B RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:78266cf3-92be-6fb9-47f7-e3ecf72f521a",
-        "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Respiratory syncytial virus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:43c4bd38-b795-8b9d-e1be-1c2a9f8231d5",
-        "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:9241628c-cafd-b8a0-d189-c7686d26d86f",
-        "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:c976d6ae-f979-8f70-d9df-bc2c40764644",
-        "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:a875f91f-6a7b-353a-4f86-43694d1ef522",
-        "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Rhinovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:f9579e3c-7b9a-3f2b-ef8f-8faa9fa25173",
-        "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Human metapneumovirus RNA [Presence] in Respiratory system specimen by NAA with probe detection"
       }, {
         "reference": "urn:uuid:07af7b8d-2545-ca33-a137-f38d18ce21a1",
-        "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+        "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory system specimen by NAA with probe detection"
       } ]
     },
     "request": {

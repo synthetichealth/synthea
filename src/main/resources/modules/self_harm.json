@@ -359,7 +359,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287185009",
-          "display": "Attempted suicide - cut/stab (event)"
+          "display": "Attempted suicide by cutting or stabbing"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -372,7 +372,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287182007",
-          "display": "Attempted suicide - suffocation (event)"
+          "display": "Attempted suicide by suffocation"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -579,7 +579,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287193009",
-          "display": "Suicide - firearms (event)"
+          "display": "Suicide using firearm (event)"
         }
       ],
       "direct_transition": "Death"
@@ -592,7 +592,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287191006",
-          "display": "Suicide - suffocation (event)"
+          "display": "Suicide by suffocation"
         }
       ],
       "direct_transition": "Death"

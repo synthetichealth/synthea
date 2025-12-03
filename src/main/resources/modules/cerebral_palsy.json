@@ -47,7 +47,7 @@
         {
           "system": "RxNorm",
           "code": 351875,
-          "display": "72 HR Scopolamine 0.0139 MG/HR Transdermal System [Transdermal Scop]"
+          "display": "72 HR scopolamine 0.0139 MG/HR Transdermal System [Transderm Scop]"
         }
       ],
       "direct_transition": "End_Cerebral_Palsy_Encounter1",
@@ -791,7 +791,7 @@
               {
                 "system": "RxNorm",
                 "code": 351875,
-                "display": "72 HR scopolamine 0.0139 MG/HR Transdermal System"
+                "display": "72 HR scopolamine 0.0139 MG/HR Transdermal System [Transderm Scop]"
               }
             ]
           }
@@ -1212,7 +1212,7 @@
         {
           "system": "RxNorm",
           "code": 1789958,
-          "display": "Dysport botulinum toxin A 300 UNT Injection"
+          "display": "abobotulinumtoxinA 300 UNT Injection [Dysport]"
         }
       ],
       "direct_transition": "Botulinum_Toxin_A_Injection",
@@ -1332,7 +1332,7 @@
         {
           "system": "RxNorm",
           "code": 1190766,
-          "display": "atropine sulfate 0.31 MG/ML Ophthalmic Solution (used Sublingual)"
+          "display": "atropine sulfate 0.31 MG/ML Ophthalmic Solution"
         }
       ],
       "direct_transition": "End_Cerebral_Palsy_Encounter1",

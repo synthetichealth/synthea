@@ -175,6 +175,18 @@ public class FHIRR4ExporterTest {
     baseTestFHIRR4Export(uscore6Validator);
   }
 
+  @Test
+  public void testFHIRR4ExportUsCore7() throws Exception {
+    setupTestFhirExport();
+
+    FhirR4.USE_US_CORE_IG = true;
+    FhirR4.US_CORE_VERSION = "7.0.0";
+    FhirR4.useUSCore7();
+
+    ValidationResources uscore7Validator = ValidationResources.forR4(FhirR4.USCoreVersion.v700);
+    baseTestFHIRR4Export(uscore7Validator);
+  }
+
   /**
    * Common test steps for testing FHIR R4 exporter. Assumes that various settings
    * have been previously set, and the given validator is in alignment with those settings.

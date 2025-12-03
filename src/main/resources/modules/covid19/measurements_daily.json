@@ -88,7 +88,7 @@
             {
               "system": "LOINC",
               "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
+              "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -118,7 +118,7 @@
             {
               "system": "LOINC",
               "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
+              "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
             }
           ],
           "range": {
@@ -133,7 +133,7 @@
             {
               "system": "LOINC",
               "code": "788-0",
-              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
             }
           ],
           "range": {
@@ -181,7 +181,7 @@
             {
               "system": "LOINC",
               "code": "770-8",
-              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
+              "display": "Neutrophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
@@ -196,7 +196,7 @@
             {
               "system": "LOINC",
               "code": "736-9",
-              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
+              "display": "Lymphocytes/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
@@ -211,7 +211,7 @@
             {
               "system": "LOINC",
               "code": "5905-5",
-              "display": "Monocytes/100 leukocytes in Blood by Automated count"
+              "display": "Monocytes/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
@@ -226,7 +226,7 @@
             {
               "system": "LOINC",
               "code": "713-8",
-              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
+              "display": "Eosinophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
@@ -241,7 +241,7 @@
             {
               "system": "LOINC",
               "code": "706-2",
-              "display": "Basophils/100 leukocytes in Blood by Automated count"
+              "display": "Basophils/Leukocytes in Blood by Automated count"
             }
           ],
           "range": {
@@ -590,7 +590,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "vital_sign": "EGFR"
@@ -804,7 +804,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+              "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
             }
           ],
           "range": {

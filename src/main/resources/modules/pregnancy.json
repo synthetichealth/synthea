@@ -63,6 +63,23 @@
           "display": "Normal pregnancy (finding)"
         }
       ],
+      "direct_transition": "Pregnancy_Status_Observation"
+    },
+    "Pregnancy_Status_Observation": {
+      "type": "Observation",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "82810-3",
+          "display": "Pregnancy status"
+        }
+      ],
+      "category": "social-history",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "77386006",
+        "display": "Pregnant"
+      },
       "direct_transition": "Delay_Eight_Weeks"
     },
     "Delay_Eight_Weeks": {
