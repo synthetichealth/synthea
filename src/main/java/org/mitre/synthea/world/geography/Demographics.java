@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -266,7 +267,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   public int pickIncome(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
     if (incomeDistribution == null) {
-      Map<String, Double> tempIncome = new HashMap<>(income);
+      Map<String, Double> tempIncome = new LinkedHashMap<>(income);
       tempIncome.remove("mean");
       tempIncome.remove("median");
       incomeDistribution = buildRandomCollectionFromMap(tempIncome);
@@ -486,7 +487,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     d.state = line.get("STNAME");
     d.county = line.get("CTYNAME");
 
-    d.ages = new HashMap<String, Double>();
+    d.ages = new LinkedHashMap<String, Double>();
 
     int i = 1;
     for (String ageGroup : CSV_AGE_GROUPS) {
@@ -497,13 +498,13 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     }
     nonZeroDefaults(d.ages);
 
-    d.gender = new HashMap<String, Double>();
+    d.gender = new LinkedHashMap<String, Double>();
     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
     nonZeroDefaults(d.gender);
 
     double percentageTotal = 0;
-    d.race = new HashMap<String, Double>();
+    d.race = new LinkedHashMap<String, Double>();
     for (String race : CSV_RACES) {
       double percentage = Double.parseDouble(line.get(race));
       d.race.put(race.toLowerCase(), percentage);
@@ -524,7 +525,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     }
     nonZeroDefaults(d.race);
 
-    d.income = new HashMap<String, Double>();
+    d.income = new LinkedHashMap<String, Double>();
     for (String income : CSV_INCOMES) {
       String incomeString = line.get(income);
       if (incomeString.isEmpty()) {
@@ -536,7 +537,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     }
     nonZeroDefaults(d.income);
 
-    d.education = new HashMap<String, Double>();
+    d.education = new LinkedHashMap<String, Double>();
     for (String education : CSV_EDUCATIONS) {
       String educationString = line.get(education);
       if (educationString.isEmpty()) {

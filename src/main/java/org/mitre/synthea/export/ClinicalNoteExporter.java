@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 
 import java.io.StringWriter;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.mitre.synthea.modules.LifecycleModule;
@@ -67,10 +68,10 @@ public class ClinicalNoteExporter {
   public static String export(Person person, Encounter encounter) {
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
-    Set<String> activeAllergies = new HashSet<String>();
-    Set<String> activeConditions = new HashSet<String>();
-    Set<String> activeMedications = new HashSet<String>();
-    Set<String> activeProcedures = new HashSet<String>();
+    Set<String> activeAllergies = new LinkedHashSet<String>();
+    Set<String> activeConditions = new LinkedHashSet<String>();
+    Set<String> activeMedications = new LinkedHashSet<String>();
+    Set<String> activeProcedures = new LinkedHashSet<String>();
 
     // need to loop through record until THIS encounter
     // to get previous data, since "present" is what is present
