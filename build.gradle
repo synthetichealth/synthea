@@ -21,7 +21,7 @@ buildscript {
   }
   dependencies {
     // commons-io used in getting the version id below
-    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    classpath 'commons-io:commons-io:2.5'
     // note that commons-io is already a dependency
     // of commons-csv in the primary dependencies above
   }
