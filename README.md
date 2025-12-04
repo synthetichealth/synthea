@@ -27,7 +27,7 @@ These instructions are intended for those wishing to examine the Synthea source 
 ### Installation
 
 **System Requirements:**
-Synthea<sup>TM</sup> requires Java JDK 11 or newer. We strongly recommend using a Long-Term Support (LTS) release of Java, 11 or 17, as issues may occur with more recent non-LTS versions.
+Synthea<sup>TM</sup> requires Java JDK 17 or newer. We strongly recommend using a Long-Term Support (LTS) release of Java, 17 or 25, as issues may occur with more recent non-LTS versions.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
