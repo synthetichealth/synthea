@@ -1,0 +1,69 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: cortisol_depression
+
+# Name of the model file
+model: Major_Depressive_Disorder_Model.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in hours (3 weeks total)
+duration: 504
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: cortisol_depression.png
+      type: line
+      title: "cortisol_depression (dh_dt)"
+      axisParamX: time
+      axisLabelX: dt (hr)
+      axisLabelY: dh
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: dh_dt
+        - param: dA_dt
+        - param: dP_dt
+        - param: dx1_internal_dt
+        - param: dx2_dt
+        - param: dx3_dt
+
+
+# possible parameters
+#      <parameter id="kms" metaid="metaid_0000010" name="kms" value="1"/>
+#      <parameter id="n" metaid="metaid_0000011" name="n" value="2"/>
+#      <parameter id="J" metaid="metaid_0000012" name="J" value="0.3"/>
+#      <parameter id="kmd" metaid="metaid_0000013" name="kmd" value="0.1"/>
+#      <parameter id="kcps" metaid="metaid_0000014" name="kcps" value="0.5"/>
+#      <parameter id="kcpd" metaid="metaid_0000015" name="kcpd" value="0.525"/>
+#      <parameter id="ka" metaid="metaid_0000016" name="ka" value="100"/>
+#      <parameter id="kd" metaid="metaid_0000017" name="kd" value="0.01"/>
+#      <parameter id="kp1" metaid="metaid_0000018" name="kp1" value="10"/>
+#      <parameter id="Jp" metaid="metaid_0000019" name="Jp" value="0.05"/>
+#      <parameter id="chk2" metaid="metaid_0000020" name="chk2" value="0"/>
+#      <parameter id="kicd" metaid="metaid_0000021" name="kicd" value="0.01"/>
+#      <parameter id="kcp2d" metaid="metaid_0000022" name="kcp2d" value="0.0525"/>
+#      <parameter id="kica" metaid="metaid_0000023" name="kica" value="20"/>
+#      <parameter id="chk2c" metaid="metaid_0000024" name="chk2c" value="0"/>
+#      <parameter id="kp2" metaid="metaid_0000025" name="kp2" value="0.1"/>
+#      <parameter id="ICtot" metaid="metaid_0000051" name="TFtot" value="1">
+
