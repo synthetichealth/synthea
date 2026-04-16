@@ -96,6 +96,95 @@ Some settings can be changed in `./src/main/resources/synthea.properties`.
 
 Synthea<sup>TM</sup> will output patient records in C-CDA and FHIR formats in `./output`.
 
+### Run with Docker
+
+Build the image from the repository root:
+```
+docker build -t synthea .
+```
+
+To stamp the image with a specific Synthea version string, pass a build argument:
+```
+docker build -t synthea --build-arg SYNTHEA_VERSION=$(git describe --tags --always) .
+```
+
+The container writes generated artifacts to `/synthea-output` by default. Bind-mount a local directory there to make outputs available on the host:
+```
+mkdir -p ./output
+docker run --rm \
+  -v "$(pwd)/output:/synthea-output" \
+  synthea -p 10 Massachusetts
+```
+
+Any Synthea CLI arguments can be passed after the image name and will be forwarded to the generator.
+If no CLI arguments are provided, the container can build the run configuration from environment variables such as `SYNTHEA_POPULATION`, `SYNTHEA_STATE`, and `SYNTHEA_CITY`.
+
+Set `SYNTHEA_OUTPUT_FORMAT` to choose the exported format without passing individual `--exporter.*` flags. Supported values are `fhir`, `bulk_fhir`, `fhir_stu3`, `fhir_dstu2`, `ccda`, `json`, `csv`, `cpcds`, `bfd`, `cdw`, `text`, and `clinical_note`. You can also provide a comma-separated list such as `fhir,csv`.
+
+Example:
+```
+mkdir -p ./output
+docker run --rm \
+  -e SYNTHEA_OUTPUT_FORMAT=csv \
+  -e SYNTHEA_POPULATION=10 \
+  -e SYNTHEA_STATE=Massachusetts \
+  -v "$(pwd)/output:/synthea-output" \
+  synthea
+```
+
+Supported runtime env vars are also listed in `.env.example`. You can print the supported container env names with:
+```
+docker run --rm synthea --help-env
+```
+
+To use a different in-container mount point, set `SYNTHEA_OUTPUT_DIR` and mount the same path:
+```
+mkdir -p ./synthea-data
+docker run --rm \
+  -e SYNTHEA_OUTPUT_DIR=/data \
+  -v "$(pwd)/synthea-data:/data" \
+  synthea -p 100 --exporter.csv.export=true Texas
+```
+
+Generated files will be written into the mounted host directory instead of the repository-local `./output` folder.
+
+### Run with Docker Compose
+
+For a repeatable local setup, use the included Compose file. It builds the image, mounts `./output` into the container, and runs Synthea with a default command:
+```
+docker compose up synthea
+```
+
+The default Compose runtime settings are currently:
+```
+SYNTHEA_POPULATION=10
+SYNTHEA_STATE=Massachusetts
+SYNTHEA_OUTPUT_FORMAT=fhir
+```
+
+The Compose setup also defaults `SYNTHEA_OUTPUT_FORMAT` to `fhir`. Override it per run or in your shell environment:
+```
+SYNTHEA_OUTPUT_FORMAT=csv docker compose run --rm synthea
+```
+
+You can set other generation defaults the same way:
+```
+SYNTHEA_POPULATION=100 SYNTHEA_STATE=Texas docker compose up synthea
+```
+
+If you pass explicit CLI arguments to `docker compose run` or `docker run`, those positional arguments are used instead of the env-based defaults:
+```
+docker compose run --rm synthea -p 100 Texas
+```
+
+If you want the image metadata to match a Git tag or commit, export `SYNTHEA_VERSION` before building:
+```
+export SYNTHEA_VERSION=$(git describe --tags --always)
+docker compose build synthea
+```
+
+Compose automatically reads a project-local `.env` file for the `${...}` substitutions used in `compose.yaml`. The included `.env.example` shows all supported values for this container setup.
+
 ### Synthea<sup>TM</sup> GraphViz
 Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 ```
