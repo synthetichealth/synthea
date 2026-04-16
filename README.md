@@ -132,10 +132,7 @@ docker run --rm \
   synthea
 ```
 
-Supported runtime env vars are also listed in `.env.example`. You can print the supported container env names with:
-```
-docker run --rm synthea --help-env
-```
+Supported runtime env vars are also listed in `.env.example`.
 
 To use a different in-container mount point, set `SYNTHEA_OUTPUT_DIR` and mount the same path:
 ```
