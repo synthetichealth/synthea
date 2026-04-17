@@ -112,12 +112,14 @@ The container writes generated artifacts to `/synthea-output` by default. Bind-m
 ```
 mkdir -p ./output
 docker run --rm \
+  -e SYNTHEA_POPULATION=10 \
+  -e SYNTHEA_STATE=Massachusetts \
   -v "$(pwd)/output:/synthea-output" \
-  synthea -p 10 Massachusetts
+  synthea
 ```
 
-Any Synthea CLI arguments can be passed after the image name and will be forwarded to the generator.
-If no CLI arguments are provided, the container can build the run configuration from environment variables such as `SYNTHEA_POPULATION`, `SYNTHEA_STATE`, and `SYNTHEA_CITY`.
+Runtime configuration for the Docker image is environment-variable-only. Set `SYNTHEA_*` values to control generation (for example `SYNTHEA_POPULATION`, `SYNTHEA_STATE`, and `SYNTHEA_CITY`).
+Passing runtime CLI arguments to the container is not supported.
 
 Set `SYNTHEA_OUTPUT_FORMAT` to choose the exported format without passing individual `--exporter.*` flags. Supported values are `fhir`, `bulk_fhir`, `fhir_stu3`, `fhir_dstu2`, `ccda`, `json`, `csv`, `cpcds`, `bfd`, `cdw`, `text`, and `clinical_note`. You can also provide a comma-separated list such as `fhir,csv`.
 
@@ -140,7 +142,10 @@ mkdir -p ./synthea-data
 docker run --rm \
   -e SYNTHEA_OUTPUT_DIR=/data \
   -v "$(pwd)/synthea-data:/data" \
-  synthea -p 100 --exporter.csv.export=true Texas
+  -e SYNTHEA_OUTPUT_FORMAT=csv \
+  -e SYNTHEA_POPULATION=100 \
+  -e SYNTHEA_STATE=Texas \
+  synthea
 ```
 
 Generated files will be written into the mounted host directory instead of the repository-local `./output` folder.
@@ -169,9 +174,9 @@ You can set other generation defaults the same way:
 SYNTHEA_POPULATION=100 SYNTHEA_STATE=Texas docker compose up synthea
 ```
 
-If you pass explicit CLI arguments to `docker compose run` or `docker run`, those positional arguments are used instead of the env-based defaults:
+To list the supported runtime environment variables from the container image:
 ```
-docker compose run --rm synthea -p 100 Texas
+docker run --rm synthea --help-env
 ```
 
 If you want the image metadata to match a Git tag or commit, export `SYNTHEA_VERSION` before building:

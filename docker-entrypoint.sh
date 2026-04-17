@@ -26,6 +26,41 @@ keep_patients_path="${SYNTHEA_KEEP_PATIENTS_PATH:-}"
 
 mkdir -p "$output_dir"
 
+original_argc=$#
+
+if [ "$original_argc" -eq 1 ] && [ "$1" = "--help-env" ]; then
+	echo "Supported runtime environment variables:" >&2
+	echo "  SYNTHEA_OUTPUT_DIR" >&2
+	echo "  SYNTHEA_OUTPUT_FORMAT" >&2
+	echo "  SYNTHEA_POPULATION" >&2
+	echo "  SYNTHEA_STATE" >&2
+	echo "  SYNTHEA_CITY" >&2
+	echo "  SYNTHEA_SEED" >&2
+	echo "  SYNTHEA_CLINICIAN_SEED" >&2
+	echo "  SYNTHEA_SINGLE_PERSON_SEED" >&2
+	echo "  SYNTHEA_REFERENCE_DATE" >&2
+	echo "  SYNTHEA_END_DATE" >&2
+	echo "  SYNTHEA_GENDER" >&2
+	echo "  SYNTHEA_AGE_RANGE" >&2
+	echo "  SYNTHEA_OVERFLOW" >&2
+	echo "  SYNTHEA_MODULES" >&2
+	echo "  SYNTHEA_CONFIG_FILE" >&2
+	echo "  SYNTHEA_LOCAL_MODULES_DIR" >&2
+	echo "  SYNTHEA_INITIAL_SNAPSHOT" >&2
+	echo "  SYNTHEA_UPDATED_SNAPSHOT" >&2
+	echo "  SYNTHEA_UPDATE_DAYS" >&2
+	echo "  SYNTHEA_FIXED_RECORD_PATH" >&2
+	echo "  SYNTHEA_KEEP_PATIENTS_PATH" >&2
+	exit 0
+fi
+
+if [ "$original_argc" -gt 0 ]; then
+	echo "Runtime CLI arguments are not supported in this image." >&2
+	echo "Configure Synthea using SYNTHEA_* environment variables instead." >&2
+	echo "Use --help-env to list supported environment variables." >&2
+	exit 1
+fi
+
 set -- "--exporter.baseDirectory=$output_dir" "$@"
 
 if [ -n "$output_format" ]; then
@@ -123,52 +158,24 @@ if [ -n "$output_format" ]; then
 	IFS="$old_ifs"
 fi
 
-if [ "$#" -eq 1 ] && [ "$1" = "--help-env" ]; then
-	echo "Supported runtime environment variables:" >&2
-	echo "  SYNTHEA_OUTPUT_DIR" >&2
-	echo "  SYNTHEA_OUTPUT_FORMAT" >&2
-	echo "  SYNTHEA_POPULATION" >&2
-	echo "  SYNTHEA_STATE" >&2
-	echo "  SYNTHEA_CITY" >&2
-	echo "  SYNTHEA_SEED" >&2
-	echo "  SYNTHEA_CLINICIAN_SEED" >&2
-	echo "  SYNTHEA_SINGLE_PERSON_SEED" >&2
-	echo "  SYNTHEA_REFERENCE_DATE" >&2
-	echo "  SYNTHEA_END_DATE" >&2
-	echo "  SYNTHEA_GENDER" >&2
-	echo "  SYNTHEA_AGE_RANGE" >&2
-	echo "  SYNTHEA_OVERFLOW" >&2
-	echo "  SYNTHEA_MODULES" >&2
-	echo "  SYNTHEA_CONFIG_FILE" >&2
-	echo "  SYNTHEA_LOCAL_MODULES_DIR" >&2
-	echo "  SYNTHEA_INITIAL_SNAPSHOT" >&2
-	echo "  SYNTHEA_UPDATED_SNAPSHOT" >&2
-	echo "  SYNTHEA_UPDATE_DAYS" >&2
-	echo "  SYNTHEA_FIXED_RECORD_PATH" >&2
-	echo "  SYNTHEA_KEEP_PATIENTS_PATH" >&2
-	exit 0
-fi
-
-if [ "$#" -eq 0 ]; then
-	[ -n "$seed" ] && set -- "$@" -s "$seed"
-	[ -n "$clinician_seed" ] && set -- "$@" -cs "$clinician_seed"
-	[ -n "$single_person_seed" ] && set -- "$@" -ps "$single_person_seed"
-	[ -n "$population" ] && set -- "$@" -p "$population"
-	[ -n "$reference_date" ] && set -- "$@" -r "$reference_date"
-	[ -n "$end_date" ] && set -- "$@" -e "$end_date"
-	[ -n "$gender" ] && set -- "$@" -g "$gender"
-	[ -n "$age_range" ] && set -- "$@" -a "$age_range"
-	[ -n "$overflow" ] && set -- "$@" -o "$overflow"
-	[ -n "$modules" ] && set -- "$@" -m "$modules"
-	[ -n "$config_file" ] && set -- "$@" -c "$config_file"
-	[ -n "$local_modules_dir" ] && set -- "$@" -d "$local_modules_dir"
-	[ -n "$initial_snapshot" ] && set -- "$@" -i "$initial_snapshot"
-	[ -n "$updated_snapshot" ] && set -- "$@" -u "$updated_snapshot"
-	[ -n "$update_days" ] && set -- "$@" -t "$update_days"
-	[ -n "$fixed_record_path" ] && set -- "$@" -f "$fixed_record_path"
-	[ -n "$keep_patients_path" ] && set -- "$@" -k "$keep_patients_path"
-	[ -n "$state" ] && set -- "$@" "$state"
-	[ -n "$city" ] && set -- "$@" "$city"
-fi
+[ -n "$seed" ] && set -- "$@" -s "$seed"
+[ -n "$clinician_seed" ] && set -- "$@" -cs "$clinician_seed"
+[ -n "$single_person_seed" ] && set -- "$@" -ps "$single_person_seed"
+[ -n "$population" ] && set -- "$@" -p "$population"
+[ -n "$reference_date" ] && set -- "$@" -r "$reference_date"
+[ -n "$end_date" ] && set -- "$@" -e "$end_date"
+[ -n "$gender" ] && set -- "$@" -g "$gender"
+[ -n "$age_range" ] && set -- "$@" -a "$age_range"
+[ -n "$overflow" ] && set -- "$@" -o "$overflow"
+[ -n "$modules" ] && set -- "$@" -m "$modules"
+[ -n "$config_file" ] && set -- "$@" -c "$config_file"
+[ -n "$local_modules_dir" ] && set -- "$@" -d "$local_modules_dir"
+[ -n "$initial_snapshot" ] && set -- "$@" -i "$initial_snapshot"
+[ -n "$updated_snapshot" ] && set -- "$@" -u "$updated_snapshot"
+[ -n "$update_days" ] && set -- "$@" -t "$update_days"
+[ -n "$fixed_record_path" ] && set -- "$@" -f "$fixed_record_path"
+[ -n "$keep_patients_path" ] && set -- "$@" -k "$keep_patients_path"
+[ -n "$state" ] && set -- "$@" "$state"
+[ -n "$city" ] && set -- "$@" "$city"
 
 exec java ${JAVA_OPTS:-} -jar /app/synthea.jar "$@"
