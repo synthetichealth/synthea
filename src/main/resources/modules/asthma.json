@@ -396,12 +396,12 @@
       "type": "SetAttribute",
       "attribute": "asthma_type",
       "value": "lifelong",
-      "direct_transition": "Next_Adult_Welness_Encounter"
+      "direct_transition": "Lifelong_Asthma_Begins"
     },
     "Next_Adult_Welness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Lifelong_Asthma_Begins",
+      "direct_transition": "End_Wellness_1",
       "reason": "asthma_condition"
     },
     "Lifelong_Asthma_Begins": {
@@ -415,7 +415,7 @@
           "display": "Asthma (disorder)"
         }
       ],
-      "direct_transition": "End_Wellness_1"
+      "direct_transition": "Next_Adult_Welness_Encounter"
     },
     "Potential_Asthma_Attack": {
       "type": "Simple",
