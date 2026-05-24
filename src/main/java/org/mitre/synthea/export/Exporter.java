@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -901,8 +902,19 @@ public abstract class Exporter {
       return person.attributes.get(Person.ID) + tag + "." + extension;
     } else {
       // ensure unique filenames for now
-      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
+      return safeFilename(person.attributes.get(Person.NAME).toString()) + "_"
           + person.attributes.get(Person.ID) + tag + "." + extension;
     }
+  }
+
+  /**
+   * Sanitize patient names before using them in filenames.
+   * @param name the patient name
+   * @return a filesystem-safe filename segment
+   */
+  private static String safeFilename(String name) {
+    String normalized = Normalizer.normalize(name, Normalizer.Form.NFD)
+        .replaceAll("\\p{M}", "");
+    return normalized.replaceAll("[^A-Za-z0-9._-]", "_");
   }
 }
