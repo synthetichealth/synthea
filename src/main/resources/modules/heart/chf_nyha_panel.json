@@ -192,7 +192,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -208,7 +208,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -237,7 +237,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -253,7 +253,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -282,7 +282,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -298,7 +298,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -327,7 +327,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -343,7 +343,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -372,7 +372,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -388,7 +388,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -417,7 +417,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -433,7 +433,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -462,7 +462,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -478,7 +478,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -507,7 +507,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -523,7 +523,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -552,7 +552,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -568,7 +568,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -597,7 +597,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -613,7 +613,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -642,7 +642,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -658,7 +658,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -687,7 +687,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
@@ -703,7 +703,7 @@
           }
         },
         {
-          "category": "laboratory",
+          "category": "survey",
           "unit": "",
           "codes": [
             {
