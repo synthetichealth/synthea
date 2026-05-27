@@ -7,9 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -499,5 +497,45 @@ public class CSVExporterTest {
     } catch (IllegalArgumentException e) {
       fail("CSV exporter should not throw an exception when only included files are set");
     }
+  }
+
+  @Test
+  public void filterOrganizationsAndProviders() throws Exception{
+    CSVExporter.getInstance().init();
+
+    int numberOfPeople = 15;
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    exportOpts.deferExports = true;
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = numberOfPeople;
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    generator.options.overflow = false;
+    for(int i = 0; i < numberOfPeople; i++){
+      generator.generatePerson(i);
+    }
+    Exporter.runPostCompletionExports(generator, exportOpts);
+
+    File expectedExportFolder = exportDir.toPath().resolve("csv").toFile();
+    File organizationsFile = expectedExportFolder.toPath().resolve("organizations.csv").toFile();
+    File encountersFiles = expectedExportFolder.toPath().resolve("encounters.csv").toFile();
+
+    String orgData = new String(Files.readAllBytes(organizationsFile.toPath()));
+    String encounterData = new String(Files.readAllBytes(encountersFiles.toPath()));
+
+    List<LinkedHashMap<String, String>> orgRows = SimpleCSV.parse(orgData);
+    List<LinkedHashMap<String, String>> encounterRows = SimpleCSV.parse(encounterData);
+
+    Set<String> orgIds = new HashSet<>();
+    for(LinkedHashMap<String, String> row : orgRows){
+      orgIds.add(row.get("Id"));
+    }
+
+    Set<String> orgIdsInEncounters = new HashSet<>();
+    for(LinkedHashMap<String, String> row : encounterRows){
+      orgIdsInEncounters.add(row.get("ORGANIZATION"));
+    }
+
+    assertTrue("Organizations CSV contains organizations not present in any encounter",
+            orgIdsInEncounters.containsAll(orgIds));
   }
 }

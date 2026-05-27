@@ -13,14 +13,8 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -79,6 +73,12 @@ public class CSVExporter {
    */
   private AtomicLong transactionId;
 
+  // Track IDs of providers and clinicians that were actually exported,
+  // so that exportOrganizationsAndProviders can filter out unused records
+  // (e.g. when using a Keep Module that filter many patients)
+  private Set<String> exportedProviderIds;
+  private Set<String> exportedClinicianIds;
+
   /**
    * Constructor for the CSVExporter - initialize the specified files and store
    * the writers in fields.
@@ -91,6 +91,8 @@ public class CSVExporter {
     fileManager = new CSVFileManager();
 
     this.transactionId = new AtomicLong();
+    this.exportedProviderIds = ConcurrentHashMap.newKeySet();
+    this.exportedClinicianIds = ConcurrentHashMap.newKeySet();
   }
 
   /**
@@ -126,13 +128,16 @@ public class CSVExporter {
       Table<Integer, String, AtomicInteger> utilization = org.getUtilization();
       int totalEncounters =
           utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
-      if (totalEncounters > 0) {
+      // Only export organizations and providers linked to exported patients
+      if (totalEncounters > 0 && exportedProviderIds.contains(org.getResourceID())) {
         exportOrganization(org, totalEncounters);
         Map<String, ArrayList<Clinician>> providers = org.clinicianMap;
         for (String speciality : providers.keySet()) {
           ArrayList<Clinician> clinicians = providers.get(speciality);
           for (Clinician clinician : clinicians) {
-            exportProvider(clinician, org.getResourceID());
+            if(exportedClinicianIds.contains(clinician.getResourceID())) {
+              exportProvider(clinician, org.getResourceID());
+            }
           }
         }
       }
@@ -421,12 +426,14 @@ public class CSVExporter {
     // ORGANIZATION
     if (encounter.provider != null) {
       s.append(encounter.provider.getResourceID()).append(',');
+      exportedProviderIds.add(encounter.provider.getResourceID());
     } else {
       s.append(',');
     }
     // PROVIDER
     if (encounter.clinician != null) {
       s.append(encounter.clinician.getResourceID()).append(',');
+      exportedClinicianIds.add(encounter.clinician.getResourceID());
     } else {
       s.append(',');
     }
