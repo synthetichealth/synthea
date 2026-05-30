@@ -7,13 +7,18 @@ import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,8 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.mitre.synthea.export.CSVConstants;
-import org.mitre.synthea.export.CSVFileManager;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -135,7 +138,7 @@ public class CSVExporter {
         for (String speciality : providers.keySet()) {
           ArrayList<Clinician> clinicians = providers.get(speciality);
           for (Clinician clinician : clinicians) {
-            if(exportedClinicianIds.contains(clinician.getResourceID())) {
+            if (exportedClinicianIds.contains(clinician.getResourceID())) {
               exportProvider(clinician, org.getResourceID());
             }
           }

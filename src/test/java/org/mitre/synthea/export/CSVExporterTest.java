@@ -7,8 +7,11 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -500,7 +503,7 @@ public class CSVExporterTest {
   }
 
   @Test
-  public void filterOrganizationsAndProviders() throws Exception{
+  public void filterOrganizationsAndProviders() throws Exception {
     CSVExporter.getInstance().init();
 
     int numberOfPeople = 15;
@@ -510,7 +513,7 @@ public class CSVExporterTest {
     generatorOpts.population = numberOfPeople;
     Generator generator = new Generator(generatorOpts, exportOpts);
     generator.options.overflow = false;
-    for(int i = 0; i < numberOfPeople; i++){
+    for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);
     }
     Exporter.runPostCompletionExports(generator, exportOpts);
@@ -526,12 +529,12 @@ public class CSVExporterTest {
     List<LinkedHashMap<String, String>> encounterRows = SimpleCSV.parse(encounterData);
 
     Set<String> orgIds = new HashSet<>();
-    for(LinkedHashMap<String, String> row : orgRows){
+    for (LinkedHashMap<String, String> row : orgRows) {
       orgIds.add(row.get("Id"));
     }
 
     Set<String> orgIdsInEncounters = new HashSet<>();
-    for(LinkedHashMap<String, String> row : encounterRows){
+    for (LinkedHashMap<String, String> row : encounterRows) {
       orgIdsInEncounters.add(row.get("ORGANIZATION"));
     }
 
