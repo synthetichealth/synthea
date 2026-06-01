@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -540,5 +542,9 @@ public class CSVExporterTest {
 
     assertTrue("Organizations CSV contains organizations not present in any encounter",
             orgIdsInEncounters.containsAll(orgIds));
+
+    CSVExporter.getInstance().init();
+    TestHelper.exportOff();
+    TestHelper.loadTestProperties();
   }
 }
