@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+﻿package org.mitre.synthea.modules;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -89,6 +89,11 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   /** Cycle time for blood pressure variation in milliseconds. */
   private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
 
+  /** Minimum physiologically plausible systolic blood pressure in mmHg. */
+  private static final double MIN_SYSTOLIC_BP = 70.0;
+  /** Minimum physiologically plausible diastolic blood pressure in mmHg. */
+  private static final double MIN_DIASTOLIC_BP = 40.0;
+
   // simple 1-value cache, so that we get consistent results when called with the same timestamp
   // note that consistency is not guaranteed if we go time A -> time B -> time A across modules.
   // in that case we'd need a bigger cache
@@ -125,10 +130,13 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
     double baseline = calculateBaseline(person);
 
-    cachedValue = baseline
-      + getMedicationImpacts(person)
-      + getLifestyleImpacts(person, baseline, time)
-      + getVariation(person, time);
+    double computed = baseline
+        + getMedicationImpacts(person)
+        + getLifestyleImpacts(person, baseline, time)
+        + getVariation(person, time);
+
+    double minValue = sysDias == SysDias.SYSTOLIC ? MIN_SYSTOLIC_BP : MIN_DIASTOLIC_BP;
+    cachedValue = Math.max(minValue, computed);
 
     cacheTime = time;
     return cachedValue;

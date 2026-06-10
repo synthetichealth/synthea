@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+﻿package org.mitre.synthea.modules;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -71,12 +71,45 @@ public class VitalsValueGeneratorTest {
 
   @Test
   public void testSystolicTrendGenerator() {
-    // TODO: Right now this only tests for a lack of crashes. What might be other good criteria?
     BloodPressureValueGenerator bloodPressureValueGenerator = new BloodPressureValueGenerator(
         person, BloodPressureValueGenerator.SysDias.SYSTOLIC);
     for (long time = 0L; time < ONE_DAY * 100; time += ONE_DAY) {
       double testValue = bloodPressureValueGenerator.getValue(time);
-      System.out.println("Value @ " + time + ": " + testValue);
+      assertTrue("Systolic BP should always be >= 70 mmHg", testValue >= 70.0);
+    }
+  }
+
+  /**
+   * Regression test for issue #1413: when multiple hypertension drugs are active,
+   * combined medication impacts can drive the calculated BP below zero, causing a
+   * RuntimeException in the Framingham lookup tables. The generator must clamp
+   * the result to a physiologically plausible minimum.
+   */
+  @Test
+  public void testSystolicBloodPressureNeverNegativeWithManyMedications() {
+    person.attributes.put("hypertension", true);
+
+    // Activate every HTN drug from htn_drugs.csv so medication impacts are maximised.
+    String[] htnDrugCodes = {
+        "197499", "313988", "313096", "310818", "977880", "310798",
+        "314076", "979492", "1091646", "1235144", "830877", "197361",
+        "308136", "866514", "866412", "197381", "197383", "905395",
+        "197987", "197745", "197626"
+    };
+    for (String code : htnDrugCodes) {
+      person.record.medicationStart(time, code, true);
+    }
+
+    BloodPressureValueGenerator systolicGenerator = new BloodPressureValueGenerator(
+        person, BloodPressureValueGenerator.SysDias.SYSTOLIC);
+    BloodPressureValueGenerator diastolicGenerator = new BloodPressureValueGenerator(
+        person, BloodPressureValueGenerator.SysDias.DIASTOLIC);
+
+    for (long t = time; t < time + ONE_DAY * 365; t += ONE_DAY) {
+      double systolic = systolicGenerator.getValue(t);
+      double diastolic = diastolicGenerator.getValue(t);
+      assertTrue("Systolic BP must not go below 70 mmHg, got: " + systolic, systolic >= 70.0);
+      assertTrue("Diastolic BP must not go below 40 mmHg, got: " + diastolic, diastolic >= 40.0);
     }
   }
 }
