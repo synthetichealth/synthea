@@ -405,8 +405,6 @@ public class PayerTest {
   public void receiveDualEligible() {
     int birthYear = 1950;
     long birthTime = Utilities.convertCalendarYearsToTime(birthYear);
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(birthTime);
 
     // Below Poverty Level and Over 65, thus Dual Eligble.
     Person person = new Person(0L);
@@ -424,14 +422,16 @@ public class PayerTest {
       assertEquals(getGovernmentPayer(PayerManager.MEDICAID),
           person.coverage.getPlanAtTime(currentTime).getPayer());
     }
-    c.setTimeInMillis(birthTime);
-    c.add(Calendar.YEAR, 64);
-    long age64Time = c.getTimeInMillis();
+    // Use Utilities.convertCalendarYearsToTime (UTC-based) for age boundary checks,
+    // consistent with birthTime and the loop above. Using Calendar.getInstance()
+    // (local timezone) caused a timezone/DST mismatch where age64Time could land on
+    // Dec 31 in UTC, making Person.age() return 64 instead of 65 and causing
+    // MedicareEligible to fail (GitHub issue #1530).
+    long age64Time = Utilities.convertCalendarYearsToTime(birthYear + 64);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
     // The person is now 65 and qualifies for Medicare in addition to Medicaid.
-    c.add(Calendar.YEAR, 1);
-    long age65Time = c.getTimeInMillis();
+    long age65Time = Utilities.convertCalendarYearsToTime(birthYear + 65);
     healthInsModule.process(person, age65Time);
     assertEquals(PayerManager.DUAL_ELIGIBLE,
         person.coverage.getPlanAtTime(age65Time).getPayer().getName());
