@@ -89,11 +89,6 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   /** Cycle time for blood pressure variation in milliseconds. */
   private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
 
-  /** Minimum physiologically plausible systolic blood pressure in mmHg. */
-  private static final double MIN_SYSTOLIC_BP = 70.0;
-  /** Minimum physiologically plausible diastolic blood pressure in mmHg. */
-  private static final double MIN_DIASTOLIC_BP = 40.0;
-
   // simple 1-value cache, so that we get consistent results when called with the same timestamp
   // note that consistency is not guaranteed if we go time A -> time B -> time A across modules.
   // in that case we'd need a bigger cache
@@ -135,7 +130,8 @@ public class BloodPressureValueGenerator extends ValueGenerator {
         + getLifestyleImpacts(person, baseline, time)
         + getVariation(person, time);
 
-    double minValue = sysDias == SysDias.SYSTOLIC ? MIN_SYSTOLIC_BP : MIN_DIASTOLIC_BP;
+    // Use the configured normal range minimum as the floor so the limit is config-driven
+    double minValue = sysDias == SysDias.SYSTOLIC ? NORMAL_SYS_BP_RANGE[0] : NORMAL_DIA_BP_RANGE[0];
     cachedValue = Math.max(minValue, computed);
 
     cacheTime = time;
