@@ -43,6 +43,14 @@ public class App {
     System.out.println("         [-k keepMatchingPatientsPath]");
     System.out.println("         [--config*=value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
+    System.out.println("");
+    System.out.println("Note: When using both -c (config file) and --config*=value (command-line),");
+    System.out.println("the last one specified wins. For example:");
+    System.out.println("  run_synthea --exporter.baseDirectory=./out1/ -c myconfig.properties");
+    System.out.println("    -> the properties file value for exporter.baseDirectory takes effect");
+    System.out.println("  run_synthea -c myconfig.properties --exporter.baseDirectory=./out1/");
+    System.out.println("    -> the command-line value ./out1/ takes effect");
+    System.out.println("");
     System.out.println("Examples:");
     System.out.println("run_synthea Massachusetts");
     System.out.println("run_synthea Alaska Juneau");
