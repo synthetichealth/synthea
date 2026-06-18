@@ -331,6 +331,10 @@ public class HealthRecord implements Serializable {
   public class Report extends Entry {
     /** The observations which comprise this report */
     public List<Observation> observations;
+    /** Accession identifier for pathology-style reports, if applicable */
+    public String accession;
+    /** Specimens associated with this report, if applicable */
+    public List<Specimen> specimens;
 
     /**
      * Constructor for Report HealthRecord Entry.
@@ -341,7 +345,68 @@ public class HealthRecord implements Serializable {
     public Report(long time, String type, List<Observation> observations) {
       super(time, type);
       this.observations = observations;
+      this.specimens = new ArrayList<Specimen>();
     }
+  }
+
+  /**
+   * Specimen is a collected sample used for laboratory/anatomic pathology testing.
+   */
+  public class Specimen extends Entry {
+    /** Accession identifier shared across specimens in a case */
+    public String accession;
+    /** Specimen identifier (part/block/slide id) */
+    public String identifier;
+    /** Specimen type (part/block/slide) */
+    public Code specimenType;
+    /** Body site associated with the specimen */
+    public Code bodySite;
+    /** Parent specimen UUID if this specimen is derived from another */
+    public UUID parentSpecimen;
+    /** Processing steps applied to the specimen */
+    public List<SpecimenProcessing> processing;
+    /** Container information for the specimen */
+    public SpecimenContainer container;
+    /** Optional stain applied to this specimen */
+    public Code stain;
+    /** Optional WSI URL for slide images */
+    public String wsiUrl;
+    /** Optional WSI MIME type */
+    public String wsiMimeType;
+    /** Specimen level indicator: part, block, or slide */
+    public String level;
+
+    /**
+     * Constructor for Specimen HealthRecord Entry.
+     * @param time the time of the entry
+     * @param type the type of the entry
+     */
+    public Specimen(long time, String type) {
+      super(time, type);
+      this.processing = new ArrayList<SpecimenProcessing>();
+    }
+  }
+
+  /**
+   * Processing step applied to a specimen.
+   */
+  public static class SpecimenProcessing implements Serializable {
+    /** Procedure performed (e.g., fixation, embedding, staining) */
+    public Code procedure;
+    /** Additive used during processing */
+    public Code additive;
+    /** Free text description */
+    public String description;
+  }
+
+  /**
+   * Container information for a specimen.
+   */
+  public static class SpecimenContainer implements Serializable {
+    /** Container type */
+    public Code type;
+    /** Container identifier */
+    public String identifier;
   }
 
   /**
@@ -812,6 +877,8 @@ public class HealthRecord implements Serializable {
     public List<Device> devices;
     /** Supplies used during the encounter. */
     public List<Supply> supplies;
+    /** Specimens collected during the encounter. */
+    public List<Specimen> specimens;
     /** Claim associated with the encounter. */
     public Claim claim; // for now assume 1 claim per encounter
     /** Reason for the encounter. */
@@ -863,6 +930,7 @@ public class HealthRecord implements Serializable {
       imagingStudies = new ArrayList<ImagingStudy>();
       devices = new ArrayList<Device>();
       supplies = new ArrayList<Supply>();
+      specimens = new ArrayList<Specimen>();
       this.claim = new Claim(this, person);
     }
 
@@ -1430,6 +1498,19 @@ public class HealthRecord implements Serializable {
     encounter.supplies.add(supply);
     encounter.claim.addLineItem(supply);
     return supply;
+  }
+
+  /**
+   * Track a specimen collected during an encounter.
+   * @param time Time the specimen was collected
+   * @param type Specimen type identifier
+   * @return the new Specimen entry
+   */
+  public Specimen specimen(long time, String type) {
+    Encounter encounter = currentEncounter(time);
+    Specimen specimen = new Specimen(time, type);
+    encounter.specimens.add(specimen);
+    return specimen;
   }
 
   /**

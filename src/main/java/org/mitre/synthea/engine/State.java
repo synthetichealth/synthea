@@ -43,6 +43,7 @@ import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Telemedicine;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.PathologyGenerator;
 import org.mitre.synthea.helpers.physiology.IoMapper;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
@@ -2176,6 +2177,67 @@ public abstract class State implements Cloneable, Serializable {
       provider.incrementLabs(year);
 
       return true;
+    }
+  }
+
+  /**
+   * PathologyReport generates an anatomic pathology report with specimens, slides, and stains.
+   * This state must occur during an Encounter.
+   */
+  public static class PathologyReport extends State {
+    /** Codes associated with this report */
+    private List<Code> codes;
+    /** Subspecialty identifier for case generation */
+    private String subspecialty;
+
+    @Override
+    public PathologyReport clone() {
+      PathologyReport clone = (PathologyReport) super.clone();
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      // Generate specimens and report narratives
+      PathologyGenerator.CaseSummary summary =
+          PathologyGenerator.generateCase(person, time, subspecialty);
+
+      List<HealthRecord.Observation> created = new ArrayList<>();
+      created.add(createTextObservation(person, time,
+          PathologyGenerator.GROSS_DESCRIPTION_CODE, summary.grossDescription));
+      created.add(createTextObservation(person, time,
+          PathologyGenerator.MICROSCOPIC_DESCRIPTION_CODE, summary.microscopicDescription));
+      created.add(createTextObservation(person, time,
+          PathologyGenerator.FINAL_DIAGNOSIS_CODE, summary.finalDiagnosis));
+
+      String primaryCode = codes.get(0).code;
+      Report report = person.record.report(time, primaryCode, created.size());
+      entry = report;
+      report.name = this.name;
+      report.mergeCodeList(codes);
+      report.accession = summary.accession;
+      report.note = summary.clinicalHistory;
+      report.specimens.addAll(summary.specimens);
+
+      // increment number of labs by respective provider
+      Provider provider;
+      if (person.getCurrentProvider(module.name) != null) {
+        provider = person.getCurrentProvider(module.name);
+      } else {
+        provider = person.getProvider(EncounterType.WELLNESS, time);
+      }
+      int year = Utilities.getYear(time);
+      provider.incrementLabs(year);
+
+      return true;
+    }
+
+    private HealthRecord.Observation createTextObservation(
+        Person person, long time, Code code, String value) {
+      HealthRecord.Observation observation = person.record.observation(time, code.code, value);
+      observation.mergeCodeList(java.util.Collections.singletonList(code));
+      observation.category = "laboratory";
+      return observation;
     }
   }
 

@@ -124,6 +124,9 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
+import org.hl7.fhir.r4.model.Specimen;
+import org.hl7.fhir.r4.model.Specimen.SpecimenContainerComponent;
+import org.hl7.fhir.r4.model.Specimen.SpecimenProcessingComponent;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
@@ -141,6 +144,7 @@ import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.export.rif.CodeMapper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PathologyGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -162,6 +166,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.HealthRecord.SpecimenContainer;
+import org.mitre.synthea.world.concepts.HealthRecord.SpecimenProcessing;
 import org.mitre.synthea.world.geography.Location;
 
 public class FhirR4 {
@@ -1944,6 +1950,89 @@ public class FhirR4 {
     return entry;
   }
 
+  private static BundleEntryComponent specimen(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, HealthRecord.Specimen specimen,
+      Map<UUID, Reference> specimenRefs) {
+    Specimen specimenResource = new Specimen();
+
+    specimenResource.setSubject(new Reference(personEntry.getFullUrl()));
+    specimenResource.setReceivedTime(new Date(specimen.start));
+
+    if (specimen.specimenType != null) {
+      specimenResource.setType(mapCodeToCodeableConcept(specimen.specimenType, null));
+    }
+
+    if (specimen.bodySite != null) {
+      specimenResource.getCollection()
+          .setBodySite(mapCodeToCodeableConcept(specimen.bodySite, null));
+    }
+
+    if (specimen.identifier != null) {
+      specimenResource.addIdentifier().setValue(specimen.identifier);
+    }
+
+    if (specimen.accession != null) {
+      specimenResource.addIdentifier()
+          .setSystem(PathologyGenerator.PATHOLOGY_ACCESSION_SYSTEM)
+          .setValue(specimen.accession);
+    }
+
+    if (specimen.parentSpecimen != null && specimenRefs.containsKey(specimen.parentSpecimen)) {
+      specimenResource.addParent(specimenRefs.get(specimen.parentSpecimen));
+    }
+
+    if (specimen.processing != null) {
+      for (SpecimenProcessing step : specimen.processing) {
+        SpecimenProcessingComponent processing = new SpecimenProcessingComponent();
+        processing.setDescription(step.description);
+        if (step.procedure != null) {
+          processing.setProcedure(mapCodeToCodeableConcept(step.procedure, null));
+        }
+        if (step.additive != null) {
+          processing.addAdditive().setDisplay(step.additive.display);
+        }
+        specimenResource.addProcessing(processing);
+      }
+    }
+
+    if (specimen.container != null) {
+      SpecimenContainerComponent container = new SpecimenContainerComponent();
+      SpecimenContainer containerData = specimen.container;
+      if (containerData.type != null) {
+        container.setType(mapCodeToCodeableConcept(containerData.type, null));
+      }
+      if (containerData.identifier != null) {
+        container.addIdentifier().setValue(containerData.identifier);
+      }
+      specimenResource.addContainer(container);
+    }
+
+    return newEntry(bundle, specimenResource, specimen.uuid.toString());
+  }
+
+  private static BundleEntryComponent slideMedia(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, HealthRecord.Specimen specimen) {
+    Media media = new Media();
+    media.setStatus(MediaStatus.COMPLETED);
+    media.setSubject(new Reference(personEntry.getFullUrl()));
+    media.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    media.setCreated(new DateTimeType(new Date(specimen.start)));
+
+    if (specimen.bodySite != null) {
+      media.setBodySite(mapCodeToCodeableConcept(specimen.bodySite, null));
+    }
+
+    org.hl7.fhir.r4.model.Attachment attachment = new org.hl7.fhir.r4.model.Attachment();
+    attachment.setUrl(specimen.wsiUrl);
+    if (specimen.wsiMimeType != null) {
+      attachment.setContentType(specimen.wsiMimeType);
+    }
+    attachment.setTitle(specimen.identifier);
+    media.setContent(attachment);
+
+    return newEntry(bundle, media, UUID.randomUUID().toString());
+  }
+
   static Type mapValueToFHIRType(Object value, String unit) {
     if (value == null) {
       return null;
@@ -2574,12 +2663,53 @@ public class FhirR4 {
     reportResource.setEffective(convertFhirDateTime(report.start, true));
     reportResource.setIssued(new Date(report.start));
 
+    if (report.accession != null) {
+      reportResource.addIdentifier()
+          .setSystem(PathologyGenerator.PATHOLOGY_ACCESSION_SYSTEM)
+          .setValue(report.accession);
+    }
+
+    if (report.note != null && !report.note.trim().isEmpty()) {
+      reportResource.setConclusion(report.note);
+    }
+
     if (shouldExport(org.hl7.fhir.r4.model.Observation.class)) {
       // if observations are not exported, we can't reference them
       for (Observation observation : report.observations) {
         Reference reference = new Reference(observation.fullUrl);
         reference.setDisplay(observation.codes.get(0).display);
         reportResource.addResult(reference);
+      }
+    }
+
+    if (report.specimens != null && !report.specimens.isEmpty()
+        && (shouldExport(Specimen.class) || shouldExport(Media.class))) {
+      Map<UUID, Reference> specimenRefs = new HashMap<>();
+      boolean exportSpecimen = shouldExport(Specimen.class);
+      boolean exportMedia = shouldExport(Media.class);
+
+      for (HealthRecord.Specimen specimen : report.specimens) {
+        Reference specimenRef = null;
+        if (exportSpecimen) {
+          BundleEntryComponent specimenEntry =
+              specimen(personEntry, bundle, encounterEntry, specimen, specimenRefs);
+          specimenRef = new Reference(specimenEntry.getFullUrl());
+          specimenRefs.put(specimen.uuid, specimenRef);
+          if (specimen.parentSpecimen == null || "part".equals(specimen.level)) {
+            reportResource.addSpecimen(specimenRef);
+          }
+        }
+
+        if (exportMedia && specimen.wsiUrl != null) {
+          BundleEntryComponent mediaEntry =
+              slideMedia(personEntry, bundle, encounterEntry, specimen);
+          DiagnosticReport.DiagnosticReportMediaComponent mediaComponent =
+              reportResource.addMedia();
+          mediaComponent.setLink(new Reference(mediaEntry.getFullUrl()));
+          if (specimen.stain != null) {
+            mediaComponent.setComment(specimen.stain.display);
+          }
+        }
       }
     }
 
