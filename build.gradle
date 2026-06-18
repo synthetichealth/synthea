@@ -21,7 +21,7 @@ buildscript {
   }
   dependencies {
     // commons-io used in getting the version id below
-    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    classpath 'commons-io:commons-io:2.5'
     // note that commons-io is already a dependency
     // of commons-csv in the primary dependencies above
   }
@@ -39,11 +39,9 @@ plugins {
 }
 
 java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(25)
-  }
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = '17'
+  withSourcesJar()
+  withJavadocJar()
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -90,9 +88,9 @@ dependencies {
   implementation 'guru.nidi:graphviz-java:0.18.1'
   // JavaScript engine included for graphviz. It gets used
   // if someone does not have graphviz installed in their environment
-  implementation 'org.graalvm.js:js:25.0.2'
-  implementation 'org.graalvm.js:js-scriptengine:25.0.2'
-  implementation 'org.graalvm.sdk:graal-sdk:25.0.2'
+  implementation 'org.graalvm.js:js:25.0.1'
+  implementation 'org.graalvm.js:js-scriptengine:25.0.1'
+  implementation 'org.graalvm.sdk:graal-sdk:25.0.1'
 
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
@@ -365,24 +363,8 @@ run {
   }
 }
 
-task sourceJar(type: Jar) {
-    archiveClassifier = "sources"
-    from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = "javadoc"
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives jar
-    archives sourceJar
-    archives javadocJar
-}
-
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.4.1-SNAPSHOT'
+def mavenVersion = '4.0.1-SNAPSHOT'
 
 publishing {
     publications {
@@ -391,12 +373,6 @@ publishing {
             version = mavenVersion
             from components.java
 
-            artifact(sourceJar) {
-                classifier = 'sources'
-            }
-            artifact(javadocJar) {
-                classifier = 'javadoc'
-            }
             pom {
                 name = 'Synthea'
                 description = 'Synthetic Patient Population Simulator'

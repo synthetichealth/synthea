@@ -1018,6 +1018,7 @@ public class PayerTest {
         = plan.getMonthlyPremium(0).multiply(BigDecimal.valueOf(0.25));
     employerCovered.checkToPayMonthlyPremium(0L);
     assertEquals(costToCoveredEmployee, employerCovered.coverage.getTotalPremiumExpenses());
+    assertEquals("250.00", employerCovered.coverage.getTotalPremiumExpenses().toPlainString());
     // Patients without a covering occupation level should not get any premium discounts.
     nonEmployerCovered.checkToPayMonthlyPremium(0L);
     assertEquals(plan.getMonthlyPremium(0).setScale(2),

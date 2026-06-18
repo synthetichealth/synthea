@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.concepts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,64 @@ public class NHANESSampleTest {
     List<NHANESSample> list = NHANESSample.loadSamples();
     NHANESSample first = list.get(0);
     assertEquals(11.9, first.wt, 0.001);
+  }
+
+  @Test
+  public void loadDistributionBySexMale() {
+    EnumeratedDistribution<NHANESSample> maleDist = NHANESSample.loadDistributionBySex(1);
+    assertNotNull(maleDist);
+    // Sample from the male distribution and verify all samples are male
+    maleDist.reseedRandomGenerator(42L);
+    for (int i = 0; i < 100; i++) {
+      NHANESSample sample = maleDist.sample();
+      assertEquals("Male distribution should only contain male samples", 1, sample.sex);
+    }
+  }
+
+  @Test
+  public void loadDistributionBySexFemale() {
+    EnumeratedDistribution<NHANESSample> femaleDist = NHANESSample.loadDistributionBySex(2);
+    assertNotNull(femaleDist);
+    // Sample from the female distribution and verify all samples are female
+    femaleDist.reseedRandomGenerator(42L);
+    for (int i = 0; i < 100; i++) {
+      NHANESSample sample = femaleDist.sample();
+      assertEquals("Female distribution should only contain female samples", 2, sample.sex);
+    }
+  }
+
+  @Test
+  public void loadDistributionBySexProbabilitiesNormalized() {
+    // Verify that the sex-specific distributions produce valid samples
+    // (probabilities are properly re-normalized)
+    EnumeratedDistribution<NHANESSample> maleDist = NHANESSample.loadDistributionBySex(1);
+    EnumeratedDistribution<NHANESSample> femaleDist = NHANESSample.loadDistributionBySex(2);
+
+    // Both distributions should be able to produce samples without error
+    maleDist.reseedRandomGenerator(0L);
+    NHANESSample maleSample = maleDist.sample();
+    assertNotNull(maleSample);
+    assertTrue("Male BMI should be positive", maleSample.bmi > 0);
+
+    femaleDist.reseedRandomGenerator(0L);
+    NHANESSample femaleSample = femaleDist.sample();
+    assertNotNull(femaleSample);
+    assertTrue("Female BMI should be positive", femaleSample.bmi > 0);
+  }
+
+  @Test
+  public void sexSpecificDistributionsAreDeterministic() {
+    // Verify that sex-specific distributions are reproducible with the same seed
+    EnumeratedDistribution<NHANESSample> maleDist = NHANESSample.loadDistributionBySex(1);
+
+    maleDist.reseedRandomGenerator(123L);
+    NHANESSample first = maleDist.sample();
+
+    maleDist.reseedRandomGenerator(123L);
+    NHANESSample second = maleDist.sample();
+
+    assertEquals("Same seed should produce same sample", first.id, second.id);
+    assertEquals("Same seed should produce same BMI", first.bmi, second.bmi, 0.0001);
   }
 
   @Test

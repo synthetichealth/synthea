@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
@@ -40,6 +41,12 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   public Map<String, Double> ages;
   /** Age distribution for the population */
   private RandomCollection<String> ageDistribution;
+
+  /**
+   * Cache of parsed range strings to int[2] arrays (low, high).
+   * Avoids repeated regex splitting and Integer.parseInt on every patient generation.
+   */
+  private static final ConcurrentHashMap<String, int[]> RANGE_CACHE = new ConcurrentHashMap<>();
 
   /** A map of genders to their frequency in the population. */
   public Map<String, Double> gender;
@@ -85,10 +92,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
     String pickedRange = ageDistribution.next(random);
 
-    String[] range = pickedRange.split("\\.\\.");
-    // TODO this seems like it would benefit from better caching
-    int low = Integer.parseInt(range[0]);
-    int high = Integer.parseInt(range[1]);
+    int[] bounds = parseRange(pickedRange);
+    int low = bounds[0];
+    int high = bounds[1];
 
     // nextInt is normally exclusive of the top value,
     // so add 1 to make it inclusive
@@ -280,10 +286,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
      */
 
     String pickedRange = incomeDistribution.next(random);
-    String[] range = pickedRange.split("\\.\\.");
-    // TODO this seems like it would benefit from better caching
-    int low = Integer.parseInt(range[0]) * 1000;
-    int high = Integer.parseInt(range[1]) * 1000;
+    int[] bounds = parseRange(pickedRange);
+    int low = bounds[0] * 1000;
+    int high = bounds[1] * 1000;
 
     // nextInt is normally exclusive of the top value,
     // so add 1 to make it inclusive
@@ -575,6 +580,20 @@ public class Demographics implements Comparable<Demographics>, Serializable {
       Double value = 1.0 / map.size();
       map.replaceAll((key, oldValue) -> value);
     }
+  }
+
+  /**
+   * Parse a range string like "0..4" or "50..75" into an int array [low, high].
+   * Results are cached to avoid repeated regex splitting and parsing on every call.
+   *
+   * @param range the range string in the format "low..high"
+   * @return an int array where [0] is the low bound and [1] is the high bound
+   */
+  private static int[] parseRange(String range) {
+    return RANGE_CACHE.computeIfAbsent(range, key -> {
+      String[] parts = key.split("\\.\\.");
+      return new int[] { Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) };
+    });
   }
 
   /**

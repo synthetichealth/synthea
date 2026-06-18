@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
@@ -88,6 +89,35 @@ public class NHANESSample implements Serializable {
     List<NHANESSample> samples = loadSamples();
     @SuppressWarnings("rawtypes")
     List sampleWeights = samples.stream().map(i -> new Pair(i, i.prob)).collect(toList());
+    return new EnumeratedDistribution<NHANESSample>(sampleWeights);
+  }
+
+  /**
+   * Load a sex-specific NHANES distribution. Filters samples by the given sex code
+   * and re-normalizes the probabilities so they sum to 1.0 within the filtered set.
+   * This produces more realistic BMI distributions for pediatric growth trajectories
+   * since male and female children have different BMI patterns.
+   *
+   * @param sexCode 1 for male, 2 for female (per NHANES convention)
+   * @return the weighted distribution of NHANES Samples filtered by sex
+   */
+  public static EnumeratedDistribution<NHANESSample> loadDistributionBySex(int sexCode) {
+    List<NHANESSample> allSamples = loadSamples();
+    List<NHANESSample> filteredSamples = allSamples.stream()
+        .filter(s -> s.sex == sexCode)
+        .collect(Collectors.toList());
+
+    if (filteredSamples.isEmpty()) {
+      // Fallback to all samples if no sex-specific data available
+      return loadDistribution();
+    }
+
+    // Re-normalize probabilities so they sum to 1.0 within the filtered set
+    double totalProb = filteredSamples.stream().mapToDouble(s -> s.prob).sum();
+    @SuppressWarnings("rawtypes")
+    List sampleWeights = filteredSamples.stream()
+        .map(i -> new Pair(i, i.prob / totalProb))
+        .collect(toList());
     return new EnumeratedDistribution<NHANESSample>(sampleWeights);
   }
 }

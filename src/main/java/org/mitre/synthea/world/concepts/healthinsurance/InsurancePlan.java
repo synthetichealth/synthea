@@ -188,7 +188,7 @@ public class InsurancePlan implements Serializable {
       // If this is a private plan non-ACA plan, then employers will provide coverage.
       double employeeContribution
           = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage", 0.83);
-      premiumPrice = premiumPrice.multiply(new BigDecimal(employeeContribution));
+      premiumPrice = premiumPrice.multiply(BigDecimal.valueOf(employeeContribution));
     }
     return premiumPrice;
   }

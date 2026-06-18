@@ -93,6 +93,10 @@ public class PediatricGrowthTrajectory implements Serializable {
   private static NormalDistribution normalDistribution = new NormalDistribution(null, 0, 1);
   private static EnumeratedDistribution<NHANESSample> nhanesSamples =
       NHANESSample.loadDistribution();
+  private static EnumeratedDistribution<NHANESSample> nhanesMaleSamples =
+      NHANESSample.loadDistributionBySex(1);
+  private static EnumeratedDistribution<NHANESSample> nhanesFemaleSamples =
+      NHANESSample.loadDistributionBySex(2);
 
   /**
    * Container for data on changes between years for BMI information.
@@ -130,13 +134,35 @@ public class PediatricGrowthTrajectory implements Serializable {
 
   /**
    * Starts a new pediatric growth trajectory. Selects a start BMI between 2 and 3 years old by
+   * pulling a weighted sample from NHANES, filtered by the individual's sex for more realistic
+   * BMI distributions.
+   *
+   * @param personSeed The person's seed to allow for repeatable randomization
+   * @param birthTime The time the individual was born in the simulation
+   * @param sex The sex of the individual ("M" or "F")
+   */
+  public PediatricGrowthTrajectory(long personSeed, long birthTime, String sex) {
+    this.seed = personSeed;
+    this.initialSample = getSample(personSeed, sex);
+    this.trajectory = new LinkedList<Point>();
+    Point p = new Point();
+    p.ageInMonths = this.initialSample.agem;
+    p.bmi = this.initialSample.bmi;
+    p.timeInSimulation = birthTime + Utilities.convertTime("months", this.initialSample.agem);
+    this.trajectory.add(p);
+  }
+
+  /**
+   * Starts a new pediatric growth trajectory. Selects a start BMI between 2 and 3 years old by
    * pulling a weighted sample from NHANES.
    *
    * @param personSeed The person's seed to allow for repeatable randomization
    * @param birthTime The time the individual was born in the simulation
+   * @deprecated Use {@link #PediatricGrowthTrajectory(long, long, String)} instead for
+   *     sex-specific sampling which produces more realistic BMI distributions.
    */
+  @Deprecated
   public PediatricGrowthTrajectory(long personSeed, long birthTime) {
-    // TODO: Make the selection sex specific
     this.seed = personSeed;
     this.initialSample = getSample(personSeed);
     this.trajectory = new LinkedList<Point>();
@@ -145,6 +171,21 @@ public class PediatricGrowthTrajectory implements Serializable {
     p.bmi = this.initialSample.bmi;
     p.timeInSimulation = birthTime + Utilities.convertTime("months", this.initialSample.agem);
     this.trajectory.add(p);
+  }
+
+  private static NHANESSample getSample(long personSeed, String sex) {
+    EnumeratedDistribution<NHANESSample> distribution;
+    if ("M".equals(sex)) {
+      distribution = nhanesMaleSamples;
+    } else if ("F".equals(sex)) {
+      distribution = nhanesFemaleSamples;
+    } else {
+      distribution = nhanesSamples;
+    }
+    synchronized (distribution) {
+      distribution.reseedRandomGenerator(personSeed);
+      return distribution.sample();
+    }
   }
 
   private static NHANESSample getSample(long personSeed) {

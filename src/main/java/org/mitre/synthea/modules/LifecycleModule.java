@@ -217,7 +217,7 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
-    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.getSeed(), time);
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.getSeed(), time, gender);
     double weightPercentile = pgt.reverseWeightPercentile(gender, heightPercentile);
     // make the head percentile within 5% of the height percentile
     double headPercentile = heightPercentile + person.rand(0.025, 0.025);

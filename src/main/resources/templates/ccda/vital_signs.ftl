@@ -19,7 +19,10 @@
           <translation code="74728-7" displayName="Vital signs, weight, height, head circumference, oximetry, BMI, and BSA panel" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
         </code>
         <statusCode code="completed"/>
-        <effectiveTime value="${time?number_to_date?string["yyyyMMddHHmmss"]}"/>
+        <effectiveTime>
+          <low value="${ehr_vital_signs_start?number_to_date?string["yyyyMMddHHmmss"]}"/>
+          <high value="${ehr_vital_signs_stop?number_to_date?string["yyyyMMddHHmmss"]}"/>
+        </effectiveTime>
         <#list ehr_vital_signs as entry>
         <#if entry.value??>
         <component>

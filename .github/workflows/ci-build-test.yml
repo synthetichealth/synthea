@@ -3,6 +3,31 @@ on: [push, pull_request]
 jobs:
   check_java_latest:
     runs-on: ubuntu-latest
+    name: Java 25
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 25
+          distribution: 'zulu'
+
+      - name: Gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-jdk25-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-jdk25
+            
+      - name: Compile with Gradle
+        run: ./gradlew assemble
+  
+  check_java_minimum:
+    runs-on: ubuntu-latest
     name: Java 17
     
     steps:
@@ -22,31 +47,6 @@ jobs:
           key: ${{ runner.os }}-gradle-jdk17-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-jdk17
-            
-      - name: Compile with Gradle
-        run: ./gradlew assemble
-  
-  check_java11:
-    runs-on: ubuntu-latest
-    name: Java 11
-    
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'zulu'
-
-      - name: Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-jdk11
             
       - name: Compile with Gradle
         run: ./gradlew assemble

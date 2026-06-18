@@ -232,6 +232,26 @@ public class AppTest {
   }
 
   @Test
+  public void testLongHelpArg() throws Exception {
+    String[] args = {"--help"};
+    final PrintStream original = System.out;
+    final PrintStream originalErr = System.err;
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final PrintStream print = new PrintStream(out, true);
+    System.setOut(print);
+    System.setErr(print);
+    App.main(args);
+    out.flush();
+    String output = out.toString();
+    Assert.assertTrue(output.contains("Usage"));
+    Assert.assertFalse(output.contains("NullPointerException"));
+    Assert.assertFalse(output.contains("Running with options:"));
+    System.setOut(original);
+    System.setErr(originalErr);
+    System.out.println(output);
+  }
+
+  @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", testStateDefault, testTownDefault};
     final PrintStream original = System.out;

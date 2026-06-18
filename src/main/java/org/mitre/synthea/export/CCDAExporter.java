@@ -75,7 +75,6 @@ public class CCDAExporter {
       // causes an exception, then we fake an insurance
       // plan for the purposes of creating the super encounter.
       person.coverage.setPlanToNoInsurance(time);
-      person.coverage.setPlanToNoInsurance(Long.MAX_VALUE);
     }
     // create a super encounter... this makes it easier to access
     // all the Allergies (for example) in the export templates,
@@ -115,6 +114,10 @@ public class CCDAExporter {
             .collect(Collectors.toList());
 
     person.attributes.put("ehr_vital_signs", vitalSigns);
+    person.attributes.put("ehr_vital_signs_start", vitalSigns.stream()
+        .mapToLong(vs -> vs.start).min().orElse(time));
+    person.attributes.put("ehr_vital_signs_stop", vitalSigns.stream()
+        .mapToLong(vs -> vs.start).max().orElse(time));
 
     List<Observation> surveyResults = superEncounter.observations
             .stream()
