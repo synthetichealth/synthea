@@ -1102,17 +1102,17 @@ public class CPCDSExporter {
               + encounter.conditions.size()
               + encounter.devices.size());
 
-      if (networkStatus == "out") {
+      if ("out".equals(networkStatus)) {
         setPlaceOfService("19");
       } else {
-        if (networkStatus == "in") {
+        if ("in".equals(networkStatus)) {
           setPlaceOfService("21");
         } else {
           setPlaceOfService("20");
         }
       }
 
-      if (getSourceAdminCode() == "emd") {
+      if ("emd".equals(getSourceAdminCode())) {
         setRevenueCenterCode("0450");
       } else {
         setRevenueCenterCode("");

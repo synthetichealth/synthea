@@ -391,7 +391,7 @@ public abstract class State implements Cloneable, Serializable {
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
 
-      if (altDirectTransition == null || altDirectTransition == "") {
+      if (altDirectTransition == null || altDirectTransition.isEmpty()) {
         throw new RuntimeException("All Physiology States MUST have an alt_direct_transition"
             + " defined in the event that Physiology States are disabled.");
       }

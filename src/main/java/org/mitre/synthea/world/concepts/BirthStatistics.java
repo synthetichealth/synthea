@@ -92,7 +92,7 @@ public class BirthStatistics {
    */
   public static void setBirthStatistics(Person mother, long time) {
     // Ignore men, they cannot become pregnant.
-    if (mother.attributes.get(Person.GENDER) == "M") {
+    if ("M".equals(mother.attributes.get(Person.GENDER))) {
       return;
     }
 
