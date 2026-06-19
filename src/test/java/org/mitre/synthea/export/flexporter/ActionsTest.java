@@ -80,7 +80,7 @@ public class ActionsTest {
    * Class setup - load the mapping file containing all tests.
    */
   @BeforeClass
-  public static void setupClass() throws FileNotFoundException {
+  public static void setupClass() throws IOException {
     ClassLoader classLoader = ActionsTest.class.getClassLoader();
     File file = new File(classLoader.getResource("flexporter/test_mapping.yaml").getFile());
 

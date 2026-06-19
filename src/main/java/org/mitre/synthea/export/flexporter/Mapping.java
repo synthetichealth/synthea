@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +34,14 @@ public class Mapping {
    * @param mappingFile Source file to read content from
    * @return Mapping object
    * @throws FileNotFoundException if the file doesn't exist
+   * @throws IOException if the stream cannot be read or closed
    */
-  public static Mapping parseMapping(File mappingFile) throws FileNotFoundException {
-    InputStream selectorInputSteam = new FileInputStream(mappingFile);
-    Yaml yaml = new Yaml(new Constructor(Mapping.class));
-
-    return yaml.loadAs(selectorInputSteam, Mapping.class);
+  public static Mapping parseMapping(File mappingFile)
+      throws FileNotFoundException, IOException {
+    try (InputStream selectorInputSteam = new FileInputStream(mappingFile)) {
+      Yaml yaml = new Yaml(new Constructor(Mapping.class));
+      return yaml.loadAs(selectorInputSteam, Mapping.class);
+    }
   }
 
   /**
