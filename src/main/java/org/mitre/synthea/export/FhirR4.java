@@ -1873,10 +1873,10 @@ public class FhirR4 {
       String codeMappingUri = US_CORE_MAPPING.get(LOINC_URI, code.code);
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
-        if (!codeMappingUri.contains("/us/core/") && observation.category.equals("vital-signs")) {
+        if (!codeMappingUri.contains("/us/core/") && "vital-signs".equals(observation.category)) {
           meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-vital-signs");
         }
-      } else if (observation.report != null && observation.category.equals("laboratory")) {
+      } else if (observation.report != null && "laboratory".equals(observation.category)) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
 
@@ -2552,7 +2552,7 @@ public class FhirR4 {
     DiagnosticReport reportResource = new DiagnosticReport();
     boolean labsOnly = true;
     for (Observation observation : report.observations) {
-      labsOnly = labsOnly && observation.category.equalsIgnoreCase("laboratory");
+      labsOnly = labsOnly && "laboratory".equalsIgnoreCase(observation.category);
     }
     if (labsOnly && USE_US_CORE_IG) {
       Meta meta = new Meta();
