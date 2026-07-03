@@ -1020,6 +1020,8 @@ public class HealthRecord implements Serializable {
     public String category;
     /** Map associating codes with reaction severity */
     public HashMap<Code, ReactionSeverity> reactions;
+    /** Overall allergy severity — worst severity across all reactions (0..1 per C-CDA spec) */
+    public ReactionSeverity severity;
 
     /**
      * Constructor for Entry.

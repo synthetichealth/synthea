@@ -1401,6 +1401,9 @@ public abstract class State implements Cloneable, Serializable {
           }
         });
         allergy.reactions = reactions;
+        // Derive overall allergy severity as the worst (lowest ordinal) across all reactions.
+        // ReactionSeverity enum ordinal: SEVERE=0, MODERATE=1, MILD=2 — sorted() picks SEVERE first.
+        allergy.severity = reactions.values().stream().sorted().findFirst().orElse(null);
       }
 
       diagnosed = true;
