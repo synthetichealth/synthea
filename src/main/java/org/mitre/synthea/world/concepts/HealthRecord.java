@@ -989,24 +989,29 @@ public class HealthRecord implements Serializable {
   /** Enum of snomed codes to use for Allergy resource */
   public enum ReactionSeverity {
     /** Severe allergic reaction */
-    SEVERE("24484000", "Severe"),
+    SEVERE("24484000", "Severe", 3),
     /** Moderate allergic reaction */
-    MODERATE("6736007", "Moderate"),
+    MODERATE("6736007", "Moderate", 2),
     /** Mild allergic reaction */
-    MILD("255604002", "Mild");
+    MILD("255604002", "Mild", 1);
     /** The code of the reaction severity */
     public String code;
     /** The text display describing the code */
     public String display;
+    /** Clinical severity level — higher value means worse (SEVERE=3, MODERATE=2, MILD=1).
+     *  Use this field when comparing severities; never rely on enum declaration order. */
+    public final int level;
 
     /**
      * Constructor for ReactionSeverity.
      * @param code the code
      * @param display the text display for the code
+     * @param level clinical severity level (higher = worse)
     */
-    ReactionSeverity(String code, String display) {
+    ReactionSeverity(String code, String display, int level) {
       this.code = code;
       this.display = display;
+      this.level = level;
     }
   }
 
