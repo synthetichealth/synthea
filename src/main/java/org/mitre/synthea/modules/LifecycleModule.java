@@ -325,7 +325,7 @@ public final class LifecycleModule extends Module {
         if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
           Boolean getsPassport = (person.rand() < 0.5);
           if (getsPassport) {
-            String identifierPassport = "X" + (person.randInt(99999999 - 10000000 + 1) + "X");
+            String identifierPassport = "X" + (person.randInt(99999999 - 10000000 + 1) + 10000000) + "X";
             person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
           }
         }
