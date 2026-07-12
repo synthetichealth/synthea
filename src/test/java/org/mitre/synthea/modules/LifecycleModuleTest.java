@@ -10,6 +10,7 @@ import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
+import java.util.regex.Pattern;
 
 public class LifecycleModuleTest {
   public static boolean deathByNaturalCauses;
@@ -105,4 +106,39 @@ public class LifecycleModuleTest {
 
     LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = enablePhysiology;
   }
+
+    @Test
+    public void testPassportFormatIsAlwaysEightDigits() throws Exception {
+        Pattern eightDigitPassport = Pattern.compile("^X\\d{8}X$");
+        int sampleSize = 2000;
+        int issued = 0;
+
+        java.lang.reflect.Method ageMethod = LifecycleModule.class.getDeclaredMethod(
+                "age", Person.class, long.class);
+        ageMethod.setAccessible(true);
+
+        for (int i = 0; i < sampleSize; i++) {
+            Person person = new Person(i);
+            person.attributes.put(Person.GENDER, "F");
+            person.attributes.put(Person.RACE, "white");
+            person.attributes.put(Person.ETHNICITY, "english");
+            long birth = 0L;
+            LifecycleModule.birth(person, birth);
+
+            long candidateTime = birth + Utilities.convertTime("years", 20);
+            while (person.ageInYears(candidateTime) < 20) {
+                candidateTime += Utilities.convertTime("days", 1);
+            }
+
+            ageMethod.invoke(null, person, candidateTime);
+
+            String passport = (String) person.attributes.get(Person.IDENTIFIER_PASSPORT);
+            if (passport != null) {
+                issued++;
+                Assert.assertTrue("Passport not 8 digits: " + passport,
+                        eightDigitPassport.matcher(passport).matches());
+            }
+        }
+        Assert.assertTrue("Expected at least some passports to be issued", issued > 0);
+    }
 }
