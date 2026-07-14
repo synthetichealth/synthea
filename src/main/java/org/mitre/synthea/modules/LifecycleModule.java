@@ -8,8 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.export.rif.identifiers.FixedLengthIdentifier;
+import org.mitre.synthea.export.rif.identifiers.Passport;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
@@ -66,6 +69,8 @@ public final class LifecycleModule extends Module {
       Config.getAsDouble("generate.middle_names", 0.80);
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
+  private static final AtomicReference<Passport> passportSequence =
+          new AtomicReference<>(new Passport(0));
 
   /**
    * Constructor for LifecycleModule.
@@ -325,7 +330,7 @@ public final class LifecycleModule extends Module {
         if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
           Boolean getsPassport = (person.rand() < 0.5);
           if (getsPassport) {
-            String identifierPassport = "X" + (person.randInt(99999999 - 10000000 + 1) + 10000000) + "X";
+            String identifierPassport = FixedLengthIdentifier.getAndUpdateId(passportSequence);
             person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
           }
         }
