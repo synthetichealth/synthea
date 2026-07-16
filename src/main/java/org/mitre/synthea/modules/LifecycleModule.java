@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.export.rif.identifiers.FixedLengthIdentifier;
 import org.mitre.synthea.export.rif.identifiers.Passport;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -69,8 +68,6 @@ public final class LifecycleModule extends Module {
       Config.getAsDouble("generate.middle_names", 0.80);
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
-  private static final AtomicReference<Passport> passportSequence =
-          new AtomicReference<>(new Passport(0));
 
   /**
    * Constructor for LifecycleModule.
@@ -330,7 +327,8 @@ public final class LifecycleModule extends Module {
         if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
           Boolean getsPassport = (person.rand() < 0.5);
           if (getsPassport) {
-            String identifierPassport = FixedLengthIdentifier.getAndUpdateId(passportSequence);
+            int randomValue = person.randInt((int) Passport.MAX_PASSPORT + 1);
+            String identifierPassport = new Passport(randomValue).toString();
             person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
           }
         }
