@@ -8,27 +8,28 @@ package org.mitre.synthea.export.rif.identifiers;
  */
 public class Passport extends FixedLengthIdentifier {
 
-    private static final char[] FIXED_X = {'X'};
-    private static final char[][] PASSPORT_FORMAT = {FIXED_X, NUMERIC, NUMERIC, NUMERIC, NUMERIC,
-            NUMERIC, NUMERIC, NUMERIC, NUMERIC, FIXED_X};
-    public static final long MIN_PASSPORT = 0;
-    public static final long MAX_PASSPORT = maxValue(PASSPORT_FORMAT);
+  private static final char[] FIXED_X = {'X'};
+  private static final char[][] PASSPORT_FORMAT = {FIXED_X, NUMERIC, NUMERIC, NUMERIC, NUMERIC,
+      NUMERIC, NUMERIC, NUMERIC, NUMERIC, FIXED_X};
+  public static final long MIN_PASSPORT = 0;
+  public static final long MAX_PASSPORT = maxValue(PASSPORT_FORMAT);
 
-    public Passport(long value) {
-        super(value, PASSPORT_FORMAT);
-    }
+  public Passport(long value) {
+    super(value, PASSPORT_FORMAT);
+  }
 
-    /**
-     * Parse a Passport from a String.
-     * @param str the string
-     * @return the Passport
-     */
-    public static Passport parse(String str) {
-        return new Passport(parse(str, PASSPORT_FORMAT));
-    }
+  /**
+   * Parse a Passport from a String.
+   *
+   * @param str the string
+   * @return the Passport
+   */
+  public static Passport parse(String str) {
+    return new Passport(parse(str, PASSPORT_FORMAT));
+  }
 
-    @Override
-    public Passport next() {
-        return new Passport(value + 1);
-    }
+  @Override
+  public Passport next() {
+    return new Passport(value + 1);
+  }
 }
