@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.export.rif.identifiers.FixedLengthIdentifier;
 import org.mitre.synthea.export.rif.identifiers.Passport;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
