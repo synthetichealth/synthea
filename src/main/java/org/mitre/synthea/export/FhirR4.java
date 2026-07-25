@@ -2560,7 +2560,9 @@ public class FhirR4 {
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
-    boolean labsOnly = true;
+    boolean cardiacUltrasoundReport = hasLoincCode(report, "55405-5");
+    boolean nyhaAssessmentReport = hasLoincCode(report, "93124-6");
+    boolean labsOnly = !cardiacUltrasoundReport && !nyhaAssessmentReport;
     for (Observation observation : report.observations) {
       labsOnly = labsOnly && "laboratory".equalsIgnoreCase(observation.category);
     }
@@ -2577,6 +2579,9 @@ public class FhirR4 {
     if (labsOnly) {
       reportResource.addCategory(new CodeableConcept(
           new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
+    } else if (cardiacUltrasoundReport) {
+      reportResource.addCategory(new CodeableConcept(
+          new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "CUS", "Cardiac Ultrasound")));
     }
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
@@ -2594,6 +2599,10 @@ public class FhirR4 {
     }
 
     return newEntry(bundle, reportResource, report.uuid.toString());
+  }
+
+  private static boolean hasLoincCode(HealthRecord.Entry entry, String code) {
+    return entry.codes.stream().anyMatch(c -> c.code.equals(code));
   }
 
   /**

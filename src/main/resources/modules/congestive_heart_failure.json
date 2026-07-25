@@ -1705,7 +1705,7 @@
       ],
       "observations": [
         {
-          "category": "laboratory",
+          "category": "imaging",
           "unit": "%",
           "codes": [
             {
