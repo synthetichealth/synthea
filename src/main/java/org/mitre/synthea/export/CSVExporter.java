@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -1554,8 +1555,14 @@ public class CSVExporter {
         long chargeId, Claim.ClaimEntry claimEntry, Person person) {
       // NOTE: see note above about the transactionId field
       // ID here will only be consistent if chargeID is consistent
-      this.id = ExportHelper.buildUUID(person, encounter.start,
-          "ClaimTransaction for Claim " + claimId + " " + chargeId);
+      // Use UUID.nameUUIDFromBytes (MD5-based) instead of buildUUID to avoid
+      // hashCode collisions when many transactions share the same person/encounter.
+      // See: https://github.com/synthetichealth/synthea/issues/1648
+      //      https://github.com/synthetichealth/synthea/issues/1545
+      String key = person.getSeed() + ":" + encounter.start
+          + ":ClaimTransaction:" + claimId + ":" + chargeId;
+      this.id = UUID.nameUUIDFromBytes(
+          key.getBytes(java.nio.charset.StandardCharsets.UTF_8)).toString();
       this.encounterId = encounterId;
       this.claimId = claimId;
       this.chargeId = chargeId;
