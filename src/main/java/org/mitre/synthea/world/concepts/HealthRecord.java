@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -1054,7 +1055,7 @@ public class HealthRecord implements Serializable {
   public HealthRecord(Person person) {
     this.person = person;
     encounters = new ArrayList<Encounter>();
-    present = new HashMap<String, Entry>();
+    present = new LinkedHashMap<String, Entry>();
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       this.demographicsAtRecordCreation = new HashMap<String,Object>(person.attributes);
     }
