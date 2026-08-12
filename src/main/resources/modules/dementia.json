@@ -8,11 +8,11 @@
       "type": "Initial",
       "distributed_transition": [
         {
-          "distribution": 0.4,
+          "distribution": 0.7,
           "transition": "AlzheimersGene"
         },
         {
-          "distribution": 0.6,
+          "distribution": 0.3,
           "transition": "Terminal"
         }
       ],
@@ -29,39 +29,16 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.95,
-          "transition": "PreAlzheimers"
+          "distribution": 0.99,
+          "transition": "Decide"
         },
         {
-          "distribution": 0.05,
+          "distribution": 0.01,
           "transition": "PreEarlyOnsetAlzheimers"
         }
       ],
       "remarks": [
         "Early onset Alzheimers affects roughly 5% of people with Alzheimer's. http://www.mayoclinic.org/diseases-conditions/alzheimers-disease/in-depth/alzheimers/art-20048356"
-      ]
-    },
-    "PreAlzheimers": {
-      "type": "Delay",
-      "range": {
-        "low": 64,
-        "high": 80,
-        "unit": "years"
-      },
-      "remarks": [
-        "There is evidence that higher education leads to a delay in the onset of alzheimers."
-      ],
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Socioeconomic Status",
-            "category": "High"
-          },
-          "transition": "EducationDelay"
-        },
-        {
-          "transition": "AlzheimersOnset"
-        }
       ]
     },
     "EducationDelay": {
@@ -428,8 +405,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
@@ -574,8 +551,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "Severe_MMSE_Score"
@@ -625,8 +602,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "VerySevere_MMSE_Score"
@@ -765,6 +742,47 @@
         "code": 50,
         "display": "Discharged/transferred to Hospice - home"
       }
+    },
+    "Decide": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "CheckEducation",
+          "default_probability": 0.01,
+          "lookup_table_name": "dementia_prob.csv"
+        },
+        {
+          "transition": "DelayOneYear",
+          "default_probability": 0.99,
+          "lookup_table_name": "dementia_prob.csv"
+        }
+      ]
+    },
+    "DelayOneYear": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Decide"
+    },
+    "CheckEducation": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "EducationDelay",
+          "condition": {
+            "condition_type": "Socioeconomic Status",
+            "category": "High"
+          }
+        },
+        {
+          "transition": "AlzheimersOnset"
+        }
+      ]
     }
   },
   "gmf_version": 1
