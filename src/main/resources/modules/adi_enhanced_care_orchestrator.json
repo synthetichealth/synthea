@@ -1,0 +1,729 @@
+{
+  "name": "ADI Enhanced Care Orchestrator",
+  "remarks": [
+    "Enhanced care transition orchestrator that integrates advance directive management",
+    "with home health, hospice, and skilled nursing facility care. Ensures advance",
+    "directive preferences are accessible and honored across care transitions.",
+    "Extends the original home_hospice_snf module with ADI integration."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_Until_65"
+    },
+
+    "Wait_Until_65": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Launch_AD_Management"
+    },
+
+    "Launch_AD_Management": {
+      "type": "Simple",
+      "direct_transition": "Launch_End_of_Life_Integration"
+    },
+
+    "Launch_End_of_Life_Integration": {
+      "type": "Simple",
+      "direct_transition": "Hospice_Check"
+    },
+
+    "Hospice_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Alzheimers_AD_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Type of Alzheimer's",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "COPD_AD_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "copd_variant",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CHF_AD_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CF_AD_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Cystic_Fibrosis",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CKD_AD_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dialysis_reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Cancer_AD_Check",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "Lung Cancer",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_condition",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "prostate_cancer",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "colorectal_cancer",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check_for_Events"
+        }
+      ]
+    },
+
+    "Alzheimers_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Alzheimers_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Alzheimers_Default_Hospice"
+        }
+      ]
+    },
+
+    "Alzheimers_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "Alzheimers_Default_Hospice"
+        }
+      ]
+    },
+
+    "Alzheimers_Default_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "Type of Alzheimer's",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "COPD_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "COPD_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "COPD_Default_Hospice"
+        }
+      ]
+    },
+
+    "COPD_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "COPD_Default_Hospice"
+        }
+      ]
+    },
+
+    "COPD_Default_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "copd_variant",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "CHF_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CHF_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CHF_Default_Hospice"
+        }
+      ]
+    },
+
+    "CHF_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "CHF_Default_Hospice"
+        }
+      ]
+    },
+
+    "CHF_Default_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "chf",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "CF_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CF_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CF_Default_Hospice"
+        }
+      ]
+    },
+
+    "CF_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "CF_Default_Hospice"
+        }
+      ]
+    },
+
+    "CF_Default_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "Cystic_Fibrosis",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "CKD_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CKD_Default_Hospice"
+        }
+      ]
+    },
+
+    "CKD_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "CKD_Default_Hospice"
+        }
+      ]
+    },
+
+    "CKD_Default_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "dialysis_reason",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "Cancer_AD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Cancer_with_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Cancer_Default_Hospice"
+        }
+      ]
+    },
+
+    "Cancer_with_AD_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_AD_Compliant",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "Cancer_Default_Hospice"
+        }
+      ]
+    },
+
+    "Cancer_Default_Hospice": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Lung_Cancer_Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Set_Breast_Cancer_Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_condition",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Set_Prostate_Cancer_Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Set_Colorectal_Cancer_Reason"
+        }
+      ]
+    },
+
+    "Set_Lung_Cancer_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "Lung Cancer",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "Set_Breast_Cancer_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "breast_cancer_condition",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "Set_Prostate_Cancer_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "prostate_cancer",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "Set_Colorectal_Cancer_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "colorectal_cancer",
+      "direct_transition": "Initiate_Hospice"
+    },
+
+    "Initiate_Hospice_AD_Compliant": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "value": true,
+      "direct_transition": "Document_AD_Honored"
+    },
+
+    "Document_AD_Honored": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "385736008",
+          "display": "Advance directive followed (finding)"
+        }
+      ],
+      "direct_transition": "Wait_for_Next_Decade"
+    },
+
+    "Initiate_Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "value": true,
+      "direct_transition": "Wait_for_Next_Decade"
+    },
+
+    "Check_for_Events": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check_for_SNF_with_AD",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "91302008",
+                    "display": "Sepsis (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_bacterial_infection",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "233604007",
+                    "display": "Pneumonia (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "230690007",
+                    "display": "Cerebrovascular accident (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "22298006",
+                    "display": "Myocardial infarction (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check_for_Home_Visits_with_AD"
+        }
+      ]
+    },
+
+    "Check_for_SNF_with_AD": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Initiate_SNF_with_PFE",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Check_for_Home_Visits_with_AD",
+              "distribution": 0.76
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Initiate_SNF_with_PFE",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Check_for_Home_Visits_with_AD",
+              "distribution": 0.67
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 90,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Initiate_SNF_with_PFE",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Check_for_Home_Visits_with_AD",
+              "distribution": 0.82
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 90,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Initiate_SNF_with_PFE",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Check_for_Home_Visits_with_AD",
+              "distribution": 0.85
+            }
+          ]
+        }
+      ]
+    },
+
+    "Initiate_SNF_with_PFE": {
+      "type": "SetAttribute",
+      "attribute": "snf",
+      "value": true,
+      "direct_transition": "Wait_for_Next_Decade"
+    },
+
+    "Check_for_Home_Visits_with_AD": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Random_Delay"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Wait_for_Next_Decade"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.32,
+              "transition": "Random_Delay"
+            },
+            {
+              "distribution": 0.68,
+              "transition": "Wait_for_Next_Decade"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.24,
+              "transition": "Random_Delay"
+            },
+            {
+              "distribution": 0.76,
+              "transition": "Wait_for_Next_Decade"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Random_Delay": {
+      "type": "Delay",
+      "range": {
+        "high": 9,
+        "low": 0,
+        "unit": "years"
+      },
+      "direct_transition": "Initiate_Home_Health_Visits"
+    },
+
+    "Initiate_Home_Health_Visits": {
+      "type": "SetAttribute",
+      "attribute": "home_health",
+      "value": true,
+      "direct_transition": "Wait_for_Next_Decade"
+    },
+
+    "Wait_for_Next_Decade": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait_Until_75",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Wait_Until_85",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Wait_Until_75": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 75,
+        "unit": "years"
+      },
+      "direct_transition": "Hospice_Check"
+    },
+
+    "Wait_Until_85": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 85,
+        "unit": "years"
+      },
+      "direct_transition": "Hospice_Check"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

@@ -1,0 +1,603 @@
+{
+  "name": "Advance Directive Management",
+  "remarks": [
+    "Advance Directive Interoperability (ADI) module implementing PACIO ADI Implementation Guide.",
+    "Handles creation and management of advance directive documents, healthcare agent designation,",
+    "and patient preferences for medical interventions. Integrates with existing end-of-life modules.",
+    "Based on realistic advance directive completion patterns and triggers."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_Until_65"
+    },
+
+    "Wait_Until_65": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Check_Existing_AD"
+    },
+
+    "Check_Existing_AD": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Annual_Review_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Triggering_Event_Check"
+        }
+      ]
+    },
+
+    "Triggering_Event_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Schedule_AD_Creation",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "26929004",
+                    "display": "Alzheimer's disease (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "230690007",
+                    "display": "Cerebrovascular accident (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "254837009",
+                    "display": "Malignant neoplasm of breast (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lung_cancer",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "88805009",
+                    "display": "Chronic congestive heart failure (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Age_Based_Probability_Check"
+        }
+      ]
+    },
+
+    "Age_Based_Probability_Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Schedule_AD_Creation"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Wait_One_Year"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.35,
+              "transition": "Schedule_AD_Creation"
+            },
+            {
+              "distribution": 0.65,
+              "transition": "Wait_One_Year"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.55,
+              "transition": "Schedule_AD_Creation"
+            },
+            {
+              "distribution": 0.45,
+              "transition": "Wait_One_Year"
+            }
+          ]
+        }
+      ]
+    },
+
+    "Schedule_AD_Creation": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 90,
+        "unit": "days"
+      },
+      "direct_transition": "AD_Creation_Encounter"
+    },
+
+    "AD_Creation_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "410155007",
+          "display": "Advance care planning (procedure)"
+        }
+      ],
+      "direct_transition": "Advance_Care_Planning_Discussion"
+    },
+
+    "Advance_Care_Planning_Discussion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://www.ama-assn.org/go/cpt",
+          "code": "99497",
+          "display": "Advance care planning including the explanation and discussion of advance directives"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Healthcare_Agent_Designation"
+    },
+
+    "Healthcare_Agent_Designation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "816151009",
+          "display": "Appointment of healthcare agent (procedure)"
+        }
+      ],
+      "direct_transition": "Set_Healthcare_Agent_Attribute"
+    },
+
+    "Set_Healthcare_Agent_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "healthcare_agent_designated",
+      "value": true,
+      "direct_transition": "Living_Will_Creation"
+    },
+
+    "Living_Will_Creation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "425392003",
+          "display": "Creation of living will (procedure)"
+        }
+      ],
+      "direct_transition": "Set_Life_Sustaining_Preferences"
+    },
+
+    "Set_Life_Sustaining_Preferences": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.35,
+          "transition": "Preference_Limited_Intervention"
+        },
+        {
+          "distribution": 0.40,
+          "transition": "Preference_Comfort_Care"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Preference_Full_Treatment"
+        }
+      ]
+    },
+
+    "Preference_Limited_Intervention": {
+      "type": "SetAttribute",
+      "attribute": "life_sustaining_preference",
+      "value": "limited_intervention",
+      "direct_transition": "Resuscitation_Preference"
+    },
+
+    "Preference_Comfort_Care": {
+      "type": "SetAttribute",
+      "attribute": "life_sustaining_preference",
+      "value": "comfort_care_only",
+      "direct_transition": "Resuscitation_Preference"
+    },
+
+    "Preference_Full_Treatment": {
+      "type": "SetAttribute",
+      "attribute": "life_sustaining_preference",
+      "value": "full_treatment",
+      "direct_transition": "Resuscitation_Preference"
+    },
+
+    "Resuscitation_Preference": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.60,
+          "transition": "DNR_Preference"
+        },
+        {
+          "distribution": 0.40,
+          "transition": "Full_Resuscitation_Preference"
+        }
+      ]
+    },
+
+    "DNR_Preference": {
+      "type": "SetAttribute",
+      "attribute": "resuscitation_preference",
+      "value": "do_not_resuscitate",
+      "direct_transition": "Artificial_Nutrition_Preference"
+    },
+
+    "Full_Resuscitation_Preference": {
+      "type": "SetAttribute",
+      "attribute": "resuscitation_preference",
+      "value": "full_resuscitation",
+      "direct_transition": "Artificial_Nutrition_Preference"
+    },
+
+    "Artificial_Nutrition_Preference": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.45,
+          "transition": "Decline_Artificial_Nutrition"
+        },
+        {
+          "distribution": 0.30,
+          "transition": "Accept_Artificial_Nutrition"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Conditional_Artificial_Nutrition"
+        }
+      ]
+    },
+
+    "Decline_Artificial_Nutrition": {
+      "type": "SetAttribute",
+      "attribute": "artificial_nutrition_preference",
+      "value": "decline",
+      "direct_transition": "Mechanical_Ventilation_Preference"
+    },
+
+    "Accept_Artificial_Nutrition": {
+      "type": "SetAttribute",
+      "attribute": "artificial_nutrition_preference",
+      "value": "accept",
+      "direct_transition": "Mechanical_Ventilation_Preference"
+    },
+
+    "Conditional_Artificial_Nutrition": {
+      "type": "SetAttribute",
+      "attribute": "artificial_nutrition_preference",
+      "value": "time_limited_trial",
+      "direct_transition": "Mechanical_Ventilation_Preference"
+    },
+
+    "Mechanical_Ventilation_Preference": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.50,
+          "transition": "Decline_Mechanical_Ventilation"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Accept_Mechanical_Ventilation"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Time_Limited_Ventilation"
+        }
+      ]
+    },
+
+    "Decline_Mechanical_Ventilation": {
+      "type": "SetAttribute",
+      "attribute": "mechanical_ventilation_preference",
+      "value": "decline",
+      "direct_transition": "Hospice_Care_Preference"
+    },
+
+    "Accept_Mechanical_Ventilation": {
+      "type": "SetAttribute",
+      "attribute": "mechanical_ventilation_preference",
+      "value": "accept",
+      "direct_transition": "Hospice_Care_Preference"
+    },
+
+    "Time_Limited_Ventilation": {
+      "type": "SetAttribute",
+      "attribute": "mechanical_ventilation_preference",
+      "value": "time_limited_trial",
+      "direct_transition": "Hospice_Care_Preference"
+    },
+
+    "Hospice_Care_Preference": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.70,
+          "transition": "Accept_Hospice_Care"
+        },
+        {
+          "distribution": 0.30,
+          "transition": "Uncertain_Hospice_Care"
+        }
+      ]
+    },
+
+    "Accept_Hospice_Care": {
+      "type": "SetAttribute",
+      "attribute": "hospice_care_preference",
+      "value": "accept",
+      "direct_transition": "Organ_Donation_Preference"
+    },
+
+    "Uncertain_Hospice_Care": {
+      "type": "SetAttribute",
+      "attribute": "hospice_care_preference",
+      "value": "uncertain",
+      "direct_transition": "Organ_Donation_Preference"
+    },
+
+    "Organ_Donation_Preference": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.58,
+          "transition": "Accept_Organ_Donation"
+        },
+        {
+          "distribution": 0.42,
+          "transition": "Decline_Organ_Donation"
+        }
+      ]
+    },
+
+    "Accept_Organ_Donation": {
+      "type": "SetAttribute",
+      "attribute": "organ_donation_preference",
+      "value": "donate_organs",
+      "direct_transition": "Complete_AD_Document"
+    },
+
+    "Decline_Organ_Donation": {
+      "type": "SetAttribute",
+      "attribute": "organ_donation_preference",
+      "value": "do_not_donate",
+      "direct_transition": "Complete_AD_Document"
+    },
+
+    "Complete_AD_Document": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "281789004",
+          "display": "Documentation of advance directive (procedure)"
+        }
+      ],
+      "direct_transition": "Set_AD_Completion_Attributes"
+    },
+
+    "Set_AD_Completion_Attributes": {
+      "type": "SetAttribute",
+      "attribute": "advance_directive_exists",
+      "value": true,
+      "direct_transition": "Set_AD_Creation_Date"
+    },
+
+    "Set_AD_Creation_Date": {
+      "type": "SetAttribute",
+      "attribute": "advance_directive_date",
+      "value": "current_time",
+      "direct_transition": "Set_AD_Version"
+    },
+
+    "Set_AD_Version": {
+      "type": "SetAttribute",
+      "attribute": "advance_directive_version",
+      "value": 1,
+      "direct_transition": "End_AD_Creation_Encounter"
+    },
+
+    "End_AD_Creation_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_One_Year"
+    },
+
+    "Annual_Review_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.20,
+          "transition": "Schedule_AD_Review"
+        },
+        {
+          "distribution": 0.80,
+          "transition": "Wait_One_Year"
+        }
+      ]
+    },
+
+    "Schedule_AD_Review": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 60,
+        "unit": "days"
+      },
+      "direct_transition": "AD_Review_Encounter"
+    },
+
+    "AD_Review_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "410155007",
+          "display": "Advance care planning (procedure)"
+        }
+      ],
+      "direct_transition": "Review_Existing_Preferences"
+    },
+
+    "Review_Existing_Preferences": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://www.ama-assn.org/go/cpt",
+          "code": "99498",
+          "display": "Advance care planning including the explanation and discussion of advance directives; each additional 30 minutes"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Update_Decision_Check"
+    },
+
+    "Update_Decision_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.15,
+          "transition": "Update_AD_Document"
+        },
+        {
+          "distribution": 0.85,
+          "transition": "Confirm_Existing_AD"
+        }
+      ]
+    },
+
+    "Update_AD_Document": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "281789004",
+          "display": "Documentation of advance directive (procedure)"
+        }
+      ],
+      "direct_transition": "Increment_AD_Version"
+    },
+
+    "Increment_AD_Version": {
+      "type": "Counter",
+      "attribute": "advance_directive_version",
+      "action": "increment",
+      "amount": 1,
+      "direct_transition": "Update_AD_Date"
+    },
+
+    "Update_AD_Date": {
+      "type": "SetAttribute",
+      "attribute": "advance_directive_date",
+      "value": "current_time",
+      "direct_transition": "End_AD_Review_Encounter"
+    },
+
+    "Confirm_Existing_AD": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "182836005",
+          "display": "Review of care plan (procedure)"
+        }
+      ],
+      "direct_transition": "End_AD_Review_Encounter"
+    },
+
+    "End_AD_Review_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_One_Year"
+    },
+
+    "Wait_One_Year": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Check_Existing_AD"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}
