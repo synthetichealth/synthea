@@ -52,6 +52,15 @@ repositories {
   }
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+
 // Uncomment to see deprecation warnings
 // tasks.withType(JavaCompile) {
 //   options.compilerArgs << "-Xlint:deprecation"
