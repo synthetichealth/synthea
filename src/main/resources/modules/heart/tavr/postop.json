@@ -298,7 +298,7 @@
         "unit": "days"
       }
     },
-    "Assign Specialty Unit": {
+    "Assign_Specialty_Unit": {
       "type": "Simple",
       "distributed_transition": [
         {
@@ -818,7 +818,7 @@
           "distribution": 0.818
         },
         {
-          "transition": "Assign Specialty Unit",
+          "transition": "Assign_Specialty_Unit",
           "distribution": 0.182
         }
       ]
