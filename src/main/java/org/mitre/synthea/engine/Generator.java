@@ -10,12 +10,16 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -153,7 +157,9 @@ public class Generator {
     /** Number of threads to use */
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
     /** Reference Time when to start Synthea. By default equal to the current system time. */
-    public long referenceTime = System.currentTimeMillis();
+    public long referenceTime = initializeReferenceTime();
+    /** Format for reference time */
+    public static SimpleDateFormat dateFormat = initializeDateFormat();
     /** End time of Synthea simulation. By default equal to the current system time. */
     public long endTime = referenceTime;
     /** Actual time the run started. */
@@ -195,6 +201,29 @@ public class Generator {
     public int daysToTravelForward = -1;
     /** Path to a module defining which patients should be kept and exported. */
     public Path keepPatientsModulePath;
+
+    /**
+     * Initialize the date formatter used for reference time
+     */
+    private static SimpleDateFormat initializeDateFormat() {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+      return dateFormat;
+    }
+
+    /**
+     * Initialize referenceTime so that it is precise to the day.
+     */
+    private long initializeReferenceTime() {
+      try {
+        return dateFormat.parse(dateFormat.format(new Date())).getTime();
+      } catch (ParseException ex) {
+        // This will be precise to the millisecond rather than the day, but it
+        // shouldn't be possible for this exception to actually be thrown
+        return System.currentTimeMillis();
+      }
+    }
   }
 
   /**
@@ -344,10 +373,13 @@ public class Generator {
     } else {
       locationName = options.city + ", " + options.state;
     }
+
+    String formattedReferenceTime =
+        GeneratorOptions.dateFormat.format(new Date(options.referenceTime));
     System.out.println("Running with options:");
     System.out.println(String.format(
-        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
-        options.population, options.seed, options.clinicianSeed, options.referenceTime,
+        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %s\nLocation: %s",
+        options.population, options.seed, options.clinicianSeed, formattedReferenceTime,
         locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d", options.minAge, options.maxAge));
     if (options.gender != null) {
