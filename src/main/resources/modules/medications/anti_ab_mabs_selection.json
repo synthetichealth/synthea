@@ -1,0 +1,342 @@
+{
+  "name": "anti-ab-mabs-selection",
+  "remarks": [
+    "Select an anti-amyloid-beta monoclonal antibody based on availability or current infusion plan."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check for prior infusions"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Aducanumab_Low_Dose": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2557232",
+          "display": "1.7 ML aducanumab-avwa 100 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true,
+      "reason": "Type of Alzheimer's",
+      "assign_to_attribute": "anti-amyloid-beta-mabs",
+      "remarks": [
+        "Removed January 2024"
+      ]
+    },
+    "Lecanemab_Increased_Dose": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2626155",
+          "display": "5 ML lecanemab-irmb 100 MG/ML Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "Type of Alzheimer's",
+      "assign_to_attribute": "anti-amyloid-beta-mabs",
+      "direct_transition": "Terminal"
+    },
+    "Aducanumab_Increased_Dose": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2557224",
+          "display": "3 ML aducanumab-avwa 100 MG/ML Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "Type of Alzheimer's",
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "anti-amyloid-beta-mabs",
+      "remarks": [
+        "Removed January 2024"
+      ]
+    },
+    "Donanemab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2687972",
+          "display": "20 ML donanemab-azbt 17.5 MG/ML Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "Type of Alzheimer's",
+      "assign_to_attribute": "anti-amyloid-beta-mabs",
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Approved July 2, 2024"
+      ]
+    },
+    "Lecanemab_Low_Dose": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2626147",
+          "display": "2 ML lecanemab-irmb 100 MG/ML Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "Type of Alzheimer's",
+      "assign_to_attribute": "anti-amyloid-beta-mabs",
+      "direct_transition": "Terminal"
+    },
+    "After April 2022": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_Lecanemab_Low",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Set_Lecanemab_Increased",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Set_Aducanumab_Low",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Set_Aducanumab_Increased",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "After January 2024": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_Lecanemab_Low",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Set_Lecanemab_Increased",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "After July 2024": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_Lecanemab_Low",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Set_Lecanemab_Increased",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Set_Donanemab",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Check Date": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "After April 2022",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "date": {
+                  "year": 2022,
+                  "month": 4,
+                  "day": 7,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                },
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": "<",
+                "value": 0,
+                "date": {
+                  "year": 2024,
+                  "month": 1,
+                  "day": 1,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "transition": "After January 2024",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "date": {
+                  "year": 2024,
+                  "month": 1,
+                  "day": 1,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                },
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": "<",
+                "value": 0,
+                "date": {
+                  "year": 2024,
+                  "month": 7,
+                  "day": 1,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "transition": "After July 2024",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "value": 0,
+            "date": {
+              "year": 2024,
+              "month": 7,
+              "day": 1,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Check for prior infusions": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Administer Proper Infusion",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Check Date"
+        }
+      ]
+    },
+    "Administer Proper Infusion": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Aducanumab_Low_Dose",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "==",
+            "value": "Aducanumab_Low_Dose"
+          }
+        },
+        {
+          "transition": "Aducanumab_Increased_Dose",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "==",
+            "value": "Aducanumab_Increased_Dose"
+          }
+        },
+        {
+          "transition": "Lecanemab_Low_Dose",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "==",
+            "value": "Lecanemab_Low_Dose"
+          }
+        },
+        {
+          "transition": "Lecanemab_Increased_Dose",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "==",
+            "value": "Lecanemab_Increased_Dose"
+          }
+        },
+        {
+          "transition": "Donanemab",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study-med",
+            "operator": "==",
+            "value": "Donanemab"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Set_Lecanemab_Low": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study-med",
+      "direct_transition": "Administer Proper Infusion",
+      "value": "Lecanemab_Low_Dose"
+    },
+    "Set_Aducanumab_Low": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study-med",
+      "direct_transition": "Administer Proper Infusion",
+      "value": "Aducanumab_Low_Dose"
+    },
+    "Set_Donanemab": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study-med",
+      "direct_transition": "Administer Proper Infusion",
+      "value": "Donanemab"
+    },
+    "Set_Aducanumab_Increased": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study-med",
+      "direct_transition": "Administer Proper Infusion",
+      "value": "Aducanumab_Increased_Dose"
+    },
+    "Set_Lecanemab_Increased": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study-med",
+      "direct_transition": "Administer Proper Infusion",
+      "value": "Lecanemab_Increased_Dose"
+    }
+  },
+  "gmf_version": 2
+}
