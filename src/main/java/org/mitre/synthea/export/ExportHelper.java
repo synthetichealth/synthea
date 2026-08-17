@@ -217,32 +217,37 @@ public abstract class ExportHelper {
   private static final String ICD9_URI = "http://hl7.org/fhir/sid/icd-9-cm";
   private static final String ICD10_URI = "http://hl7.org/fhir/sid/icd-10";
   private static final String ICD10_CM_URI = "http://hl7.org/fhir/sid/icd-10-cm";
+  private static final String CPT_URI = "http://www.ama-assn.org/go/cpt";
 
   /**
    * Translate the system name (e.g. SNOMED-CT) into the official
-   * FHIR system URI (e.g. http://snomed.info/sct).
+   * FHIR system URI (e.g. http://snomed.info/sct). The system name is matched
+   * case-insensitively, so that names sourced from configuration keys
+   * (e.g. {@code exporter.code_map.icd10-cm}) resolve as well.
    * @param system SNOMED-CT, LOINC, RxNorm, CVX
    * @return The FHIR system URI for the given system or the input if not found.
    */
   public static String getSystemURI(String system) {
-    if (system.equals("SNOMED-CT")) {
+    if (system.equalsIgnoreCase("SNOMED-CT")) {
       system = SNOMED_URI;
-    } else if (system.equals("LOINC")) {
+    } else if (system.equalsIgnoreCase("LOINC")) {
       system = LOINC_URI;
-    } else if (system.equals("RxNorm")) {
+    } else if (system.equalsIgnoreCase("RxNorm")) {
       system = RXNORM_URI;
-    } else if (system.equals("CVX")) {
+    } else if (system.equalsIgnoreCase("CVX")) {
       system = CVX_URI;
-    } else if (system.equals("DICOM-DCM")) {
+    } else if (system.equalsIgnoreCase("DICOM-DCM")) {
       system = DICOM_DCM_URI;
-    } else if (system.equals("CDT")) {
+    } else if (system.equalsIgnoreCase("CDT")) {
       system = CDT_URI;
-    } else if (system.equals("ICD9")) {
+    } else if (system.equalsIgnoreCase("ICD9")) {
       system = ICD9_URI;
-    } else if (system.equals("ICD10")) {
+    } else if (system.equalsIgnoreCase("ICD10")) {
       system = ICD10_URI;
-    } else if (system.equals("ICD10-CM")) {
+    } else if (system.equalsIgnoreCase("ICD10-CM")) {
       system = ICD10_CM_URI;
+    } else if (system.equalsIgnoreCase("CPT")) {
+      system = CPT_URI;
     }
     return system;
   }
@@ -273,6 +278,8 @@ public abstract class ExportHelper {
         return "ICD10";
       case ICD10_CM_URI:
         return "ICD10-CM";
+      case CPT_URI:
+        return "CPT";
       default:
         return "Unknown";
     }
