@@ -938,7 +938,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void exportOrganization(Provider org, int utilization) throws IOException {
-    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,REVENUE,UTILIZATION
+    // Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION,NPI
     StringBuilder s = new StringBuilder();
     s.append(org.getResourceID()).append(',');
     s.append(clean(org.name)).append(',');
@@ -950,7 +950,8 @@ public class CSVExporter {
     s.append(org.getX()).append(',');
     s.append(org.phone).append(',');
     s.append(org.getRevenue()).append(',');
-    s.append(utilization);
+    s.append(utilization).append(',');
+    s.append(clean(org.npi));
     s.append(NEWLINE);
 
     fileManager.writeResourceLine(s.toString(), CSVConstants.ORGANIZATION_KEY);
@@ -964,7 +965,8 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void exportProvider(Clinician provider, String orgId) throws IOException {
-    // Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,ENCOUNTERS,PROCEDURES
+    // Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,
+    // ENCOUNTERS,PROCEDURES,NPI
 
     StringBuilder s = new StringBuilder();
     s.append(provider.getResourceID()).append(',');
@@ -978,7 +980,8 @@ public class CSVExporter {
     s.append(provider.getY()).append(',');
     s.append(provider.getX()).append(',');
     s.append(provider.getEncounterCount()).append(',');
-    s.append(provider.getProcedureCount());
+    s.append(provider.getProcedureCount()).append(',');
+    s.append(clean(provider.npi));
 
     s.append(NEWLINE);
 
