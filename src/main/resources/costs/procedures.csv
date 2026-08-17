@@ -2,8 +2,8 @@ CODE,MIN,MODE,MAX,COMMENTS
 180256009,5935.44,11870.87276,23741.75,Subcutaneous immunotherapy
 313191000,1284.51,2569.027213,5138.05,Injection of adrenaline
 80146002,6184.83,12369.65,24739.30,Appendectomy
-405783006,5132.80,10265.59304,20531.19,Psychological assessment
-228557008,5132.80,10265.59304,20531.19,Cognitive and behavioral therapy
+405783006,166.91,450.00,1200.00,"Psychological assessment - one evaluation. MIN is the CY2025 Medicare national non-facility payment for CPT 90791 psychiatric diagnostic evaluation (5.16 RVU x 32.3465) https://www.cms.gov/medicare/payment/fee-schedules/physician/pfs-relative-value-files - MODE and MAX are published university psychology clinic assessment fees https://artsandsciences.syracuse.edu/psychology/psychological-services-center/our-fees/ and https://www.slu.edu/arts-and-sciences/psychology/center-clinics/psychological-services-center/fees-payments.php"
+228557008,78.93,139.00,335.00,"Cognitive and behavioral therapy - one outpatient session of 30-60 minutes. MIN is the CY2025 Medicare national non-facility payment for CPT 90832 30 min (2.44 RVU x 32.3465 conversion factor) https://www.cms.gov/medicare/payment/fee-schedules/physician/pfs-relative-value-files - MODE is the 2024 US average session rate across 105M sessions https://www.simplepractice.com/blog/average-therapy-session-rate-by-state/ - MAX is the 75th percentile hospital cash price for CPT 90837 https://fairvisithealth.com/costs/therapy-session/"
 399208008,3805.29,7610.58,15221.16,Plain chest X-ray (procedure)
 269911007,3048.51,6097.0171,12194.03,Sputum examination (procedure)
 73761001,5856.40,11712.80115,23425.60,Colonoscopy
