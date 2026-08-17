@@ -14,12 +14,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -108,9 +108,11 @@ public abstract class Exporter {
    * exporter.code_map.cpt=export/phlebotomy_code_map.json,export/neurology_code_map.json
    * </pre>
    * The above define a single code map for ICD-10 codes and two code maps for CPT codes.
+   * A TreeMap is used so that mappers are always iterated in a deterministic order,
+   * which keeps output reproducible when more than one code system is configured.
    */
   public static void loadCodeMappers() {
-    codeMappers = new HashMap<String, CodeMapper>();
+    codeMappers = new TreeMap<String, CodeMapper>();
     List<String> codeSystemProperties = Config.allPropertyNames()
             .stream()
             .filter((key) -> key.startsWith("exporter.code_map"))
@@ -136,7 +138,18 @@ public abstract class Exporter {
    * @return the corresponding code mapper or null if none configured
    */
   public static CodeMapper getCodeMapper(String codeSystem) {
-    return codeMappers.get(codeSystem);
+    return getCodeMappers().get(codeSystem);
+  }
+
+  /**
+   * Get all configured code mappers, keyed by the code system they map to.
+   * @return the configured code mappers, empty if none are configured
+   */
+  public static Map<String, CodeMapper> getCodeMappers() {
+    if (codeMappers == null) {
+      return Collections.emptyMap();
+    }
+    return codeMappers;
   }
 
   /**
