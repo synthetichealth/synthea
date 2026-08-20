@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+﻿package org.mitre.synthea.modules;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -125,10 +125,14 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
     double baseline = calculateBaseline(person);
 
-    cachedValue = baseline
-      + getMedicationImpacts(person)
-      + getLifestyleImpacts(person, baseline, time)
-      + getVariation(person, time);
+    double computed = baseline
+        + getMedicationImpacts(person)
+        + getLifestyleImpacts(person, baseline, time)
+        + getVariation(person, time);
+
+    // Use the configured normal range minimum as the floor so the limit is config-driven
+    double minValue = sysDias == SysDias.SYSTOLIC ? NORMAL_SYS_BP_RANGE[0] : NORMAL_DIA_BP_RANGE[0];
+    cachedValue = Math.max(minValue, computed);
 
     cacheTime = time;
     return cachedValue;
