@@ -1,0 +1,117 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: mammalian_circadian_rhythm_non_24hr
+
+# Name of the model file
+model: Leloup2004_CircadianRhythmsSet4.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: dormand_prince_54
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.1
+
+# Simulation duration in seconds
+duration: 168
+# duration: 86400
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: mammalian_circadian_rhythm_non_24hr.png
+      type: line
+      title: "mammalian_circadian_rhythm_non_24hr"
+      axisParamX: time
+      axisLabelX: time (hr)
+      axisLabelY: MB
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: MB
+
+
+# <parameter constant="false" id="MP" metaid="COPASI21" name="MP" units="unit_0" value="0">
+# <parameter constant="false" id="vsP" metaid="COPASI22" name="vsP" units="unit_1" value="1.5">
+# <parameter constant="true" id="vmP" metaid="COPASI23" name="vmP" units="unit_1" value="1.1">
+# <parameter constant="true" id="kdmp" metaid="COPASI24" name="kdmp" units="unit_2" value="0.01">
+# <parameter constant="true" id="KAP" metaid="COPASI25" name="KAP" sboTerm="SBO:0000363" units="unit_0" value="0.7">
+# <parameter constant="true" id="KmP" metaid="COPASI26" name="KmP" sboTerm="SBO:0000027" units="unit_0" value="0.31">
+# <parameter constant="false" id="MC" metaid="COPASI27" name="MC" units="unit_0" value="0">
+# <parameter constant="false" id="vsC" metaid="COPASI28" name="vsC" units="unit_1" value="1.1">
+# <parameter constant="true" id="vmC" metaid="COPASI29" name="vmC" units="unit_1" value="1">
+# <parameter constant="true" id="kdmc" metaid="COPASI30" name="kdmc" units="unit_2" value="0.01">
+# <parameter constant="true" id="KAC" metaid="COPASI31" name="KAC" sboTerm="SBO:0000363" units="unit_0" value="0.6">
+# <parameter constant="true" id="KmC" metaid="COPASI32" name="KmC" sboTerm="SBO:0000027" units="unit_0" value="0.4">
+# <parameter constant="false" id="MB" metaid="COPASI33" name="MB" units="unit_0" value="8.6">
+# <parameter constant="false" id="vsB" metaid="COPASI34" name="vsB" units="unit_1" value="1">
+# <parameter constant="true" id="vmB" metaid="COPASI35" name="vmB" units="unit_1" value="0.8">
+# <parameter constant="true" id="kdmb" metaid="COPASI36" name="kdmb" units="unit_2" value="0.01">
+# <parameter constant="true" id="KIB" metaid="COPASI37" name="KIB" sboTerm="SBO:0000261" units="unit_0" value="2.2">
+# <parameter constant="true" id="KmB" metaid="COPASI38" name="KmB" sboTerm="SBO:0000027" units="unit_0" value="0.4">
+# <parameter constant="false" id="PC" metaid="COPASI39" name="PC" units="unit_0" value="1">
+# <parameter constant="false" id="CC" metaid="COPASI40" name="CC" units="unit_0" value="1">
+# <parameter constant="false" id="PCP" metaid="COPASI41" name="PCP" units="unit_0" value="1">
+# <parameter constant="false" id="CCP" metaid="COPASI42" name="CCP" units="unit_0" value="1">
+# <parameter constant="false" id="PCC" metaid="COPASI43" name="PCC" units="unit_0" value="1">
+# <parameter constant="false" id="PCN" metaid="COPASI44" name="PCN" units="unit_0" value="1">
+# <parameter constant="false" id="PCCP" metaid="COPASI45" name="PCCP" units="unit_0" value="1">
+# <parameter constant="false" id="PCNP" metaid="COPASI46" name="PCNP" units="unit_0" value="1">
+# <parameter constant="false" id="BC" metaid="COPASI47" name="BC" units="unit_0" value="1">
+# <parameter constant="false" id="BCP" metaid="COPASI48" name="BCP" units="unit_0" value="1">
+# <parameter constant="false" id="BN" metaid="COPASI49" name="BN" units="unit_0" value="1">
+# <parameter constant="false" id="BNP" metaid="COPASI50" name="BNP" units="unit_0" value="1">
+# <parameter constant="false" id="IN" metaid="COPASI51" name="IN" units="unit_0" value="1">
+# <parameter constant="true" id="k1" metaid="COPASI52" name="k1" units="unit_2" value="0.4">
+# <parameter constant="true" id="k2" metaid="COPASI53" name="k2" units="unit_2" value="0.2">
+# <parameter constant="true" id="k3" metaid="COPASI54" name="k3" units="unit_3" value="0.4">
+# <parameter constant="true" id="k4" metaid="COPASI55" name="k4" units="unit_2" value="0.2">
+# <parameter constant="true" id="k5" metaid="COPASI56" name="k5" units="unit_2" value="0.4">
+# <parameter constant="true" id="k6" metaid="COPASI57" name="k6" units="unit_2" value="0.2">
+# <parameter constant="true" id="k7" metaid="COPASI58" name="k7" units="unit_3" value="0.5">
+# <parameter constant="true" id="k8" metaid="COPASI59" name="k8" units="unit_2" value="0.1">
+# <parameter constant="true" id="kdnc" metaid="COPASI60" name="kdnc" units="unit_2" value="0.12">
+# <parameter constant="true" id="kdn" metaid="COPASI61" name="kdn" units="unit_2" value="0.01">
+# <parameter constant="true" id="kstot" metaid="COPASI62" name="kstot" units="unit_2" value="1">
+# <parameter constant="false" id="ksB" metaid="COPASI63" name="ksB" units="unit_2" value="0.12">
+# <parameter constant="false" id="ksC" metaid="COPASI64" name="ksC" units="unit_2" value="1.6">
+# <parameter constant="false" id="ksP" metaid="COPASI65" name="ksP" units="unit_2" value="0.6">
+# <parameter constant="true" id="m" metaid="COPASI66" name="m" sboTerm="SBO:0000190" units="unit_4" value="2">
+# <parameter constant="true" id="n" metaid="COPASI67" name="n" sboTerm="SBO:0000190" units="unit_4" value="4">
+# <parameter constant="true" id="vstot" metaid="COPASI68" name="vstot" units="unit_1" value="1">
+# <parameter constant="true" id="Kd" metaid="COPASI69" name="Kd" sboTerm="SBO:0000027" units="unit_0" value="0.3">
+# <parameter constant="true" id="Kdp" metaid="COPASI70" name="Kdp" sboTerm="SBO:0000027" units="unit_0" value="0.1">
+# <parameter constant="true" id="Kp" metaid="COPASI71" name="Kp" sboTerm="SBO:0000027" units="unit_0" value="0.1">
+# <parameter constant="true" id="Vphos" metaid="COPASI72" name="Vphos" sboTerm="SBO:0000612" units="unit_1" value="0.4">
+# <parameter constant="true" id="V1B" metaid="COPASI73" name="V1B" units="unit_1" value="0.5">
+# <parameter constant="true" id="V1C" metaid="COPASI74" name="V1C" units="unit_1" value="0.6">
+# <parameter constant="false" id="V1P" metaid="COPASI75" name="V1P" units="unit_1" value="0.4">
+# <parameter constant="false" id="V1PC" metaid="COPASI76" name="V1PC" units="unit_1" value="0.4">
+# <parameter constant="true" id="V2B" metaid="COPASI77" name="V2B" units="unit_1" value="0.1">
+# <parameter constant="true" id="V2C" metaid="COPASI78" name="V2C" units="unit_1" value="0.1">
+# <parameter constant="true" id="V2P" metaid="COPASI79" name="V2P" units="unit_1" value="0.3">
+# <parameter constant="true" id="V2PC" metaid="COPASI80" name="V2PC" units="unit_1" value="0.1">
+# <parameter constant="true" id="V3B" metaid="COPASI81" name="V3B" units="unit_1" value="0.5">
+# <parameter constant="false" id="V3PC" metaid="COPASI82" name="V3PC" units="unit_1" value="0.4">
+# <parameter constant="true" id="V4B" metaid="COPASI83" name="V4B" units="unit_1" value="0.2">
+# <parameter constant="true" id="V4PC" metaid="COPASI84" name="V4PC" units="unit_1" value="0.1">
+# <parameter constant="true" id="vdBC" metaid="COPASI85" name="vdBC" units="unit_1" value="0.5">
+# <parameter constant="true" id="vdBN" metaid="COPASI86" name="vdBN" units="unit_1" value="0.6">
+# <parameter constant="true" id="vdCC" metaid="COPASI87" name="vdCC" units="unit_1" value="0.7">
+# <parameter constant="true" id="vdIN" metaid="COPASI88" name="vdIN" units="unit_1" value="0.8">
+# <parameter constant="true" id="vdPC" metaid="COPASI89" name="vdPC" units="unit_1" value="0.7">
+# <parameter constant="true" id="vdPCC" metaid="COPASI90" name="vdPCC" units="unit_1" value="0.7">
+# <parameter constant="true" id="vdPCN" metaid="COPASI91" name="vdPCN" units="unit_1" value="0.7">

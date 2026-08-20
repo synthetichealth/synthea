@@ -1,0 +1,199 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: menstrual_cycle
+
+# Name of the model file
+model: Roblitz2013_Menstrual_Cycle.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: adams_moulton
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+# duration: 2419200
+# duration: 86400
+duration: 28
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: menstrual_cycle.png
+      type: line
+      title: "menstrual_cycle"
+      axisParamX: time
+      axisLabelX: time (d)
+      axisLabelY: IU/L
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: AF1
+        - param: E2
+        - param: GnRH
+        - param: InhA
+        - param: Lut1
+        - param: OvF
+        - param: P4
+        - param: FSH_R
+        - param: R_FSH
+        - param: R_FSH_des
+
+
+    # <listOfParameters>
+    #   <parameter constant="true" id="p1" metaid="e7872be6-f9b2-49ca-935b-cde9cf1d5e82" name="b_syn_LH" value="7309.91587614104"/>
+    #   <parameter constant="true" id="p2" metaid="_6f93d2a3-0345-48c6-8d90-303c5199a126" name="k_E2_LH" value="7309.91587614104"/>
+    #   <parameter constant="true" id="p174" metaid="ceeca09f-a403-42e9-bdf0-3a0a4bbcd3a2" name="k_AF2_IhB" value="447.467334884553"/>
+    #   <parameter constant="true" id="p173" metaid="_3c7378a8-3b64-48e6-8d03-36fe6de01876" name="b_IhB" value="89.4934669769107"/>
+    #   <parameter constant="true" id="p3" metaid="e1e74065-fa21-4166-b441-003daa805497" name="T_E2_LH" value="192.2041"/>
+    #   <parameter constant="true" id="p4" metaid="_1f928680-96e2-4faa-959e-078daf15597c" name="T_P4_LH" value="2.3708"/>
+    #   <parameter constant="true" id="p6" metaid="_9656dab1-786a-451f-831a-819fef5e1e7b" name="n_E2_LH" value="10"/>
+    #   <parameter constant="true" id="p7" metaid="_2cf28b85-fff1-4ab4-af6d-95d983ef1ecc" name="n_P4_LH" value="1"/>
+    #   <parameter constant="true" id="p175" metaid="_3c63f2bf-2195-44c1-8dc8-c97ef51d7a32" name="k_Sc2_IhB" value="1.34240200465366E5"/>
+    #   <parameter constant="true" id="p152" metaid="_3975e584-f6df-4bf7-94c6-9dca0d8d26cd" name="k_AF2_E2" value="2.09450510112762"/>
+    #   <parameter constant="true" id="p158" metaid="_604dc4b2-cc0e-4c1c-bc1e-a9ae8c9b8520" name="b_E2" value="51.558081260068"/>
+    #   <parameter constant="true" id="p159" metaid="_56dcc7ef-e3a9-4505-b041-bf462fbfebc3" name="k_AF3_E2" value="9.28"/>
+    #   <parameter constant="true" id="p160" metaid="_33e833e9-fe81-4725-81c5-f3967a38d3a0" name="k_AF4_E2" value="3480.27"/>
+    #   <parameter constant="true" id="p161" metaid="_9d22712a-417c-40dc-9e05-05101ae6674f" name="k_PrF_E2" value="0.972"/>
+    #   <parameter constant="true" id="p164" metaid="_7348c454-1dc4-4822-991d-d572d0f816b5" name="k_Lut1_E2" value="1713.71039914086"/>
+    #   <parameter constant="true" id="p165" metaid="_44b7d7c3-24fb-42be-a6a0-6b5258cbbc67" name="k_Lut4_E2" value="8675.13871487382"/>
+    #   <parameter constant="true" id="p154" metaid="_4ddbdb18-0e9b-4164-bb5d-c1469ce4d817" name="k_cl_E2" value="5.23500984428137"/>
+    #   <parameter constant="true" id="p168" metaid="fea3403b-4888-4436-802e-485b34e939a9" name="b_IhA" value="1.44522999821013"/>
+    #   <parameter constant="true" id="p169" metaid="_166bc502-6fe1-4d1f-b235-5546328ae2d0" name="k_PrF_IhA" value="2.28494719885448"/>
+    #   <parameter constant="true" id="p170" metaid="c4430978-f432-46f3-8693-8bc91b03d50a" name="k_Lut2_IhA" value="28.2110255951316"/>
+    #   <parameter constant="true" id="p171" metaid="aab99692-9d8d-401e-b39e-99827d107f2a" name="k_Lut3_IhA" value="216.85"/>
+    #   <parameter constant="true" id="p172" metaid="_91632c7f-b38c-4e1f-96de-00b0938aa283" name="k_Lut4_IhA" value="114.247359942724"/>
+    #   <parameter constant="true" id="p177" metaid="_51c8425c-c35c-432b-a155-8a31205e5577" name="k_Sc1_IhA" value="60"/>
+    #   <parameter constant="true" id="p178" metaid="_2067a4fa-aeef-4d93-be67-7e91bdd18517" name="k_Lut1_IhA" value="180"/>
+    #   <parameter constant="true" id="p166" metaid="d204d531-73e2-4f59-bd89-f48ff8a975de" name="b_P4" value="0.9426346876678"/>
+    #   <parameter constant="true" id="p167" metaid="_12e91baa-717e-4649-afa0-e83abfd866e3" name="k_Lut4_P4" value="761.643100053696"/>
+    #   <parameter constant="true" id="p155" metaid="_7f5fc5b9-71f3-45af-b032-f605fc105485" name="k_cl_P4" value="5.12958654018257"/>
+    #   <parameter constant="true" id="p301" metaid="fb138a2b-9c56-42f3-bf37-8ebc43dde6a6" name="a_0" value="0.005593"/>
+    #   <parameter constant="true" id="p203" metaid="e5754c10-1c12-4b78-9136-b806d51f46ce" name="T_P4_freq" value="1.2"/>
+    #   <parameter constant="true" id="p204" metaid="eef3fd15-c49a-455f-a2be-323c255711bf" name="n_P4_freq" value="2"/>
+    #   <parameter constant="true" id="p205" metaid="_15051c43-143f-4db9-b7b3-d43f115cc006" name="T_E2_freq" value="220"/>
+    #   <parameter constant="true" id="p206" metaid="_7a470b88-2429-4921-8c79-55f4bf1ae537" name="n_E2_freq" value="10"/>
+    #   <parameter constant="true" id="p208" metaid="_110e587f-a3f0-4d5e-bf4d-4d3d78c85c30" name="T_E2_mass_1" value="220"/>
+    #   <parameter constant="true" id="p209" metaid="_2d15e2bf-bf3b-464d-8af8-67a984c3ece8" name="n_E2_mass_1" value="2"/>
+    #   <parameter constant="true" id="p210" metaid="_14adfb5e-08dc-47e5-943f-97c905a17c5f" name="T_E2_mass_2" value="9.6"/>
+    #   <parameter constant="true" id="p211" metaid="d2dffed6-763b-46ac-84e8-903b3bd70132" name="n_E2_mass_2" value="1"/>
+    #   <parameter constant="true" id="p12" metaid="_1b246356-5ce1-49ba-a3b0-a8b28828fed7" name="V_blood" value="5"/>
+    #   <parameter constant="true" id="p300" metaid="fd25e69a-9d74-4900-b2be-ca5d314e9a99" name="k_degr_G" value="0.447467334884553"/>
+    #   <parameter constant="true" id="p30" metaid="_8c911399-de5e-4454-b344-73feb491f105" name="k_cl_IhAe" value="0.1989"/>
+    #   <parameter constant="true" id="p21" metaid="_92fac8e2-64fc-4220-b12d-bd32f53a9348" name="k_Ih_FSH" value="2.21290495793807E4"/>
+    #   <parameter constant="true" id="p22" metaid="_9f888d7b-84cf-4e38-9179-6739fc0e3750" name="T_IhA" value="95.81"/>
+    #   <parameter constant="true" id="p23" metaid="_7e19d439-98ef-474b-8ca4-ebedba1c94bd" name="T_IhB" value="70"/>
+    #   <parameter constant="true" id="p24" metaid="_613b6f31-bd67-42be-996b-88e347a9052c" name="n_IhA" value="5"/>
+    #   <parameter constant="true" id="p25" metaid="_05206d2c-51b7-41ab-96b8-5782cbc60041" name="n_IhB" value="2"/>
+    #   <parameter constant="true" id="p11" metaid="d5594bd6-135f-4aa0-b64f-2b73ceeadeac" name="T_freq_FSH" value="10"/>
+    #   <parameter constant="true" id="p13" metaid="_2a347f5b-0974-4e2f-9f1b-913fb4948403" name="n_freq_FSH" value="3"/>
+    #   <parameter constant="true" id="p8" metaid="eedc153c-72c3-4206-a77d-02355e1a64e1" name="T_GR_LH" value="0.0003"/>
+    #   <parameter constant="true" id="p9" metaid="_7219ad58-1614-4849-9c81-2673b104b617" name="n_GR_LH" value="5"/>
+    #   <parameter constant="true" id="p16" metaid="_629bf9ff-8125-4707-99ff-0ab842744b43" name="b_rel_LH" value="0.00476024700196886"/>
+    #   <parameter constant="true" id="p5" metaid="da41abcd-7c31-419e-be25-a3959cd9323d" name="k_GR_LH" value="0.190415249686773"/>
+    #   <parameter constant="true" id="p302" metaid="f29903b2-d047-4d91-9763-1393e7668293" name="k_on_G" value="322.176481116879"/>
+    #   <parameter constant="true" id="p307" metaid="_204d0823-b431-4720-9634-0e07cd9f4906" name="k_recy_RG" value="32.2176481116879"/>
+    #   <parameter constant="true" id="p306" metaid="_9496a2ca-84c0-4ce4-8f03-00fa11df5c1d" name="k_inter_RG" value="3.22176481116878"/>
+    #   <parameter constant="true" id="p308" metaid="_35813e48-e315-41f4-aff2-56d7381954f9" name="k_degr_RG" value="0.0894934669769107"/>
+    #   <parameter constant="true" id="p311" metaid="_1189ab53-0ba9-4bfe-b0a0-cb685068c8eb" name="k_syn_RG" value="8.94934669769107E-5"/>
+    #   <parameter constant="true" id="p303" metaid="_9739ef0f-73cb-4698-883b-1e89c15c12ab" name="k_off_G" value="644.352962233757"/>
+    #   <parameter constant="true" id="p309" metaid="_44db9019-dd25-4adf-86e8-a8b56425ee77" name="k_inact_GR" value="32.2176481116879"/>
+    #   <parameter constant="true" id="p310" metaid="_22603b8d-0ac3-469f-8132-2f668f1b711e" name="k_act_GR" value="3.222"/>
+    #   <parameter constant="true" id="p305" metaid="_76388d54-684f-41d1-bf36-59111d44f1ab" name="k_diss_GRi" value="32.2176481116879"/>
+    #   <parameter constant="true" id="p231" metaid="_426da768-5f35-4f84-9b3e-c320a6bdfe6e" name="k_cl_LH" value="74.8505459101486"/>
+    #   <parameter constant="true" id="p230" metaid="_6f52a066-68ca-4409-aba4-cdc9036d3e96" name="k_on_LH" value="2.1430105602291"/>
+    #   <parameter constant="true" id="p234" metaid="f1b846a5-a5d9-4bf3-a0b8-61ce3160d673" name="k_des_LH" value="183.363164488992"/>
+    #   <parameter constant="true" id="p232" metaid="_63fcb1b9-c79b-4543-9aa6-b69420aca3de" name="k_recy_LH" value="68.9493466976911"/>
+    #   <parameter constant="true" id="p17" metaid="e07d0dcd-74ff-4a9c-8601-b6162cbf71ed" name="b_rel_FSH" value="0.0569894397708967"/>
+    #   <parameter constant="true" id="p28" metaid="_8b1761ea-e073-48f6-8959-36a8a4503a60" name="k_GR_FSH" value="0.27201539287632"/>
+    #   <parameter constant="true" id="p18" metaid="_2b9f1a74-c53f-4f08-b246-c6e3453a2606" name="T_GR_FSH" value="0.0003"/>
+    #   <parameter constant="true" id="p20" metaid="_1ea33585-549e-49e0-b828-57880d7e93d6" name="n_GR_FSH" value="2"/>
+    #   <parameter constant="true" id="p240" metaid="bea3c36a-62a5-416f-841b-204eca6c39f0" name="k_on_FSH" value="3.52890638983354"/>
+    #   <parameter constant="true" id="p242" metaid="_8c32e156-da91-473e-94c7-46c1bca36b9e" name="k_recy_FSH" value="61.0291748702345"/>
+    #   <parameter constant="true" id="p244" metaid="b8d42dce-b67d-4a61-aecd-3beca1005af2" name="k_des_FSH" value="138.303203866118"/>
+    #   <parameter constant="true" id="p94" metaid="_150e0451-a9f5-481a-958b-c2eff99b7dfc" name="k_s" value="0.2186056917845"/>
+    #   <parameter constant="true" id="p90" metaid="_7fcef695-8d8c-40da-98d4-dcdf8bb02b4c" name="T_FSH_s" value="3"/>
+    #   <parameter constant="true" id="p91" metaid="ec546a23-4bf2-487e-8cbc-82b3a112d2e2" name="n_FSH_s" value="5"/>
+    #   <parameter constant="true" id="p95" metaid="_957f9872-3db6-4864-a5c3-15af22212fa9" name="k_cl_s" value="1.34267048505459"/>
+    #   <parameter constant="true" id="p92" metaid="cb2cf4cc-04e4-44cf-b55e-3b40694fc70e" name="T_P4_s" value="1.2348"/>
+    #   <parameter constant="true" id="p93" metaid="_785fdc2b-fb40-4eb8-8a0a-df629e6eb6f0" name="n_P4_s" value="5"/>
+    #   <parameter constant="true" id="p49" metaid="_86d9a12a-6a9b-43d0-a2b9-99154dc39710" name="k_AF1" value="3.66180418829425"/>
+    #   <parameter constant="true" id="p48" metaid="f2438ef8-0e4f-4632-b907-e26bbc8f7b84" name="T_FSHR_AF1" value="0.608121"/>
+    #   <parameter constant="true" id="p47" metaid="df466df8-a5c8-48e0-ab57-805563517f75" name="n_FSHR_AF1" value="3"/>
+    #   <parameter constant="true" id="p50" metaid="fdec6f31-de1e-489c-9f15-7a3791578388" name="k_AF1_AF2" value="1.22060139609808"/>
+    #   <parameter constant="true" id="p51" metaid="_83658f5a-c163-42e1-a50e-aa9e2914468c" name="k_AF2_AF3" value="4.88231609092536"/>
+    #   <parameter constant="true" id="p52" metaid="_6f1cf31b-75fb-4ab1-b57f-014cd55a95dd" name="SF_LHR" value="2.7262"/>
+    #   <parameter constant="true" id="p46" metaid="ea879999-8ceb-4696-9360-2efe14f03e7d" name="n_AF2_AF3" value="3.68896"/>
+    #   <parameter constant="true" id="p32" metaid="_4cbfaf41-b7ce-40c4-b07d-1cb2b87335b6" name="k_AF3_AF4" value="122.060139609808"/>
+    #   <parameter constant="true" id="p43" metaid="_5e3008a8-e833-419a-b293-9d61810d6123" name="n_AF3_AF4" value="5"/>
+    #   <parameter constant="true" id="p31" metaid="_3d72f17c-4cf7-4a3e-8a25-883095ffd495" name="k_AF3_AF3" value="0.122060139609808"/>
+    #   <parameter constant="true" id="p55" metaid="be82e20c-0f20-4ba0-addd-0929b53f61e6" name="SeF_max" value="10"/>
+    #   <parameter constant="true" id="p33" metaid="_202b4ab1-a2a5-4464-8fee-d8ba6a2a5397" name="k_A42_AF4" value="12.2060139609808"/>
+    #   <parameter constant="true" id="p44" metaid="_42d2929c-e751-40fc-821d-a7a014aa2712" name="n_AF4" value="2"/>
+    #   <parameter constant="true" id="p34" metaid="e2c6ffc8-da66-4e20-b7e3-63dd82c6628c" name="k_AF4_PrF" value="332.754608913549"/>
+    #   <parameter constant="true" id="p35" metaid="_4cd5ce82-1e0d-4679-9da9-1f0745f8fc9d" name="k_cl_PrF" value="122.060139609808"/>
+    #   <parameter constant="true" id="p45" metaid="_9b9b7564-3c37-4ae5-b148-221bbeb209a0" name="n_OvF" value="6"/>
+    #   <parameter constant="true" id="p27" metaid="_092d7657-7a81-4aac-a0cb-a3c0b723d205" name="k_OvF" value="7.98433864327904"/>
+    #   <parameter constant="true" id="p53" metaid="_1a6f7ccd-7f59-4faf-b35f-a765486ef43c" name="T_PrF_OvF" value="3"/>
+    #   <parameter constant="true" id="p54" metaid="_0c7f46da-0de4-4dac-8ddc-8cb9aad1a439" name="n_PrF_OvF" value="10"/>
+    #   <parameter constant="true" id="p36" metaid="_7447374c-9890-44aa-9986-8c843dc17438" name="k_cl_OvF" value="12.2060139609808"/>
+    #   <parameter constant="true" id="p26" metaid="_0bac0e7c-2811-4122-8a40-99c07198629d" name="k_Sc1" value="1.20834079112225"/>
+    #   <parameter constant="true" id="p56" metaid="_0709fd02-3f21-43f6-9099-7c86aa1488dc" name="T_OvF_Sc1" value="0.02"/>
+    #   <parameter constant="true" id="p57" metaid="_68064f67-3eae-49d6-bece-6b3584937b2e" name="n_OvF_Sc1" value="10"/>
+    #   <parameter constant="true" id="p37" metaid="_7f3eeb83-73bd-43e9-a18b-b0e1ee4f8de7" name="k_Sc1_Sc2" value="1.22060139609808"/>
+    #   <parameter constant="true" id="p38" metaid="ad896395-2a67-4268-975a-c332b69e59c2" name="k_Sc2_Lut1" value="0.958117057454806"/>
+    #   <parameter constant="true" id="p39" metaid="b71a7587-f64f-4602-a7ef-b9b1e2f148f0" name="k_Lut1_Lut2" value="0.924735994272418"/>
+    #   <parameter constant="true" id="p83" metaid="de602fec-2aa2-4038-b2c3-80ca6434d9dd" name="T_GR_Lut" value="0.0008"/>
+    #   <parameter constant="true" id="p84" metaid="d9c4b420-6d94-40a6-ba63-dfd32756fab6" name="n_GR_Lut" value="5"/>
+    #   <parameter constant="true" id="p40" metaid="_330e7a6f-eb83-4299-8094-7e1ca4f09b07" name="k_Lut2_Lut3" value="0.756765706103455"/>
+    #   <parameter constant="true" id="p41" metaid="_517de92f-577d-4389-ba6c-bd3cd9019fd6" name="k_Lut3_Lut4" value="0.610291748702345"/>
+    #   <parameter constant="true" id="p42" metaid="_654b2a9b-686b-435a-99a9-d30c759bb2a6" name="k_cl_Lut4" value="0.542840522641847"/>
+    #   <parameter constant="true" id="p156" metaid="_6d19ad02-56cc-474a-8519-7eae9c13cf5a" name="k_IhA" value="4.28718453552891"/>
+    #   <parameter constant="true" id="p157" metaid="_2d4412b2-f773-429f-9dee-ec6b95f08d46" name="k_cl_IhB" value="172.453910864507"/>
+    #   <parameter constant="true" id="p304" metaid="e9b27fe8-b7aa-47f7-951b-e17cd88076e9" name="k_degr_GRi" value="0.00894934669769107"/>
+    #   <parameter constant="true" id="p241" metaid="_4271fec3-3919-4e62-b9b0-8e0c212d4f16" name="k_cl_FSH" value="114.247359942724"/>
+    #   <parameter constant="true" id="p80" metaid="_25272094-841c-408c-83c9-572dbc8751f1" name="m_GR_Lut" value="20"/>
+    #   <parameter constant="false" id="freq" metaid="_0bb89632-2ae9-4c6e-ab3b-92cb347ee469" name="freq" value="3.17876449742659"/>
+    #   <parameter constant="false" id="mass" metaid="e10d315c-7ffa-4ebf-acc3-71b0da32aee2" name="mass" value="0.00120799195301476"/>
+    #   <parameter constant="true" id="facE2" metaid="_09ae7bab-fff5-495b-aa18-cd8f8123f450" name="facE2" value="1"/>
+    #   <parameter constant="true" id="facP4" metaid="f11227f8-d8d5-4ce1-890c-b1638cfbe3e5" name="facP4" value="1"/>
+    #   <parameter constant="true" id="facLH" metaid="_739b2a50-2dbd-4358-8e81-4c25f3067cb7" name="facLH" value="1"/>
+    #   <parameter constant="true" id="facFSH" metaid="e241128b-3156-4f80-9c7f-43ce9370a396" name="facFSH" value="1"/>
+    #   <parameter constant="true" id="p202" metaid="ae92a0f7-476d-4e9a-97b7-5454be010887" name="f_0" value="16"/>
+    #   <parameter constant="true" id="p201" metaid="_59f33d70-e553-41af-aaa5-3e2ffc3f1ac1" name="m_E2_freq" value="1"/>
+    #   <parameter constant="true" id="p274" metaid="efec5cfa-6f58-419b-95d0-bc1d68c0a52b" name="k_A_Ago" value="54.2"/>
+    #   <parameter constant="true" id="p275" metaid="_6d03106a-65dd-4497-bd0f-ecc7ef5ef7cc" name="cl_Ago" value="2.65"/>
+    #   <parameter constant="true" id="p273" metaid="dfe38cc7-7704-4ef9-8350-3cc062212ba5" name="V_c_F_Ago" value="38.12"/>
+    #   <parameter constant="true" id="p313" metaid="b2987fa0-1aeb-4301-b76a-8cbda143193d" name="k_off_Ago" value="644.35"/>
+    #   <parameter constant="true" id="p312" metaid="_43e9ba5d-7693-4027-841c-2b23a95549d4" name="k_on_Ago" value="322.18"/>
+    #   <parameter constant="true" id="p314" metaid="e41787ef-4b6e-4f6e-8208-b019f6b2baca" name="k_degr_AgoR" value="0.009"/>
+    #   <parameter constant="true" id="p315" metaid="c80712df-bdcc-4e02-aacf-2e23f3d74894" name="k_diss_AgoR" value="32.22"/>
+    #   <parameter constant="true" id="p319" metaid="e0cf51dc-e30b-464e-8239-054e028544cb" name="k_inact_AgoR" value="32.22"/>
+    #   <parameter constant="true" id="p320" metaid="_8b0282af-4d85-4ec0-a573-40f87fa14d31" name="k_act_AgoR" value="3.22"/>
+    #   <parameter constant="true" id="p269" metaid="_41a9244f-a5ad-4805-839d-e77f6783945e" name="t_0_Ago" value="91"/>
+    #   <parameter constant="true" id="p272" metaid="_63e216aa-ade0-44d8-9a32-9e0cf7ba91aa" name="dose_Ago" value="100"/>
+    #   <parameter constant="true" id="p512" metaid="ee09dfe8-4a96-4ba0-87ae-e60fd82fdf5a" name="k_on_ant" value="322.18"/>
+    #   <parameter constant="true" id="p513" metaid="_3fd2ddc7-6df8-42e4-bed8-67a323474181" name="k_off_Ant" value="644.35"/>
+    #   <parameter constant="true" id="p514" metaid="_71c353e9-e8a9-437e-b66d-c2e4a5b515bc" name="k_degr_Ant" value="0.009"/>
+    #   <parameter constant="true" id="p474" metaid="_44e04d66-fccf-45dc-8d8e-b4302d5a792c" name="k_A_Ant" value="45.56"/>
+    #   <parameter constant="true" id="p475" metaid="f001451c-1bbd-49ba-8845-55a65f27f129" name="cl_Ant" value="5"/>
+    #   <parameter constant="true" id="p473" metaid="_855512ad-49b1-417f-a610-cf7ab5e00f56" name="V_c_F_Ant" value="34.9"/>
+    #   <parameter constant="true" id="p476" metaid="_2e58f035-98a1-41c2-8c35-0fd22f925925" name="k_cp_Ant" value="3.216"/>
+    #   <parameter constant="true" id="p477" metaid="d88d9143-e83b-4aee-aa6f-22894d5eebb6" name="k_pc_Ant" value="4.76"/>
+    #   <parameter constant="true" id="p469" metaid="_7d395017-fa8d-4968-9a6e-0d7fda01405f" name="t_0_Ant" value="34"/>
+    #   <parameter constant="true" id="p472" metaid="_0706bf8d-2d39-4a04-adea-0255461b8ec7" name="dose_Ant" value="500"/>
+    # </listOfParameters>

@@ -1,0 +1,75 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: telomere_associated_dna_damage
+
+# Name of the model file
+model: Talemi2015_Telomere_DNA_Damage.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: rosenbrock
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.1
+
+# Simulation duration in seconds
+duration: 10
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: telomere_associated_dna_damage.png
+      type: line
+      title: "telomere_associated_dna_damage"
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: ???
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: Tot
+        - param: DNAdamagefoci_0
+        - param: Gy
+        - param: FociperGy
+        - param: prop_C
+        - param: TAF0
+        - param: k_TAF
+        - param: BaseDNAdamage
+        - param: percentTAF
+        - param: kcross
+        - param: TotalRP
+        - param: Toti
+        - param: Metabolite_1
+        - param: ModelValue_3
+        - param: ModelValue_2
+
+
+
+# <parameter name="Tot" constant="false" id="Tot" metaid="COPASI7" value="1.87907428496686">
+# <parameter name="DNAdamagefoci_0" constant="false" id="DNAdamagefoci_0" metaid="COPASI8" value="750.500039901129">
+# <parameter name="Gy" constant="true" id="Gy" metaid="COPASI9" value="20">
+# <parameter name="FociperGy" constant="true" id="FociperGy" metaid="COPASI10" value="167.816910633523">
+# <parameter name="prop_C" constant="true" id="prop_C" metaid="COPASI11" value="0.0225659121497629">
+# <parameter name="TAF0" constant="true" id="TAF0" metaid="COPASI12" value="0.889883170980968">
+# <parameter name="k_TAF" constant="true" id="k_TAF" metaid="COPASI13" value="0.790501839872594">
+# <parameter name="BaseDNAdamage" constant="true" id="BaseDNAdamage" metaid="COPASI14" value="0.989191113985894">
+# <parameter name="percentTAF" constant="false" id="percentTAF" metaid="COPASI15" value="47.3575301466414">
+# <parameter name="kcross" constant="true" id="kcross" metaid="COPASI16" value="0.000151844699335433">
+# <parameter name="TotalRP" constant="false" id="TotalRP" metaid="COPASI17" value="20">
+# <parameter name="Toti" constant="false" id="Toti" metaid="COPASI18" value="0">
+# <parameter name="Initial for TAF" constant="true" id="Metabolite_1" metaid="_43c0d407-ee2f-4dce-aad5-e2a8b62f319e" value="0.889883170980968">
+# <parameter name="Initial for FociperGy" constant="true" id="ModelValue_3" metaid="d2669bdc-9de4-4067-b478-b4b7926333ac" value="167.816910633523">
+# <parameter name="Initial for Gy" constant="true" id="ModelValue_2" metaid="_1c963c68-ddc8-4432-9934-f9294e653474" value="20">
