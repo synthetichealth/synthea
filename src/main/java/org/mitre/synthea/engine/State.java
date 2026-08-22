@@ -1401,6 +1401,11 @@ public abstract class State implements Cloneable, Serializable {
           }
         });
         allergy.reactions = reactions;
+        // Derive overall allergy severity as the worst across all reactions,
+        // comparing by ReactionSeverity.level (SEVERE=3 > MODERATE=2 > MILD=1).
+        allergy.severity = reactions.values().stream()
+            .max((a, b) -> Integer.compare(a.level, b.level))
+            .orElse(null);
       }
 
       diagnosed = true;
