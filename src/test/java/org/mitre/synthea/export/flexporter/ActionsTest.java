@@ -10,6 +10,8 @@ import ca.uhn.fhir.parser.IParser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -81,8 +83,7 @@ public class ActionsTest {
    */
   @BeforeClass
   public static void setupClass() throws IOException {
-    ClassLoader classLoader = ActionsTest.class.getClassLoader();
-    File file = new File(classLoader.getResource("flexporter/test_mapping.yaml").getFile());
+    File file = getResourceFile("flexporter/test_mapping.yaml");
 
     testMapping = Mapping.parseMapping(file);
     testMapping.loadValueSets();
@@ -99,11 +100,25 @@ public class ActionsTest {
 
   private static Bundle loadFixtureBundle(String filename) throws IOException {
     IParser parser = FhirR4.getContext().newJsonParser();
-    ClassLoader classLoader = ActionsTest.class.getClassLoader();
-    File file = new File(classLoader.getResource("flexporter/" + filename).getFile());
+    File file = getResourceFile("flexporter/" + filename);
 
     String fhirJson = new String(Files.readAllBytes(file.toPath()));
     return parser.parseResource(Bundle.class, fhirJson);
+  }
+
+  /**
+   * Resolve a file on the test classpath. Note this goes via URI rather than URL.getFile(),
+   * so that paths containing characters that get percent-encoded in a URL, such as spaces,
+   * still resolve to the right file.
+   */
+  private static File getResourceFile(String path) {
+    URL url = ActionsTest.class.getClassLoader().getResource(path);
+    assertNotNull("Unable to find test resource " + path, url);
+    try {
+      return new File(url.toURI());
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException("Unable to resolve test resource " + path, e);
+    }
   }
 
   @Test
