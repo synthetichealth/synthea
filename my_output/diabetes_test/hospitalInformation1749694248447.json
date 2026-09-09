@@ -1,0 +1,315 @@
+{
+  "resourceType": "Bundle",
+  "type": "batch",
+  "entry": [ {
+    "fullUrl": "urn:uuid:1d5145fa-75e6-3a96-b5b9-bd6b25b69467",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "1d5145fa-75e6-3a96-b5b9-bd6b25b69467",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 2
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/bed-count-extension",
+        "valueInteger": 11
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "1d5145fa-75e6-3a96-b5b9-bd6b25b69467"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "LAGUNA HONDA HOSPITAL & REHABILITATION CENTER",
+      "telecom": [ {
+        "system": "phone",
+        "value": "4157592300"
+      } ],
+      "address": [ {
+        "line": [ "375 LAGUNA HONDA BLVD" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941161411",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|1d5145fa-75e6-3a96-b5b9-bd6b25b69467"
+    }
+  }, {
+    "fullUrl": "urn:uuid:ce4d6b1a-107d-30b3-872e-68c3a77050ed",
+    "resource": {
+      "resourceType": "Location",
+      "id": "ce4d6b1a-107d-30b3-872e-68c3a77050ed",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "ce4d6b1a-107d-30b3-872e-68c3a77050ed"
+      } ],
+      "status": "active",
+      "name": "LAGUNA HONDA HOSPITAL & REHABILITATION CENTER",
+      "telecom": [ {
+        "system": "phone",
+        "value": "4157592300"
+      } ],
+      "address": {
+        "line": [ "375 LAGUNA HONDA BLVD" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941161411",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -122.45729651523612,
+        "latitude": 37.7494814
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "1d5145fa-75e6-3a96-b5b9-bd6b25b69467"
+        },
+        "display": "LAGUNA HONDA HOSPITAL & REHABILITATION CENTER"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|ce4d6b1a-107d-30b3-872e-68c3a77050ed"
+    }
+  }, {
+    "fullUrl": "urn:uuid:cfa97fcd-02e7-3ace-a898-08544cb97c4c",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "cfa97fcd-02e7-3ace-a898-08544cb97c4c",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 34
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 0
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "cfa97fcd-02e7-3ace-a898-08544cb97c4c"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "PRECISION HEALTHCARE ASSOCIATES",
+      "telecom": [ {
+        "system": "phone",
+        "value": "4152977158"
+      } ],
+      "address": [ {
+        "line": [ "483 BUENA VISTA AVE E STE A" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941174164",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|cfa97fcd-02e7-3ace-a898-08544cb97c4c"
+    }
+  }, {
+    "fullUrl": "urn:uuid:a26bfc25-09cc-3c4c-9e05-337162f9fd21",
+    "resource": {
+      "resourceType": "Location",
+      "id": "a26bfc25-09cc-3c4c-9e05-337162f9fd21",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "a26bfc25-09cc-3c4c-9e05-337162f9fd21"
+      } ],
+      "status": "active",
+      "name": "PRECISION HEALTHCARE ASSOCIATES",
+      "telecom": [ {
+        "system": "phone",
+        "value": "4152977158"
+      } ],
+      "address": {
+        "line": [ "483 BUENA VISTA AVE E STE A" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941174164",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -122.44225978484414,
+        "latitude": 37.7656903
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "cfa97fcd-02e7-3ace-a898-08544cb97c4c"
+        },
+        "display": "PRECISION HEALTHCARE ASSOCIATES"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|a26bfc25-09cc-3c4c-9e05-337162f9fd21"
+    }
+  }, {
+    "fullUrl": "urn:uuid:748eda13-6f3c-3fb8-8bce-4398e66d38c0",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "748eda13-6f3c-3fb8-8bce-4398e66d38c0",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 32
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 0
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "748eda13-6f3c-3fb8-8bce-4398e66d38c0"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "ALVA FAMILY SPECIALIST INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "9095933519"
+      } ],
+      "address": [ {
+        "line": [ "2248 D ST" ],
+        "city": "LA VERNE",
+        "state": "CA",
+        "postalCode": "917505403",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|748eda13-6f3c-3fb8-8bce-4398e66d38c0"
+    }
+  }, {
+    "fullUrl": "urn:uuid:7b8a7672-7d3c-3e54-bf7c-8c6f942ae87e",
+    "resource": {
+      "resourceType": "Location",
+      "id": "7b8a7672-7d3c-3e54-bf7c-8c6f942ae87e",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "7b8a7672-7d3c-3e54-bf7c-8c6f942ae87e"
+      } ],
+      "status": "active",
+      "name": "ALVA FAMILY SPECIALIST INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "9095933519"
+      } ],
+      "address": {
+        "line": [ "2248 D ST" ],
+        "city": "LA VERNE",
+        "state": "CA",
+        "postalCode": "917505403",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -117.77026087890671,
+        "latitude": 34.09997433869367
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "748eda13-6f3c-3fb8-8bce-4398e66d38c0"
+        },
+        "display": "ALVA FAMILY SPECIALIST INC"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|7b8a7672-7d3c-3e54-bf7c-8c6f942ae87e"
+    }
+  }, {
+    "fullUrl": "urn:uuid:bb1ad573-19b8-9cd8-68fb-0e6f684df992",
+    "resource": {
+      "resourceType": "Location",
+      "id": "bb1ad573-19b8-9cd8-68fb-0e6f684df992",
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "bb1ad573-19b8-9cd8-68fb-0e6f684df992"
+      } ],
+      "status": "active",
+      "description": "Patient's Home",
+      "mode": "kind",
+      "physicalType": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+          "code": "ho",
+          "display": "House"
+        } ]
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|bb1ad573-19b8-9cd8-68fb-0e6f684df992"
+    }
+  } ]
+}
