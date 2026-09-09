@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mitre.synthea.export.JSONSkip;
@@ -467,7 +468,7 @@ public class Location implements Serializable {
     return stateAbbreviations.get(state);
   }
 
-  /**
+   /**
    * Get the index for a state. This maybe useful for
    * exporters where you want to generate a list of unique
    * identifiers that do not collide across state-boundaries.
