@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +77,7 @@ public class PlanEligibilityFinder {
   private static <T> Map<T, String> removeBlankMapStringValues(Map<T, String> map) {
     Map<T, String> mapValuesToKeep = map.entrySet().stream()
         .filter(entry -> !StringUtils.isBlank(entry.getValue())).collect(
-        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     return mapValuesToKeep;
   }
 
