@@ -115,6 +115,20 @@ public class HealthRecord implements Serializable {
     }
 
     /**
+     * Copy an existing code. Exporters that rewrite a field of a code, such as expanding the
+     * code system into a URI, copy it first so the record they are reading is left untouched.
+     *
+     * @param other the code to copy
+     */
+    public Code(Code other) {
+      this.system = other.system;
+      this.code = other.code;
+      this.display = other.display;
+      this.version = other.version;
+      this.valueSet = other.valueSet;
+    }
+
+    /**
      * Create a new code from JSON.
      *
      * @param definition JSON object that contains 'system', 'code', and 'display'

@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -13,6 +14,7 @@ import ca.uhn.fhir.validation.ValidationResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
+import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Media;
@@ -584,5 +587,72 @@ public class FHIRR4ExporterTest {
     assertFalse("MedicationRequest found but should not have been included", foundMedications);
     assertFalse("Procedure resource found but should not have been included", foundProcedures);
     assertTrue("Condition resource missing but should have been included", foundConditions);
+  }
+
+  /**
+   * A reaction's manifestation Code is a key in Allergy.reactions, and Code.hashCode() includes
+   * the code system. Mapping that key in place, as the exporter used to do when expanding a short
+   * name such as "SNOMED-CT" into a URI, silently rehomed the key and dropped the recorded
+   * severity. See https://github.com/synthetichealth/synthea/issues/1702
+   */
+  @Test
+  public void testAllergyReactionSeveritySurvivesCodeSystemExpansion() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.record.provider = stub;
+
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = p.record.provider;
+
+    // The short name is what the allergy modules actually carry, e.g. food_allergy_incidence.json
+    HealthRecord.Allergy allergy = p.record.allergyStart(0, "Peanut allergy");
+    allergy.allergyType = "allergy";
+    allergy.category = "food";
+    allergy.codes.add(new Code("SNOMED-CT", "762952008", "Peanut (substance)"));
+    Code manifestation = new Code("SNOMED-CT", "39579001", "Anaphylaxis (disorder)");
+    allergy.reactions = new HashMap<Code, HealthRecord.ReactionSeverity>();
+    allergy.reactions.put(manifestation, HealthRecord.ReactionSeverity.SEVERE);
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 0L);
+
+    AllergyIntolerance exported = null;
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof AllergyIntolerance) {
+        exported = (AllergyIntolerance) entry.getResource();
+      }
+    }
+    assertNotNull("AllergyIntolerance resource missing from the bundle", exported);
+    assertEquals(1, exported.getReaction().size());
+
+    AllergyIntolerance.AllergyIntoleranceReactionComponent reaction =
+        exported.getReactionFirstRep();
+    assertEquals("39579001",
+        reaction.getManifestationFirstRep().getCodingFirstRep().getCode());
+    assertEquals("http://snomed.info/sct",
+        reaction.getManifestationFirstRep().getCodingFirstRep().getSystem());
+    assertTrue("Recorded reaction severity was dropped on export", reaction.hasSeverity());
+    assertEquals("severe", reaction.getSeverity().toCode());
+
+    // Exporting must not corrupt the record it reads, so the map stays usable afterwards.
+    assertEquals(HealthRecord.ReactionSeverity.SEVERE, allergy.reactions.get(manifestation));
+    assertEquals("SNOMED-CT", manifestation.system);
   }
 }
