@@ -1777,13 +1777,18 @@ public class FhirR4 {
     allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
     if (allergy.reactions != null) {
-      List<Code> sortedReactions = new ArrayList<>(allergy.reactions.keySet());
-      sortedReactions.sort((a,b) -> a.code.compareTo(b.code));
-      sortedReactions.forEach(manifestation -> {
+      // The manifestation Codes are keys of allergy.reactions and Code.hashCode() covers the
+      // code system, so mapping one in place would rehome the key and lose its severity.
+      // Iterate the entries and map a copy of each key instead.
+      List<Entry<Code, HealthRecord.ReactionSeverity>> sortedReactions =
+          new ArrayList<>(allergy.reactions.entrySet());
+      sortedReactions.sort((a,b) -> a.getKey().code.compareTo(b.getKey().code));
+      sortedReactions.forEach(reaction -> {
         AllergyIntolerance.AllergyIntoleranceReactionComponent reactionComponent =
             new AllergyIntolerance.AllergyIntoleranceReactionComponent();
-        reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
-        HealthRecord.ReactionSeverity severity = allergy.reactions.get(manifestation);
+        reactionComponent.addManifestation(
+            mapCodeToCodeableConcept(new Code(reaction.getKey()), SNOMED_URI));
+        HealthRecord.ReactionSeverity severity = reaction.getValue();
         if (severity != null) {
           switch (severity) {
             case MILD:
