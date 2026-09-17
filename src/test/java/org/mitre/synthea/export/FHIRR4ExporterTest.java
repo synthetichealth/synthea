@@ -13,6 +13,7 @@ import ca.uhn.fhir.validation.ValidationResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
+import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Media;
@@ -584,5 +586,88 @@ public class FHIRR4ExporterTest {
     assertFalse("MedicationRequest found but should not have been included", foundMedications);
     assertFalse("Procedure resource found but should not have been included", foundProcedures);
     assertTrue("Condition resource missing but should have been included", foundConditions);
+  }
+
+  @Test
+  public void testAllergyReactionSeverityExport() throws Exception {
+    // Regression test for #1702. mapCodeToCodeableConcept normalized the source
+    // Code.system in place; since Code.hashCode() covers system, mutating a Code
+    // held as a key of the allergy reactions map corrupted the HashMap, so the
+    // severity lookup failed and the exported AllergyIntolerance reaction lost
+    // its severity.
+    // Reset the include/exclude filters: other tests in this class change them
+    // and JUnit does not guarantee method order.
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.AMBULATORY, stub);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.record.provider = stub;
+
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = p.record.provider;
+
+    HealthRecord.Allergy allergy = p.record.allergyStart(0, "762952008");
+    allergy.codes.add(new HealthRecord.Code("SNOMED-CT", "762952008", "Peanut (substance)"));
+    allergy.allergyType = "allergy";
+    allergy.category = "food";
+    HealthRecord.Code reactionCode =
+        new HealthRecord.Code("SNOMED-CT", "39579001", "Anaphylaxis (disorder)");
+    allergy.reactions = new HashMap<HealthRecord.Code, HealthRecord.ReactionSeverity>();
+    allergy.reactions.put(reactionCode, HealthRecord.ReactionSeverity.SEVERE);
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 0);
+
+    AllergyIntolerance allergyResource = null;
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof AllergyIntolerance) {
+        allergyResource = (AllergyIntolerance) entry.getResource();
+      }
+    }
+    assertTrue("expected an AllergyIntolerance in the exported bundle",
+        allergyResource != null);
+    assertTrue("reaction severity must be exported",
+        allergyResource.getReactionFirstRep().hasSeverity());
+    assertEquals("severe", allergyResource.getReactionFirstRep().getSeverity().toCode());
+    assertEquals("39579001", allergyResource.getReactionFirstRep().getManifestationFirstRep()
+        .getCodingFirstRep().getCode());
+    assertEquals("http://snomed.info/sct", allergyResource.getReactionFirstRep()
+        .getManifestationFirstRep().getCodingFirstRep().getSystem());
+
+    // the source record must remain usable: the key must not be mutated, and the
+    // map lookup must still resolve
+    assertEquals("SNOMED-CT", reactionCode.system);
+    assertEquals(HealthRecord.ReactionSeverity.SEVERE, allergy.reactions.get(reactionCode));
+
+    // exporting a second time must give the same result: the first export must
+    // not have damaged the map for later exports
+    Bundle secondBundle = FhirR4.convertToFHIR(p, 0);
+    boolean secondHasSeverity = false;
+    for (BundleEntryComponent entry : secondBundle.getEntry()) {
+      if (entry.getResource() instanceof AllergyIntolerance) {
+        AllergyIntolerance second = (AllergyIntolerance) entry.getResource();
+        if (second.getReactionFirstRep().hasSeverity()
+            && "severe".equals(second.getReactionFirstRep().getSeverity().toCode())) {
+          secondHasSeverity = true;
+        }
+      }
+    }
+    assertTrue("severity must survive repeated export", secondHasSeverity);
   }
 }
