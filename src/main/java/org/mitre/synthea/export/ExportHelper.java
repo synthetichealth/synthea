@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -47,8 +46,10 @@ public abstract class ExportHelper {
     } else if (observation.value instanceof String) {
       value = (String)observation.value;
     } else if (observation.value instanceof Double) {
-      // round to 1 decimal place for display
-      value = String.format(Locale.US, "%.1f", observation.value);
+      // Do not round: all exporters of one run must agree on the same numeric value.
+      // The FHIR exporters serialize the full value via PlainBigDecimal, so use the
+      // same representation here instead of truncating to 1 decimal place (#1697).
+      value = new PlainBigDecimal((Double) observation.value).toString();
     } else if (observation.value instanceof SampledData) {
       value = sampledDataToValueString((SampledData) observation.value);
     } else if (observation.value instanceof Attachment) {

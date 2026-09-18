@@ -22,6 +22,8 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class CSVExporterTest {
   /**
@@ -499,5 +501,45 @@ public class CSVExporterTest {
     } catch (IllegalArgumentException e) {
       fail("CSV exporter should not throw an exception when only included files are set");
     }
+  }
+
+  @Test
+  public void testObservationDoubleValueNotRounded() throws Exception {
+    // https://github.com/synthetichealth/synthea/issues/1697
+    // a Double observation value must be written to CSV with the same precision
+    // as the FHIR export of the same run, not truncated to 1 decimal place
+    CSVExporter.getInstance().init();
+
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = 1;
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    generator.options.overflow = false;
+    Person person = generator.generatePerson(0, 1234L);
+
+    long time = System.currentTimeMillis();
+    List<HealthRecord.Encounter> encounters = person.record.encounters;
+    assertTrue("test person should have at least one encounter", !encounters.isEmpty());
+    HealthRecord.Encounter encounter = encounters.get(encounters.size() - 1);
+    encounter.addObservation(time, "12345-6", 4.8075, "Precision test observation");
+
+    CSVExporter.getInstance().export(person, time);
+
+    File observationsFile =
+        exportDir.toPath().resolve("csv").resolve("observations.csv").toFile();
+    assertTrue("observations.csv should have been written", observationsFile.exists());
+    String csvData = new String(Files.readAllBytes(observationsFile.toPath()));
+
+    String targetLine = null;
+    for (String line : csvData.split("\n")) {
+      if (line.contains("12345-6")) {
+        targetLine = line;
+        break;
+      }
+    }
+    assertTrue("observations.csv should contain the test observation (LOINC 12345-6)",
+        targetLine != null);
+    assertTrue("test observation value should be written unrounded as 4.8075, but was: "
+        + targetLine, targetLine.contains(",4.8075,"));
   }
 }
