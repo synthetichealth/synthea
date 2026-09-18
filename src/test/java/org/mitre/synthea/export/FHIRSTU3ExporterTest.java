@@ -180,7 +180,9 @@ public class FHIRSTU3ExporterTest {
           ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
 
           for (SingleValidationMessage message : bbResult.getMessages()) {
-            if (message.getMessage().contains("extension https://bluebutton.cms.gov/assets")) {
+            if (message.getMessage().contains("extension https://bluebutton.cms.gov/assets")
+                || (message.getMessage().startsWith("Extension.")
+                    && message.getMessage().contains("(from https://bluebutton.cms.gov/assets"))) {
               /*
                * The instance validator complains about the BlueButton extensions, ignore
                */

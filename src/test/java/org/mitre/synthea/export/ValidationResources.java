@@ -58,6 +58,8 @@ public class ValidationResources {
             new InMemoryTerminologyServerValidationSupport(ctx),
             new CommonCodeSystemsTerminologyService(ctx)
     );
+    // A CodeableConcept binding requires at least one matching coding.
+    chain.setCodeableConceptValidationSuccessfulIfNotAllCodingsAreValid(true);
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
     instanceValidator.setErrorForUnknownProfiles(false);
@@ -71,8 +73,8 @@ public class ValidationResources {
     ValidationSupportChain chain = new ValidationSupportChain(
             new ValidationSupportR4(ctx, usCoreVersion),
             new DefaultProfileValidationSupport(ctx),
-            new CommonCodeSystemsTerminologyService(ctx),
-            new InMemoryTerminologyServerValidationSupport(ctx)
+            new InMemoryTerminologyServerValidationSupport(ctx),
+            new CommonCodeSystemsTerminologyService(ctx)
     );
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);

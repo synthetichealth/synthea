@@ -1,0 +1,39 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "loinc-document-types",
+  "url": "http://loinc.org",
+  "name": "LoincDocumentTypesTestFragment",
+  "status": "active",
+  "description": "Test fragment containing the LOINC document type codes emitted by the R4 exporter. Codes are taken from the bundled US Core document reference type ValueSet.",
+  "copyright": "This material contains content from [LOINC](http://loinc.org). LOINC is copyright © 1995-2020, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc",
+  "content": "fragment",
+  "concept": [
+    {
+      "code": "34117-2",
+      "display": "History and physical note",
+      "property": [
+        {
+          "code": "CLASSTYPE",
+          "valueString": "2"
+        }
+      ]
+    },
+    {
+      "code": "51847-2",
+      "display": "Evaluation+Plan note",
+      "property": [
+        {
+          "code": "CLASSTYPE",
+          "valueString": "2"
+        }
+      ]
+    }
+  ],
+  "property": [
+    {
+      "code": "CLASSTYPE",
+      "description": "LOINC class type: 2 = Clinical",
+      "type": "string"
+    }
+  ]
+}
