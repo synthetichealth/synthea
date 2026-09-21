@@ -221,10 +221,10 @@ public class CSVExporter {
           if (RandomCodeGenerator.selectedCodes.stream()
               .filter(code -> code.code.equals(condition.codes.get(0).code))
               .findFirst().isPresent()) {
-            exportCondition(personID, encounterID, condition);
+            exportCondition(personID, encounterID, condition, person);
           }
         } else {
-          exportCondition(personID, encounterID, condition);
+          exportCondition(personID, encounterID, condition, person);
         }
       }
 
@@ -477,11 +477,17 @@ public class CSVExporter {
    * @param personID    ID of the person that has the condition.
    * @param encounterID ID of the encounter where the condition was diagnosed
    * @param condition   The condition itself
+   * @param person      The person whose RNG selects a weighted mapping
    * @throws IOException if any IO error occurs
    */
-  private void exportCondition(String personID, String encounterID, Entry condition)
+  private void exportCondition(String personID, String encounterID, Entry condition, Person person)
       throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION
+    fileManager.writeResourceLine(conditionLine(personID, encounterID, condition, person),
+        CSVConstants.CONDITION_KEY);
+  }
+
+  static String conditionLine(String personID, String encounterID, Entry condition, Person person) {
+    // START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION[,ICD10_CODE,ICD10_DESCRIPTION]
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(condition.start)).append(',');
@@ -498,8 +504,21 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display));
 
+    // Use the configured mapper for the optional ICD-10-CM columns.
+    if (Exporter.getCodeMapper(Exporter.ICD10_CM_CODE_SYSTEM) != null) {
+      s.append(',');
+      Code mapped = Exporter.mapConditionCode(condition, Exporter.ICD10_CM_CODE_SYSTEM, person);
+      if (mapped != null) {
+        s.append(clean(mapped.code));
+        s.append(',');
+        s.append(clean(mapped.display));
+      } else {
+        s.append(',');
+      }
+    }
+
     s.append(NEWLINE);
-    fileManager.writeResourceLine(s.toString(), CSVConstants.CONDITION_KEY);
+    return s.toString();
   }
 
   /**

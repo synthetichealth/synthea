@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -173,6 +174,9 @@ public class HealthRecord implements Serializable {
     public final UUID uuid = record.person.randUUID();
     /** Cached full URL used in FHIR exporters. */
     public String fullUrl;
+    /** Translations selected during export, shared by exporters for this entry. */
+    @JSONSkip
+    private transient Map<String, Code> mappedCodes;
     /** Name of the entry. */
     public String name;
     /** Start time of the entry. */
@@ -198,6 +202,21 @@ public class HealthRecord implements Serializable {
       this.start = start;
       this.type = type;
       this.codes = new ArrayList<Code>();
+    }
+
+    /**
+     * Select a mapped code once for this entry and reuse it in later exports.
+     * The supplier should use the person's random number generator when selecting a code.
+     *
+     * @param system target code system
+     * @param mapping supplies a mapped code when one exists
+     * @return the selected code, or null when no mapping exists
+     */
+    public synchronized Code getOrCreateMappedCode(String system, Supplier<Code> mapping) {
+      if (mappedCodes == null) {
+        mappedCodes = new HashMap<>();
+      }
+      return mappedCodes.computeIfAbsent(system, ignored -> mapping.get());
     }
 
     /**
