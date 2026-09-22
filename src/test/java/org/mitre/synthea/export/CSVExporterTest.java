@@ -6,10 +6,13 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.awt.geom.Point2D;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +31,14 @@ import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.agents.PayerManager;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 
 public class CSVExporterTest {
   /**
@@ -635,5 +646,121 @@ public class CSVExporterTest {
     assertTrue("observations.csv was not exported", observationsFile.exists());
     String csvData = new String(Files.readAllBytes(observationsFile.toPath()));
     return SimpleCSV.parse(csvData);
+  }
+
+  /**
+   * Field of a parsed CSV row, looked up by the column name the exporter's own header declares.
+   *
+   * @param row the parsed row
+   * @param column the column name, as written in {@link CSVConstants}
+   * @return the value, or an empty string when the field holds nothing
+   */
+  private static String field(LinkedHashMap<String, String> row, String column) {
+    assertTrue("column " + column + " is missing from the row: " + row.keySet(),
+        row.containsKey(column));
+    String value = row.get(column);
+    return value == null ? "" : value;
+  }
+
+  /**
+   * Regression test: an entry that was never stopped must not write an epoch timestamp.
+   *
+   * <p>When the internal stop time is unset ({@code 0L}), the CSV exporter should leave the
+   * end-date field empty rather than serialize the Unix epoch, consistent with the existing
+   * handling of unset stop times elsewhere in {@code CSVExporter}. It does not: the row is built
+   * by {@code ClaimTransaction.toString()}, which formats the unset stop through
+   * {@code ExportHelper.iso8601Timestamp(0L)}, and the Unix epoch is what that call renders.
+   *
+   * <p>The state is built explicitly and deterministically: a fixed seed, a fixed birth date, a
+   * medication entry the simulation never stopped ({@code stop == 0L}, the unset sentinel this
+   * code base checks everywhere), and the same row construction the exporter performs in
+   * {@code exportClaim(...)}. No population is generated.
+   *
+   * @throws Exception if the export fails
+   */
+  @Test
+  public void testClaimTransactionToDateEmptyWhenStopUnset() throws Exception {
+    PayerManager.loadNoInsurance();
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, "test-patient");
+    person.coverage.setPlanToNoInsurance(0L);
+
+    long start = 86_400_000L;
+    Encounter encounter = person.record.encounterStart(start, EncounterType.EMERGENCY);
+    encounter.codes.add(new Code("system", "code", "display"));
+    // a medication that was never stopped: its entry keeps the unset stop time
+    Medication medication = person.record.new Medication(start, "test-medication");
+    medication.codes.add(new Code("system", "code", "display"));
+    assertEquals("fixture: the medication must have no stop time", 0L, medication.stop);
+    assertTrue("fixture: the medication start must be a real timestamp", medication.start > 0L);
+
+    Claim claim = medication.claim;
+    CSVExporter.ClaimTransaction transaction = CSVExporter.getInstance().new ClaimTransaction(
+        encounter, "test-encounter-id", claim, "test-claim-id", 0L, claim.mainEntry, person);
+    // the same field sequence exportClaim(...) applies to a CHARGE transaction
+    transaction.type = CSVExporter.ClaimTransactionType.CHARGE;
+    transaction.setAmount(claim.mainEntry.cost);
+    transaction.departmentId = "";
+    transaction.diagnosisCodes = new String[8];
+    transaction.transferType = claim.getPayer().isNoInsurance() ? "p" : "1";
+
+    List<LinkedHashMap<String, String>> parsed = SimpleCSV.parse(
+        CSVConstants.CLAIM_TRANSACTION_HEADER_LINE + transaction.toString());
+    assertEquals("the fixture must produce exactly one transaction row", 1, parsed.size());
+    String todate = field(parsed.get(0), "TODATE");
+
+    assertEquals("claims_transactions.TODATE must be empty when the entry has no stop time; "
+        + "the exporter wrote the Unix epoch into the end-date field instead: " + todate,
+        "", todate);
+  }
+
+  /**
+   * Regression test: a plan whose end was never set must not write an epoch END_DATE.
+   *
+   * <p>When the plan's internal stop time is unset ({@code 0L}), the CSV exporter should leave
+   * the end-date field empty rather than serialize the Unix epoch, consistent with the existing
+   * handling of unset stop times elsewhere in {@code CSVExporter}. It does not:
+   * {@code exportPayerTransition(...)} formats {@code planRecord.getStopTime()} through
+   * {@code ExportHelper.iso8601Timestamp(0L)}, which renders the Unix epoch.
+   *
+   * <p>The state is built explicitly and deterministically (fixed seed, fixed birth date, one
+   * plan record stopped at {@code 0L} through the public {@code PlanRecord.updateStopTime}), and
+   * the CSV file is produced by {@code CSVExporter.export(Person,long)}, the method production
+   * calls in {@code Exporter}. No population is generated.
+   *
+   * @throws Exception if the export fails
+   */
+  @Test
+  public void testPayerTransitionEndDateEmptyWhenStopUnset() throws Exception {
+    PayerManager.loadNoInsurance();
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, "test-patient");
+    person.attributes.put(Person.INCOME, 0);
+    person.attributes.put(Person.COORDINATE, new Point2D.Double(0.0, 0.0));
+    person.attributes.put(QualityOfLifeModule.QALY, new HashMap<Integer, Double>());
+    person.attributes.put(QualityOfLifeModule.DALY, new HashMap<Integer, Double>());
+    person.attributes.put(QualityOfLifeModule.QOLS, new HashMap<Integer, Double>());
+    person.coverage.setPlanToNoInsurance(0L);
+
+    PlanRecord planRecord = person.coverage.getLastPlanRecord();
+    planRecord.updateStopTime(0L); // the plan's end was never set
+    assertEquals("fixture: the plan record must have no stop time", 0L, planRecord.getStopTime());
+
+    CSVExporter.getInstance().init();
+    CSVExporter.getInstance().export(person, 86_400_000L);
+
+    File exported = exportDir.toPath().resolve("csv")
+        .resolve(CSVConstants.PAYER_TRANSITION_KEY + ".csv").toFile();
+    assertTrue("the export must have written " + exported, exported.exists());
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(
+        new String(Files.readAllBytes(exported.toPath()), StandardCharsets.UTF_8));
+    assertEquals("the fixture must export exactly one payer transition", 1, rows.size());
+    String endDate = field(rows.get(0), "END_DATE");
+
+    assertEquals("payer_transitions.END_DATE must be empty when the plan has no stop time; "
+        + "the exporter wrote the Unix epoch into the end-date field instead: " + endDate,
+        "", endDate);
   }
 }
