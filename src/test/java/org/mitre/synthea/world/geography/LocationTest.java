@@ -83,6 +83,18 @@ public class LocationTest {
   }
 
   @Test
+  public void testStateThatDoesNotExist() {
+    try {
+      new Location("The Lost State of Atlantis", null);
+      Assert.fail("Expected an error for a state missing from the demographics file");
+    } catch (ExceptionInInitializerError e) {
+      Assert.assertEquals(
+          "The state The Lost State of Atlantis was not found in the demographics file.",
+          e.getCause().getMessage());
+    }
+  }
+
+  @Test
   public void testAssignPointPersonWithLocationThatDoesNotExist() {
     Person p = new Person(1);
     String zipcode = location.getZipCode(locationDoesNotExist, p);
