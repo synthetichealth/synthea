@@ -1840,10 +1840,10 @@ public class FhirR4 {
     // add extra codes, if there are any...
     if (observation.codes.size() > 1) {
       for (int i = 1; i < observation.codes.size(); i++) {
-        code = observation.codes.get(i);
+        Code extraCode = observation.codes.get(i);
         Coding coding = new Coding();
-        coding.setCode(code.code);
-        coding.setDisplay(code.display);
+        coding.setCode(extraCode.code);
+        coding.setDisplay(extraCode.display);
         coding.setSystem(LOINC_URI);
         observationResource.getCode().addCoding(coding);
       }
