@@ -585,4 +585,68 @@ public class FHIRR4ExporterTest {
     assertFalse("Procedure resource found but should not have been included", foundProcedures);
     assertTrue("Condition resource missing but should have been included", foundConditions);
   }
+
+  @Test
+  public void testObservationProfileUsesPrimaryCode() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+    boolean useUsCoreIG = FhirR4.USE_US_CORE_IG;
+    String usCoreVersion = FhirR4.US_CORE_VERSION;
+    FhirR4.USE_US_CORE_IG = true;
+    FhirR4.US_CORE_VERSION = "6";
+    FhirR4.useUSCore6();
+
+    try {
+      Person p = new Person(0L);
+      p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+      p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+      p.attributes.put(Person.FIRST_LANGUAGE, "english");
+      p.attributes.put(Person.BIRTHDATE, 0L);
+      p.attributes.put(Person.GENDER, "F");
+      p.coverage.setPlanToNoInsurance(0L);
+
+      Provider stub = new Provider();
+      stub.name = "Fake Provider";
+      stub.npi = "0";
+      Clinician doc = new Clinician(0, p, 0, stub);
+      ArrayList<Clinician> docs = new ArrayList<Clinician>();
+      docs.add(doc);
+      stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+      p.setProvider(EncounterType.AMBULATORY, stub);
+      p.setProvider(EncounterType.WELLNESS, stub);
+      p.setProvider(EncounterType.EMERGENCY, stub);
+      p.setProvider(EncounterType.INPATIENT, stub);
+      p.record.provider = stub;
+
+      HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+      e.provider = p.record.provider;
+
+      // Body temperature has a US Core profile, oral temperature does not.
+      // Modules such as sore_throat record both codes on one observation, in this order.
+      HealthRecord.Observation temperature = p.record.observation(0, "8310-5", 37.0);
+      temperature.codes.add(new Code("LOINC", "8310-5", "Body temperature"));
+      temperature.codes.add(new Code("LOINC", "8331-1", "Oral temperature"));
+      temperature.category = "vital-signs";
+      temperature.unit = "Cel";
+
+      Bundle bundle = FhirR4.convertToFHIR(p, 0);
+
+      List<Observation> observations = bundle.getEntry().stream()
+          .map(BundleEntryComponent::getResource)
+          .filter(Observation.class::isInstance)
+          .map(Observation.class::cast)
+          .collect(Collectors.toList());
+      assertEquals(1, observations.size());
+      List<String> profiles = observations.get(0).getMeta().getProfile().stream()
+          .map(profile -> profile.getValue())
+          .collect(Collectors.toList());
+      assertEquals(
+          List.of("http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-temperature"),
+          profiles);
+    } finally {
+      FhirR4.USE_US_CORE_IG = useUsCoreIG;
+      FhirR4.US_CORE_VERSION = usCoreVersion;
+    }
+  }
 }
