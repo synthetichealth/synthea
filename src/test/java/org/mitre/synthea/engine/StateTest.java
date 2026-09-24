@@ -946,6 +946,42 @@ public class StateTest {
   }
 
   @Test
+  public void wellness_after_delay_does_not_enter_closed_encounter() throws Exception {
+    Module module = TestHelper.getFixture("wellness_after_delay.json");
+    Encounter previous = person.record.encounterStart(time, EncounterType.AMBULATORY);
+    previous.end(time);
+    assertFalse(module.process(person, time));
+
+    long visitTime = time + Utilities.convertTime("years", 1)
+        + Utilities.convertTime("days", 6);
+    simulateWellnessEncounter(module, person, visitTime);
+    Encounter current = person.record.currentEncounter(visitTime);
+
+    // Module.process first rewinds to the annual delay's expiry, before the new visit.
+    assertTrue(module.process(person, visitTime));
+    assertTrue(previous.procedures.isEmpty());
+    assertEquals(1, current.procedures.size());
+    assertEquals(visitTime, current.procedures.get(0).start);
+    assertTrue(previous.ended);
+    assertFalse(current.ended);
+  }
+
+  @Test
+  public void wellness_after_delay_does_not_enter_future_first_encounter() throws Exception {
+    Module module = TestHelper.getFixture("wellness_after_delay.json");
+    assertFalse(module.process(person, time));
+    long visitTime = time + Utilities.convertTime("years", 1)
+        + Utilities.convertTime("days", 6);
+    simulateWellnessEncounter(module, person, visitTime);
+    Encounter current = person.record.currentEncounter(visitTime);
+
+    // With no earlier encounter, currentEncounter falls back to the first, future visit.
+    assertTrue(module.process(person, visitTime));
+    assertEquals(1, current.procedures.size());
+    assertEquals(visitTime, current.procedures.get(0).start);
+  }
+
+  @Test
   public void wellness_encounter_diagnoses_condition() throws Exception {
     Module module = TestHelper.getFixture("encounter.json");
     // First, onset the Diabetes!
