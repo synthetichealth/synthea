@@ -383,7 +383,30 @@
     },
     "Lab_MetabolicPanel": {
       "type": "Simple",
+      "remarks": [
+        "With CKD stage 1 to 4, metabolic_syndrome/kidney_conditions records a basic metabolic panel at every wellness encounter, so skip this one."
+      ],
       "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "<=",
+                "value": 4
+              }
+            ]
+          },
+          "transition": "Lab_LipidPanel"
+        },
         {
           "condition": {
             "condition_type": "Or",
