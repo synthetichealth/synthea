@@ -2131,7 +2131,18 @@ public class StateTest {
     assertTrue(lipidPanel.process(person, time));
     assertEquals(2, encounter.reports.size());
 
-    // the dedup is scoped to a single encounter: the same panel in a later
+    // the dedup is scoped to the same instant, not the whole encounter: the same
+    // panel recorded again later in the encounter (e.g. daily labs during an
+    // inpatient stay) is kept
+    long nextDay = time + Utilities.convertTime("days", 1);
+    int reportsBefore = encounter.reports.size();
+    int observationsBefore = encounter.observations.size();
+    State panelNextDay = module.getState("Record_MetabolicPanel");
+    assertTrue(panelNextDay.process(person, nextDay));
+    assertEquals(reportsBefore + 1, encounter.reports.size());
+    assertEquals(observationsBefore + 8, encounter.observations.size());
+
+    // the dedup is also scoped to a single encounter: the same panel in a later
     // encounter is recorded again
     long laterTime = time + Utilities.convertTime("years", 1);
     person.record.encounterEnd(time, EncounterType.WELLNESS);

@@ -2156,11 +2156,14 @@ public abstract class State implements Cloneable, Serializable {
   public static class DiagnosticReport extends ObservationGroup {
     @Override
     public boolean process(Person person, long time) {
-      if (panelAlreadyRecordedThisEncounter(person, time)) {
-        // Another module already recorded this panel during the current encounter,
-        // for example a submodule joining a wellness encounter (like the Veteran
-        // Hyperlipidemia initial workup). Recording it again would create a duplicate
-        // lab panel, which downstream systems reject.
+      if (panelAlreadyRecordedAtThisTime(person, time)) {
+        // Another module already recorded this panel at this exact instant during the
+        // current encounter, for example a submodule joining a wellness encounter (like
+        // the Veteran Hyperlipidemia initial workup). Recording it again would create a
+        // duplicate lab panel, which downstream systems reject.
+        // Note this is intentionally scoped to the same instant, not the whole encounter:
+        // some modules legitimately record the same panel repeatedly within one encounter
+        // (e.g. COVID-19 daily labs during a single inpatient stay).
         // See https://github.com/synthetichealth/synthea/issues/1552
         return true;
       }
@@ -2187,20 +2190,26 @@ public abstract class State implements Cloneable, Serializable {
     }
 
     /**
-     * Check whether the current encounter already contains a report for this panel.
-     * Panels are identified by their codes, so this catches the same panel recorded
-     * by a different module or state during the same encounter.
+     * Check whether the current encounter already contains a report for this panel
+     * recorded at the same instant. Panels are identified by their codes, so this
+     * catches the same panel recorded by a different module or state at the same
+     * timestamp. The check is deliberately limited to the same instant: modules may
+     * legitimately record the same panel again later in the encounter (for example
+     * daily labs during an inpatient stay), and those must be kept.
      *
      * @param person the person being simulated
      * @param time the current time in the simulation
-     * @return true if this panel was already recorded during the current encounter
+     * @return true if this panel was already recorded at this instant
      */
-    private boolean panelAlreadyRecordedThisEncounter(Person person, long time) {
+    private boolean panelAlreadyRecordedAtThisTime(Person person, long time) {
       HealthRecord.Encounter encounter = person.record.currentEncounter(time);
       if (encounter == null || encounter.reports == null) {
         return false;
       }
       for (HealthRecord.Report report : encounter.reports) {
+        if (report.start != time) {
+          continue;
+        }
         for (Code code : codes) {
           if (report.containsCode(code.code, code.system)) {
             return true;
