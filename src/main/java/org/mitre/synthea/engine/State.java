@@ -2156,6 +2156,14 @@ public abstract class State implements Cloneable, Serializable {
   public static class DiagnosticReport extends ObservationGroup {
     @Override
     public boolean process(Person person, long time) {
+      if (panelAlreadyRecordedThisEncounter(person, time)) {
+        // Another module already recorded this panel during the current encounter,
+        // for example a submodule joining a wellness encounter (like the Veteran
+        // Hyperlipidemia initial workup). Recording it again would create a duplicate
+        // lab panel, which downstream systems reject.
+        // See https://github.com/synthetichealth/synthea/issues/1552
+        return true;
+      }
       for (Observation o : observations) {
         o.process(person, time);
       }
@@ -2176,6 +2184,30 @@ public abstract class State implements Cloneable, Serializable {
       provider.incrementLabs(year);
 
       return true;
+    }
+
+    /**
+     * Check whether the current encounter already contains a report for this panel.
+     * Panels are identified by their codes, so this catches the same panel recorded
+     * by a different module or state during the same encounter.
+     *
+     * @param person the person being simulated
+     * @param time the current time in the simulation
+     * @return true if this panel was already recorded during the current encounter
+     */
+    private boolean panelAlreadyRecordedThisEncounter(Person person, long time) {
+      HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+      if (encounter == null || encounter.reports == null) {
+        return false;
+      }
+      for (HealthRecord.Report report : encounter.reports) {
+        for (Code code : codes) {
+          if (report.containsCode(code.code, code.system)) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }
 

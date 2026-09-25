@@ -2103,6 +2103,45 @@ public class StateTest {
   }
 
   @Test
+  public void testDiagnosticReportNotDuplicatedInSameEncounter() throws Exception {
+    // https://github.com/synthetichealth/synthea/issues/1552
+    // When two modules record the same lab panel during one encounter (for example the
+    // Veteran Hyperlipidemia initial workup joining a wellness encounter), the panel must
+    // only be recorded once -- downstream systems reject duplicate panels.
+    // Birth makes the vital signs come alive :-)
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
+
+    Module module = TestHelper.getFixture("observation_groups.json");
+
+    State metabolicPanel = module.getState("Record_MetabolicPanel");
+    assertTrue(metabolicPanel.process(person, time));
+
+    Encounter encounter = person.record.encounters.get(0);
+    assertEquals(1, encounter.reports.size());
+
+    // a second module recording the same panel in the same encounter is skipped,
+    // including its observations
+    State duplicatePanel = module.getState("Record_MetabolicPanel");
+    assertTrue(duplicatePanel.process(person, time));
+    assertEquals(1, encounter.reports.size());
+    assertEquals(8, encounter.observations.size());
+
+    // a different panel in the same encounter is still recorded
+    State lipidPanel = module.getState("Record_LipidPanel");
+    assertTrue(lipidPanel.process(person, time));
+    assertEquals(2, encounter.reports.size());
+
+    // the dedup is scoped to a single encounter: the same panel in a later
+    // encounter is recorded again
+    long laterTime = time + Utilities.convertTime("years", 1);
+    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterStart(laterTime, EncounterType.WELLNESS);
+    State panelNextEncounter = module.getState("Record_MetabolicPanel");
+    assertTrue(panelNextEncounter.process(person, laterTime));
+    assertEquals(1, person.record.encounters.get(1).reports.size());
+  }
+
+  @Test
   public void testMultiObservation() throws Exception {
     // Birth makes the blood pump :-)
     LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
