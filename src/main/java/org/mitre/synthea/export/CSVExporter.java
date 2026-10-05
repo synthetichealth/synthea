@@ -159,18 +159,20 @@ public class CSVExporter {
   }
 
   /**
-   * Export the payerTransitions.csv file. This method should be called once after all the
-   * Patient records have been exported using the export(Person,long) method.
+   * Write a person's plan history to payer_transitions.csv. Every plan that started before
+   * the given stop time is written, regardless of how long ago it ended, so that the member
+   * id referenced by every exported claim transaction resolves to a payer transition.
    *
+   * @param person The person whose plan history to write.
+   * @param stopTime Time the simulation ended; plans starting after this are not written.
    * @throws IOException if any IO errors occur.
    */
-  private void exportPayerTransitions(Person person, long cutOffTime, long stopTime)
-      throws IOException {
+  private void exportPayerTransitions(Person person, long stopTime) throws IOException {
     List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
         .sorted(Comparator.comparingLong(PlanRecord::getStartTime))
         .collect(Collectors.toList());
     for (PlanRecord planRecord : sortedPlanRecords) {
-      if ((planRecord.getStartTime() <= stopTime) && (planRecord.getStopTime() >= cutOffTime)) {
+      if (planRecord.getStartTime() <= stopTime) {
         exportPayerTransition(person, planRecord);
       }
     }
@@ -271,7 +273,7 @@ public class CSVExporter {
       cutOff = Calendar.getInstance();
       cutOff.set(cutOff.get(Calendar.YEAR) - yearsOfHistory, 0, 1);
     }
-    CSVExporter.getInstance().exportPayerTransitions(person, 0L, time);
+    CSVExporter.getInstance().exportPayerTransitions(person, time);
     CSVExporter.getInstance().exportPatientExpenses(person, cutOff.getTimeInMillis(), time);
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();

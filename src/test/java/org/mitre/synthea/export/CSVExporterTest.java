@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -273,6 +275,75 @@ public class CSVExporterTest {
     assertEquals("Expected " + expected + " CSV files in the output directory, but found: "
                  + count + "\nMissing resource files:\n " + String.join(", ", expectedResourceFiles)
                  + "\n", expected, count);
+  }
+
+  @Test
+  public void testClaimTransactionsReferenceExportedPayerTransitions() throws Exception {
+    // Keep the entire history so that claims made under insurance plans that ended
+    // before 1970 are exported, and only generate people who were born well before then.
+    String yearsOfHistory = Config.get("exporter.years_of_history");
+    Config.set("exporter.years_of_history", "0");
+    Config.set("exporter.csv.included_files", "payer_transitions.csv,claims_transactions.csv");
+    try {
+      CSVExporter.getInstance().init();
+
+      int numberOfPeople = 10;
+      ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+      exportOpts.deferExports = true;
+      GeneratorOptions generatorOpts = new GeneratorOptions();
+      generatorOpts.population = numberOfPeople;
+      generatorOpts.seed = 1725L;
+      generatorOpts.clinicianSeed = 1725L;
+      generatorOpts.ageSpecified = true;
+      generatorOpts.minAge = 60;
+      generatorOpts.maxAge = 90;
+      Generator generator = new Generator(generatorOpts, exportOpts);
+      generator.options.overflow = false;
+      for (int i = 0; i < numberOfPeople; i++) {
+        generator.generatePerson(i);
+      }
+      Exporter.runPostCompletionExports(generator, exportOpts);
+
+      File exportFolder = exportDir.toPath().resolve("csv").toFile();
+      String transitionsData = new String(Files.readAllBytes(
+          exportFolder.toPath().resolve("payer_transitions.csv")));
+      String transactionsData = new String(Files.readAllBytes(
+          exportFolder.toPath().resolve("claims_transactions.csv")));
+      assertTrue("CSV validation: payer_transitions.csv", SimpleCSV.isValid(transitionsData));
+      assertTrue("CSV validation: claims_transactions.csv", SimpleCSV.isValid(transactionsData));
+
+      Set<String> memberIds = new HashSet<>();
+      for (LinkedHashMap<String, String> row : SimpleCSV.parse(transitionsData)) {
+        memberIds.add(row.get("PATIENT") + "|" + row.get("MEMBERID"));
+      }
+
+      boolean foundPre1970 = false;
+      List<String> unresolved = new ArrayList<>();
+      for (LinkedHashMap<String, String> row : SimpleCSV.parse(transactionsData)) {
+        String memberId = row.get("PATIENTINSURANCEID");
+        if (memberId == null || memberId.isEmpty()) {
+          continue;
+        }
+        String fromDate = row.get("FROMDATE");
+        if (fromDate.compareTo("1970") < 0) {
+          foundPre1970 = true;
+        }
+        if (!memberIds.contains(row.get("PATIENTID") + "|" + memberId)) {
+          unresolved.add(row.get("PATIENTID") + " " + memberId + " " + fromDate);
+        }
+      }
+
+      assertTrue("Expected claims transactions dated before 1970", foundPre1970);
+      assertTrue("claims_transactions.PATIENTINSURANCEID values with no matching "
+          + "payer_transitions.MEMBERID (PATIENTID MEMBERID FROMDATE):\n "
+          + String.join("\n ", unresolved), unresolved.isEmpty());
+    } finally {
+      if (yearsOfHistory == null) {
+        Config.remove("exporter.years_of_history");
+      } else {
+        Config.set("exporter.years_of_history", yearsOfHistory);
+      }
+    }
   }
 
   @Test
