@@ -1174,8 +1174,9 @@ public class CSVExporter {
       s.append(claim.getPayer().getResourceID()).append(',');
     }
     // SECONDARYPATIENTINSURANCEID (0 default if none)
-    if (encounter.claim.getSecondaryPayer() == null
-        || encounter.claim.getSecondaryPayer().isNoInsurance()) {
+    boolean hasSecondaryPayer = claim.getSecondaryPayer() != null
+        && !claim.getSecondaryPayer().isNoInsurance();
+    if (!hasSecondaryPayer) {
       s.append(",");
     } else {
       s.append(claim.getSecondaryPayer().getResourceID()).append(',');
@@ -1237,8 +1238,7 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("CLOSED,");
       // STATUS2 for Payer2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         s.append("CLOSED,");
       } else {
         s.append(',');
@@ -1248,8 +1248,7 @@ public class CSVExporter {
       // OUTSTANDING1
       s.append("0,");
       // OUTSTANDING2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         s.append("0,");
       } else {
         s.append(',');
@@ -1259,8 +1258,7 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.stop)).append(',');
       // LASTBILLEDDATE2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         s.append(iso8601Timestamp(encounter.stop)).append(',');
       } else {
         s.append(',');
@@ -1273,8 +1271,7 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("BILLED,");
       // STATUS2 for Payer2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         s.append("BILLED,");
       } else {
         s.append(',');
@@ -1285,8 +1282,7 @@ public class CSVExporter {
       s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
               .append(',');
       // OUTSTANDING2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         // TODO this is not correct
         s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
                 .append(',');
@@ -1299,8 +1295,7 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
       // LASTBILLEDDATE2
-      if (claim.getSecondaryPayer() != null
-          && claim.getSecondaryPayer().isNoInsurance()) {
+      if (hasSecondaryPayer) {
         s.append(iso8601Timestamp(encounter.start)).append(',');
       } else {
         s.append(',');
@@ -1316,8 +1311,7 @@ public class CSVExporter {
       s.append("1,");
     }
     // HEALTHCARECLAIMTYPEID2
-    if (claim.getSecondaryPayer() != null
-        && claim.getSecondaryPayer().isNoInsurance()) {
+    if (hasSecondaryPayer) {
       if (institutional) {
         s.append('2');
       } else {
