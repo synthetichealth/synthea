@@ -380,7 +380,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "g/L",
+          "unit": "g/dL",
           "codes": [
             {
               "system": "LOINC",
@@ -633,7 +633,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "g/L",
+          "unit": "g/dL",
           "codes": [
             {
               "system": "LOINC",
