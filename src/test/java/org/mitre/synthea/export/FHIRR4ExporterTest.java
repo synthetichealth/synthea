@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -520,6 +521,70 @@ public class FHIRR4ExporterTest {
     assertTrue("MedicationRequest missing but should have been included", foundMedications);
     assertTrue("Procedure resource missing but should have been included", foundProcedures);
     assertFalse("Condition resource found but should not have been included", foundConditions);
+  }
+
+  @Test
+  public void testHeartDiagnosticReportCategories() throws Exception {
+    Person p = setupPersonForReportCategoryTest();
+    HealthRecord.Encounter encounter = p.record.encounterStart(0, EncounterType.WELLNESS);
+    encounter.provider = p.record.provider;
+
+    HealthRecord.Observation ejectionFraction = p.record.observation(0,
+        "Left ventricular Ejection fraction", 60.0);
+    ejectionFraction.category = "imaging";
+    ejectionFraction.codes.add(new Code("LOINC", "10230-1",
+        "Left ventricular Ejection fraction"));
+    HealthRecord.Report heartFailureReport = p.record.report(0, "55405-5", 1);
+    heartFailureReport.codes.add(new Code("LOINC", "55405-5", "Heart failure tracking panel"));
+
+    HealthRecord.Observation nyha = p.record.observation(1, "Functional capacity NYHA", "Class I");
+    nyha.category = "survey";
+    nyha.codes.add(new Code("LOINC", "88020-3", "Functional capacity NYHA"));
+    HealthRecord.Report nyhaReport = p.record.report(1, "93124-6", 1);
+    nyhaReport.codes.add(new Code("LOINC", "93124-6",
+        "New York Heart Association Functional Classification panel"));
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 1);
+
+    DiagnosticReport heartFailureFhirReport = findDiagnosticReport(bundle, "55405-5");
+    assertEquals("CUS", heartFailureFhirReport.getCategoryFirstRep().getCodingFirstRep().getCode());
+    DiagnosticReport nyhaFhirReport = findDiagnosticReport(bundle, "93124-6");
+    assertTrue(nyhaFhirReport.getCategory().isEmpty());
+  }
+
+  private Person setupPersonForReportCategoryTest() {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.record.provider = stub;
+    return p;
+  }
+
+  private DiagnosticReport findDiagnosticReport(Bundle bundle, String code) {
+    return (DiagnosticReport) bundle.getEntry().stream()
+        .map(BundleEntryComponent::getResource)
+        .filter(resource -> resource instanceof DiagnosticReport)
+        .map(resource -> (DiagnosticReport) resource)
+        .filter(report -> report.getCode().getCodingFirstRep().getCode().equals(code))
+        .findFirst()
+        .get();
   }
 
   @Test
