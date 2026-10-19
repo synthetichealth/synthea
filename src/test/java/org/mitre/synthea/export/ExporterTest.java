@@ -79,6 +79,18 @@ public class ExporterTest {
   }
 
   @Test
+  public void testFilenameSanitizesPatientName() {
+    patient.attributes.put(Person.NAME, "Raquel318 Henríquez109 / Test");
+    patient.attributes.put(Person.ID, "4b33f163-b07b-4ec7-b579-5ac453371d4f");
+    Config.set("exporter.use_uuid_filenames", "false");
+
+    String filename = Exporter.filename(patient, "", "xml");
+
+    assertEquals("Raquel318_Henriquez109___Test_"
+        + "4b33f163-b07b-4ec7-b579-5ac453371d4f.xml", filename);
+  }
+
+  @Test
   public void testExportFilterShouldKeepOldActiveMedication() {
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
