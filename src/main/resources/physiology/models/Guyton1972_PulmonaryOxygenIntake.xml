@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" metaid="_551655" level="2" version="3">
+  <model metaid="metaid_0000002" id="Guyton1972_PulmonaryOxygenIntake" name="Guyton1972_PulmonaryOxygenIntake">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>This a model from the article:      <br/>
+        <strong>Circulation: overall regulation.</strong>
+        <br/>
+          Guyton AC, Coleman TG, Granger HJ.      <em>Annu Rev Physiol</em>
+          1972;34:13-46      <a href="http://www.ncbi.nlm.nih.gov/pubmed/4334846">4334846</a>
+          ,      <br/>
+        <strong>Abstract:</strong>
+        <br/>
+          No abstract available      </p>
+      <p>This model was taken from the      <a href="http://www.cellml.org/models">CellML repository</a>
+          and automatically converted to SBML.      <br/>
+          The original model was:      <a href="http://www.cellml.org/models/guyton_pulmonary_oxygen_uptake_2008_version02">
+        <strong>Guyton AC, Coleman TG, Granger HJ. (2008) - version02</strong>
+      </a>
+      <br/>
+          The original CellML model was created by:      <br/>
+      <strong>Terkildsen, Jonna,</strong>
+      <br/>
+          j.terkildsen@aukland.ac.nz      <br/>
+          The University of Auckland      <br/>
+          Auckland Bioengineering Institute      <br/></p>
+    <p>This model originates from BioModels Database: A Database of Annotated Published Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net Team.      <br/>
+          To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to      <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons CC0">CC0 Public Domain Dedication</a>
+          for more information.      </p>
+  <p>In summary, you are entitled to use this encoded model in absolutely any manner you deem suitable, verbatim, or with modification, alone or embedded it in a larger context, redistribute it, commercially or not, in a restricted way or not..      <br/>
+  <br/>
+          To cite BioModels Database, please use:      <a href="http://www.ncbi.nlm.nih.gov/pubmed/20587024" target="_blank">Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.</a>
+</p>
+</body>
+</notes><annotation>
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+    <rdf:Description rdf:about="#metaid_0000002">
+      <bqmodel:is>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL0911047946"/>
+        </rdf:Bag>
+      </bqmodel:is>
+      <bqmodel:isDescribedBy>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/pubmed/4334846"/>
+        </rdf:Bag>
+      </bqmodel:isDescribedBy>
+      <bqbiol:hasTaxon>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+        </rdf:Bag>
+      </bqbiol:hasTaxon>
+      <bqbiol:isVersionOf>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/go/GO:0008015"/>
+        </rdf:Bag>
+      </bqbiol:isVersionOf>
+    </rdf:Description>
+  </rdf:RDF>
+</annotation><listOfUnitDefinitions>
+  <unitDefinition metaid="_551667" id="minute" name="minute">
+    <listOfUnits>
+      <unit metaid="_551679" kind="second" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551691" id="per_minute" name="per_minute">
+    <listOfUnits>
+      <unit metaid="_551704" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551716" id="mmHg" name="mmHg">
+    <listOfUnits>
+      <unit metaid="_551728" kind="newton" multiplier="133.322"/>
+      <unit metaid="_551740" kind="metre" exponent="-2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551753" id="per_mmHg" name="per_mmHg">
+    <listOfUnits>
+      <unit metaid="_551765" kind="newton" exponent="-1" multiplier="133.322"/>
+      <unit metaid="_551778" kind="metre" exponent="2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551790" id="mmHg_per_mL" name="mmHg_per_mL">
+    <listOfUnits>
+      <unit metaid="_551802" kind="newton" multiplier="133.322"/>
+      <unit metaid="_551814" kind="metre" exponent="-2"/>
+      <unit metaid="_551826" kind="litre" exponent="-1" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551838" id="per_mmHg2" name="per_mmHg2">
+    <listOfUnits>
+      <unit metaid="_551850" kind="newton" exponent="-2" multiplier="133.322"/>
+      <unit metaid="_551862" kind="metre" exponent="4"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551874" id="mmHg3" name="mmHg3">
+    <listOfUnits>
+      <unit metaid="_551886" kind="newton" exponent="3" multiplier="133.322"/>
+      <unit metaid="_551899" kind="metre" exponent="-6"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551911" id="monovalent_mEq" name="monovalent_mEq">
+    <listOfUnits>
+      <unit metaid="_551923" kind="mole" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551936" id="monovalent_mEq_per_minute" name="monovalent_mEq_per_minute">
+    <listOfUnits>
+      <unit metaid="_551949" kind="mole" scale="-3"/>
+      <unit metaid="_551962" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_551974" id="monovalent_mEq_per_litre" name="monovalent_mEq_per_litre">
+    <listOfUnits>
+      <unit metaid="_551986" kind="mole" scale="-3"/>
+      <unit metaid="_551998" kind="litre" exponent="-1"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552010" id="monovalent_mEq_per_litre_per_minute" name="monovalent_mEq_per_litre_per_minute">
+    <listOfUnits>
+      <unit metaid="_552022" kind="mole" scale="-3"/>
+      <unit metaid="_552034" kind="litre" exponent="-1"/>
+      <unit metaid="_552046" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552058" id="litre2_per_monovalent_mEq_per_minute" name="litre2_per_monovalent_mEq_per_minute">
+    <listOfUnits>
+      <unit metaid="_552070" kind="litre" exponent="2"/>
+      <unit metaid="_552082" kind="mole" exponent="-1" scale="-3"/>
+      <unit metaid="_552095" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552107" id="L_per_minute" name="L_per_minute">
+    <listOfUnits>
+      <unit metaid="_552119" kind="litre"/>
+      <unit metaid="_552131" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552143" id="mL" name="mL">
+    <listOfUnits>
+      <unit metaid="_552155" kind="litre" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552167" id="mL_per_L" name="mL_per_L">
+    <listOfUnits>
+      <unit metaid="_552179" kind="litre" exponent="-1"/>
+      <unit metaid="_552191" kind="litre" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552203" id="mL_per_L_per_minute" name="mL_per_L_per_minute">
+    <listOfUnits>
+      <unit metaid="_552215" kind="litre" exponent="-1"/>
+      <unit metaid="_552227" kind="litre" scale="-3"/>
+      <unit metaid="_552239" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552251" id="mL_per_minute_per_mmHg" name="mL_per_minute_per_mmHg">
+    <listOfUnits>
+      <unit metaid="_552263" kind="litre" scale="-3"/>
+      <unit metaid="_552275" kind="second" exponent="-1" multiplier="60"/>
+      <unit metaid="_552288" kind="newton" exponent="-1" multiplier="133.322"/>
+      <unit metaid="_552300" kind="metre" exponent="2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552312" id="L_mL_per_minute_per_mmHg" name="L_mL_per_minute_per_mmHg">
+    <listOfUnits>
+      <unit metaid="_552324" kind="litre" exponent="2" scale="-1"/>
+      <unit metaid="_552336" kind="second" exponent="-1" multiplier="60"/>
+      <unit metaid="_552348" kind="newton" exponent="-1" multiplier="133.322"/>
+      <unit metaid="_552360" kind="metre" exponent="2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552372" id="mL_per_minute" name="mL_per_minute">
+    <listOfUnits>
+      <unit metaid="_552384" kind="litre" scale="-3"/>
+      <unit metaid="_552396" kind="second" exponent="-1" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552408" id="L_per_minute_per_mmHg" name="L_per_minute_per_mmHg">
+    <listOfUnits>
+      <unit metaid="_552420" kind="litre"/>
+      <unit metaid="_552432" kind="second" exponent="-1" multiplier="60"/>
+      <unit metaid="_552444" kind="newton" exponent="-1" multiplier="133.322"/>
+      <unit metaid="_552456" kind="metre" exponent="2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_552468" id="time" name="time">
+    <listOfUnits>
+      <unit metaid="_552480" kind="second" multiplier="60"/>
+    </listOfUnits>
+  </unitDefinition>
+</listOfUnitDefinitions><listOfCompartments>
+  <compartment metaid="_323273" id="Compartment" size="1" units="litre"/>
+</listOfCompartments><listOfParameters>
+  <parameter metaid="_323303" id="VPF" name="VPF" value="0.0123238" units="litre"/>
+  <parameter metaid="_323306" id="DOB" name="DOB" value="163.508" units="mL_per_minute"/>
+  <parameter metaid="_323307" id="QRO" name="QRO" value="4.97838" units="L_per_minute"/>
+  <parameter metaid="_323308" id="RMO" name="RMO" value="56.8057" units="mL_per_minute"/>
+  <parameter metaid="_323311" id="HM" name="HM" value="40.0381" units="dimensionless"/>
+  <parameter metaid="_323312" id="O2UTIL" name="O2UTIL" units="mL_per_minute" constant="false"/>
+  <parameter metaid="_323313" id="ALVENT" name="ALVENT" units="L_per_minute" constant="false"/>
+  <parameter metaid="_323315" id="PO2ALV" name="PO2ALV" units="mmHg" constant="false"/>
+  <parameter metaid="_323316" id="O2DFS" name="O2DFS" units="mL_per_minute" constant="false"/>
+  <parameter metaid="_323319" id="RSPDFC" name="RSPDFC" units="mL_per_minute_per_mmHg" constant="false"/>
+  <parameter metaid="_323320" id="OVA" name="OVA" value="204.497" units="mL_per_L" constant="false"/>
+  <parameter metaid="_323323" id="DOVA" name="DOVA" units="mL_per_L_per_minute" constant="false"/>
+  <parameter metaid="_323324" id="PO2ART" name="PO2ART" units="mmHg" constant="false"/>
+  <parameter metaid="_323327" id="OSA" name="OSA" units="dimensionless" constant="false"/>
+  <parameter metaid="_323328" id="O2VTS2" name="O2VTS2" units="dimensionless" constant="false"/>
+  <parameter metaid="_323331" id="O2VTST" name="O2VTST" units="dimensionless" constant="false"/>
+  <parameter metaid="_323332" id="O2VTST1" name="O2VTST1" units="dimensionless" constant="false"/>
+  <parameter metaid="_323335" id="O2VAD2" name="O2VAD2" units="dimensionless" constant="false"/>
+  <parameter metaid="_323336" id="DO2VAD" name="DO2VAD" units="per_minute" constant="false"/>
+  <parameter metaid="_323337" id="O2VAD1" name="O2VAD1" value="2.368e-07" units="dimensionless" constant="false"/>
+  <parameter metaid="_323340" id="PO2AMB" name="PO2AMB" value="150" units="mmHg"/>
+  <parameter metaid="_323341" id="PL2" name="PL2" value="1.8" units="L_mL_per_minute_per_mmHg"/>
+  <parameter metaid="_323342" id="VPTISS" name="VPTISS" value="0.0175" units="litre"/>
+  <parameter metaid="_323345" id="VNTSTM" name="VNTSTM" value="1" units="dimensionless"/>
+</listOfParameters><listOfRules>
+  <rateRule metaid="_323277" variable="OVA">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <ci> DOVA </ci>
+    </math>
+  </rateRule>
+  <rateRule metaid="_323278" variable="O2VAD1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <ci> DO2VAD </ci>
+    </math>
+  </rateRule>
+  <assignmentRule metaid="_323281" variable="O2UTIL">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> DOB </ci>
+        <ci> RMO </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323282" variable="OSA">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <apply>
+          <divide/>
+          <ci> OVA </ci>
+          <ci> HM </ci>
+        </apply>
+        <cn> 5.25 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323283" variable="PO2ART">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <apply>
+            <plus/>
+            <cn> 114 </cn>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> OSA </ci>
+                <cn> 1 </cn>
+              </apply>
+              <cn> 6667 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <gt/>
+            <ci> OSA </ci>
+            <cn> 1 </cn>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <plus/>
+            <cn> 74 </cn>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> OSA </ci>
+                <cn> 0.936 </cn>
+              </apply>
+              <cn> 625 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <and/>
+            <apply>
+              <gt/>
+              <ci> OSA </ci>
+              <cn> 0.936 </cn>
+            </apply>
+            <apply>
+              <leq/>
+              <ci> OSA </ci>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <plus/>
+            <cn> 46 </cn>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> OSA </ci>
+                <cn> 0.8 </cn>
+              </apply>
+              <cn> 205.882 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <and/>
+            <apply>
+              <gt/>
+              <ci> OSA </ci>
+              <cn> 0.8 </cn>
+            </apply>
+            <apply>
+              <leq/>
+              <ci> OSA </ci>
+              <cn> 0.936 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <times/>
+            <ci> OSA </ci>
+            <cn> 57.5 </cn>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323286" variable="O2VTST1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <apply>
+          <minus/>
+          <ci> PO2ART </ci>
+          <cn> 67 </cn>
+        </apply>
+        <cn> 30 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323287" variable="O2VTST">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 1 </cn>
+          <apply>
+            <gt/>
+            <ci> O2VTST1 </ci>
+            <cn> 1 </cn>
+          </apply>
+        </piece>
+        <piece>
+          <cn> 0.6 </cn>
+          <apply>
+            <lt/>
+            <ci> O2VTST1 </ci>
+            <cn> 0.6 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <ci> O2VTST1 </ci>
+        </otherwise>
+      </piecewise>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323290" variable="O2VTS2">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <cn> 1 </cn>
+        <ci> O2VTST </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323291" variable="DO2VAD">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> O2VTS2 </ci>
+              <cn> 1 </cn>
+            </apply>
+            <cn> 3 </cn>
+          </apply>
+          <ci> O2VAD1 </ci>
+        </apply>
+        <cn> 0.0005 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323294" variable="O2VAD2">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> O2VAD1 </ci>
+        <cn> 1 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323295" variable="ALVENT">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> O2UTIL </ci>
+        <ci> VNTSTM </ci>
+        <cn> 0.026667 </cn>
+        <ci> O2VTS2 </ci>
+        <ci> O2VAD2 </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323296" variable="PO2ALV">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <minus/>
+        <ci> PO2AMB </ci>
+        <apply>
+          <divide/>
+          <apply>
+            <divide/>
+            <ci> O2UTIL </ci>
+            <ci> ALVENT </ci>
+          </apply>
+          <cn> 0.761 </cn>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323299" variable="RSPDFC">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <ci> PL2 </ci>
+        <apply>
+          <plus/>
+          <ci> VPTISS </ci>
+          <ci> VPF </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323300" variable="O2DFS">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <apply>
+          <minus/>
+          <ci> PO2ALV </ci>
+          <ci> PO2ART </ci>
+        </apply>
+        <ci> RSPDFC </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_323301" variable="DOVA">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <apply>
+          <minus/>
+          <ci> O2DFS </ci>
+          <ci> O2UTIL </ci>
+        </apply>
+        <apply>
+          <times/>
+          <ci> QRO </ci>
+          <cn> 1 </cn>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+</listOfRules>
+</model>
+</sbml>

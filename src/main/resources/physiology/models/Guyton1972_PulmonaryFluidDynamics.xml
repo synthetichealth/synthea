@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" metaid="_556529" level="2" version="3">
+  <model metaid="metaid_0000002" id="Guyton1972_PulmonaryFluidDynamics" name="Guyton1972_PulmonaryFluidDynamics">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>This a model from the article:      <br/>
+        <strong>Circulation: overall regulation.</strong>
+        <br/>
+          Guyton AC, Coleman TG, Granger HJ.      <em>Annu Rev Physiol</em>
+          1972;34:13-46      <a href="http://www.ncbi.nlm.nih.gov/pubmed/4334846">4334846</a>
+          ,      <br/>
+        <strong>Abstract:</strong>
+        <br/>
+          No abstract available      </p>
+      <p>This model was taken from the      <a href="http://www.cellml.org/models">CellML repository</a>
+          and automatically converted to SBML.      <br/>
+          The original model was:      <a href="http://www.cellml.org/models/guyton_pulmonary_fluid_dynamics_2008_version02">
+        <strong>Guyton AC, Coleman TG, Granger HJ. (2008) - version02</strong>
+      </a>
+      <br/>
+          The original CellML model was created by:      <br/>
+      <strong>Terkildsen, Jonna.</strong>
+      <br/>
+          j.terkildsen@aukland.ac.nz      <br/>
+          The University of Auckland      <br/>
+          Auckland Bioengineering Institute      <br/></p>
+    <p>This model originates from BioModels Database: A Database of Annotated Published Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net Team.      <br/>
+          To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to      <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons CC0">CC0 Public Domain Dedication</a>
+          for more information.      </p>
+  <p>In summary, you are entitled to use this encoded model in absolutely any manner you deem suitable, verbatim, or with modification, alone or embedded it in a larger context, redistribute it, commercially or not, in a restricted way or not..      <br/>
+  <br/>
+          To cite BioModels Database, please use:      <a href="http://www.ncbi.nlm.nih.gov/pubmed/20587024" target="_blank">Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.</a>
+</p>
+</body>
+</notes><annotation>
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+    <rdf:Description rdf:about="#metaid_0000002">
+      <bqmodel:is>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL0911091440"/>
+        </rdf:Bag>
+      </bqmodel:is>
+      <bqmodel:isDescribedBy>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/pubmed/4334846"/>
+        </rdf:Bag>
+      </bqmodel:isDescribedBy>
+      <bqbiol:hasTaxon>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+        </rdf:Bag>
+      </bqbiol:hasTaxon>
+      <bqbiol:isVersionOf>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/go/GO:0008015"/>
+        </rdf:Bag>
+      </bqbiol:isVersionOf>
+    </rdf:Description>
+  </rdf:RDF>
+</annotation><listOfUnitDefinitions>
+  <unitDefinition metaid="_556541" id="substance" name="normalised">
+    <listOfUnits>
+      <unit metaid="_556553" kind="dimensionless"/>
+    </listOfUnits>
+  </unitDefinition>
+</listOfUnitDefinitions><listOfCompartments>
+  <compartment metaid="_645323" id="Compartment" size="1"/>
+</listOfCompartments><listOfParameters>
+  <parameter metaid="_645354" id="PPC" name="PPC" value="29.9941" units="dimensionless"/>
+  <parameter metaid="_645356" id="PPA" name="PPA" value="15.6376" units="dimensionless"/>
+  <parameter metaid="_645358" id="PLA" name="PLA" value="2" units="dimensionless"/>
+  <parameter metaid="_645360" id="CPP" name="CPP" value="71.9719" units="dimensionless"/>
+  <parameter metaid="_645362" id="RPV" name="RPV" value="1.55719" units="dimensionless"/>
+  <parameter metaid="_645364" id="RPA" name="RPA" value="1.5683" units="dimensionless"/>
+  <parameter metaid="_645366" id="PCP" name="PCP" units="dimensionless" constant="false"/>
+  <parameter metaid="_645368" id="PFI" name="PFI" units="dimensionless" constant="false"/>
+  <parameter metaid="_645370" id="DFP" name="DFP" units="dimensionless" constant="false"/>
+  <parameter metaid="_645372" id="VPF" name="VPF" units="dimensionless" constant="false"/>
+  <parameter metaid="_645374" id="DFZ" name="DFZ" units="dimensionless" constant="false"/>
+  <parameter metaid="_645376" id="VPF1" name="VPF1" value="0.0123238" units="dimensionless" constant="false"/>
+  <parameter metaid="_645378" id="PPI" name="PPI" units="dimensionless" constant="false"/>
+  <parameter metaid="_645380" id="PPD" name="PPD" units="dimensionless" constant="false"/>
+  <parameter metaid="_645382" id="CPN" name="CPN" units="dimensionless" constant="false"/>
+  <parameter metaid="_645384" id="PPZ" name="PPZ" units="dimensionless" constant="false"/>
+  <parameter metaid="_645386" id="PPR1" name="PPR1" value="0.419998" units="dimensionless" constant="false"/>
+  <parameter metaid="_645388" id="PPR" name="PPR" units="dimensionless" constant="false"/>
+  <parameter metaid="_645390" id="POS" name="POS" units="dimensionless" constant="false"/>
+  <parameter metaid="_645392" id="PPN" name="PPN" units="dimensionless" constant="false"/>
+  <parameter metaid="_645394" id="PLF" name="PLF" units="dimensionless" constant="false"/>
+  <parameter metaid="_645396" id="PPO" name="PPO" units="dimensionless" constant="false"/>
+  <parameter metaid="_645398" id="CPF" name="CPF" value="0.0003" units="dimensionless"/>
+  <parameter metaid="_645400" id="tu" name="time_unit" value="1" units="time"/>
+</listOfParameters><listOfRules>
+  <rateRule metaid="_645324" variable="VPF1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <ci> DFP </ci>
+        <ci> tu </ci>
+      </apply>
+    </math>
+  </rateRule>
+  <rateRule metaid="_645325" variable="PPR1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <ci> PPD </ci>
+        <ci> tu </ci>
+      </apply>
+    </math>
+  </rateRule>
+  <assignmentRule metaid="_645327" variable="PCP">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> PPA </ci>
+              <ci> PLA </ci>
+            </apply>
+            <ci> RPV </ci>
+          </apply>
+          <apply>
+            <plus/>
+            <ci> RPV </ci>
+            <ci> RPA </ci>
+          </apply>
+        </apply>
+        <ci> PLA </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645329" variable="PFI">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <ci> PCP </ci>
+              <ci> PPI </ci>
+            </apply>
+            <ci> POS </ci>
+          </apply>
+          <ci> PPC </ci>
+        </apply>
+        <ci> CPF </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645331" variable="DFZ">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <minus/>
+        <ci> PFI </ci>
+        <ci> PLF </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645333" variable="DFP">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <ci> DFZ </ci>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645335" variable="VPF">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0.001 </cn>
+          <apply>
+            <lt/>
+            <ci> VPF1 </ci>
+            <cn> 0.001 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <ci> VPF1 </ci>
+        </otherwise>
+      </piecewise>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645337" variable="PPI">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <minus/>
+        <cn> 2 </cn>
+        <apply>
+          <divide/>
+          <cn> 0.15 </cn>
+          <ci> VPF </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645339" variable="PPZ">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <minus/>
+        <ci> PPN </ci>
+        <ci> PPO </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645341" variable="PPD">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <ci> PPZ </ci>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645343" variable="PPR">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0.025 </cn>
+          <apply>
+            <lt/>
+            <ci> PPR1 </ci>
+            <cn> 0.025 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <ci> PPR1 </ci>
+        </otherwise>
+      </piecewise>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645345" variable="CPN">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <ci> PPR </ci>
+        <ci> VPF </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645347" variable="POS">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> CPN </ci>
+        <cn> 0.4 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645349" variable="PPN">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <apply>
+          <minus/>
+          <ci> CPP </ci>
+          <ci> CPN </ci>
+        </apply>
+        <cn> 0.000225 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645351" variable="PLF">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <apply>
+          <plus/>
+          <ci> PPI </ci>
+          <cn> 11 </cn>
+        </apply>
+        <cn> 0.0003 </cn>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_645353" variable="PPO">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> PLF </ci>
+        <ci> CPN </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+</listOfRules>
+</model>
+</sbml>

@@ -177,12 +177,13 @@ public abstract class TestHelper {
   public static synchronized Person[] getGeneratedPeople() throws IOException,
       ClassNotFoundException {
     if (serializedPatients == null) {
-      // Ensure Physiology state is enabled
-      boolean physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
-      State.ENABLE_PHYSIOLOGY_STATE = true;
-
       int numberOfPeople = 10;
       Generator generator = new Generator(numberOfPeople);
+
+      // Ensure Physiology state is enabled. This must happen after the Generator is
+      // constructed, because Generator.init() refreshes the flag from configuration.
+      boolean physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
+      State.ENABLE_PHYSIOLOGY_STATE = true;
       generator.options.overflow = false;
       exportOff();
       Person[] people = new Person[10];

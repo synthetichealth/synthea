@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.ode.DerivativeException;
+import org.mitre.synthea.export.PhysiologySimulationExporter;
 import org.mitre.synthea.helpers.ChartRenderer;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableChartConfig;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableSeriesConfig;
@@ -181,6 +182,25 @@ public class PhysiologySimulator {
      */
     public void setCharts(List<MultiTableChartConfig> charts) {
       this.charts = charts;
+    }
+
+    private boolean exportFhir;
+    private String fhirUnit;
+
+    public boolean isExportFhir() {
+      return exportFhir;
+    }
+
+    public void setExportFhir(boolean exportFhir) {
+      this.exportFhir = exportFhir;
+    }
+
+    public String getFhirUnit() {
+      return fhirUnit;
+    }
+
+    public void setFhirUnit(String fhirUnit) {
+      this.fhirUnit = fhirUnit;
     }
 
   }
@@ -488,6 +508,18 @@ public class PhysiologySimulator {
           chartConfig.setFilename(Paths.get(outputDir.toString(),
               chartConfig.getFilename()).toString());
           ChartRenderer.drawChartAsFile(results, chartConfig);
+        }
+      }
+
+      // Optionally export the results as a FHIR R4 Bundle of sampled Observations.
+      if (config.isExportFhir()) {
+        String unit = config.getFhirUnit() != null ? config.getFhirUnit() : "1";
+        String fhirJson = PhysiologySimulationExporter.toBundleJson(results, unit);
+        try {
+          Files.write(Paths.get(outputDir.toString(), config.getName() + ".fhir.json"),
+              fhirJson.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } catch (IOException ex) {
+          throw new RuntimeException("Unable to write FHIR output file", ex);
         }
       }
 

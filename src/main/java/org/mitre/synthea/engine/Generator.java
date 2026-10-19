@@ -266,6 +266,12 @@ public class Generator {
   }
 
   private void init() {
+    // State.ENABLE_PHYSIOLOGY_STATE is initialized when the State class loads, which
+    // happens (via module scanning) before command-line --config overrides are applied,
+    // so a "--physiology.state.enabled=true" argument would otherwise be silently ignored.
+    // Re-read it now that configuration is final.
+    State.ENABLE_PHYSIOLOGY_STATE = Config.getAsBoolean("physiology.state.enabled", false);
+
     if (options.state == null) {
       options.state = DEFAULT_STATE;
     }

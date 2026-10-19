@@ -1,7 +1,7 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: ECG
+name: ecg
 
 # Name of the model file
 model: circulation/McSharry2003_Synthetic_ECG.xml
@@ -15,6 +15,10 @@ stepSize: 0.01
 
 # Simulation duration in seconds
 duration: 10
+
+# Also emit a FHIR R4 Bundle of sampled Observations to output/.../{name}.fhir.json
+exportFhir: true
+fhirUnit: "mV"
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
@@ -33,7 +37,7 @@ inputs:
 charts:
     - filename: ecg.png
       type: line
-      title: "ECG: AFib"
+      title: "Synthetic ECG with arrhythmia (McSharry2003)"
       axisParamX: time
       axisLabelX: time (s)
       axisLabelY: Current (A)
