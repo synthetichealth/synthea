@@ -1786,6 +1786,11 @@ public class FhirDstu2 {
    * Helper function to convert a Code into a CodeableConceptDt. Takes an optional system, which
    * replaces the Code.system in the resulting CodeableConceptDt if not null.
    *
+   * <p>The source Code is not modified. Normalizing into a local variable is required because
+   * module Code objects are process-wide singletons and callers may read the Code's system
+   * after this call (e.g. the CSV exporter), so mutating it would corrupt subsequent exports
+   * (see #1702, #1703).
+   *
    * @param from
    *          The Code to create a CodeableConcept from.
    * @param system
@@ -1795,7 +1800,7 @@ public class FhirDstu2 {
   private static CodeableConceptDt mapCodeToCodeableConcept(Code from, String system) {
     CodeableConceptDt to = new CodeableConceptDt();
     system = system == null ? null : ExportHelper.getSystemURI(system);
-    from.system = ExportHelper.getSystemURI(from.system);
+    String fromSystemURI = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -1804,10 +1809,10 @@ public class FhirDstu2 {
     CodingDt coding = new CodingDt();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (from.system == null) {
+    if (fromSystemURI == null) {
       coding.setSystem(system);
     } else {
-      coding.setSystem(from.system);
+      coding.setSystem(fromSystemURI);
     }
     coding.setVersion(from.version); // may be null
 

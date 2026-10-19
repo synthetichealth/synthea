@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.SampledDataDt;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -15,8 +16,8 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
@@ -285,5 +287,21 @@ public class FHIRDSTU2ExporterTest {
         }
       }
     }
+  }
+
+  @Test
+  public void testMapCodeToCodeableConceptDoesNotMutateCode() throws Exception {
+    // Regression test for #1703. mapCodeToCodeableConcept normalized the source
+    // Code.system in place, so the FHIR exporter permanently rewrote module-level
+    // Code singletons and the CSV export read the wrong SYSTEM value depending on
+    // whether FHIR export ran first. The method is private, so invoke it directly.
+    HealthRecord.Code code = new HealthRecord.Code("SNOMED-CT", "123456", "Test display");
+    Method method = FhirDstu2.class.getDeclaredMethod("mapCodeToCodeableConcept",
+        HealthRecord.Code.class, String.class);
+    method.setAccessible(true);
+    CodeableConceptDt concept = (CodeableConceptDt) method.invoke(null, code, null);
+    assertEquals("SNOMED-CT", code.system);
+    assertEquals("http://snomed.info/sct", concept.getCoding().get(0).getSystem());
+    assertEquals("123456", concept.getCoding().get(0).getCode());
   }
 }

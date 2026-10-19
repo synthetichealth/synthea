@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -584,5 +585,19 @@ public class FHIRR4ExporterTest {
     assertFalse("MedicationRequest found but should not have been included", foundMedications);
     assertFalse("Procedure resource found but should not have been included", foundProcedures);
     assertTrue("Condition resource missing but should have been included", foundConditions);
+  }
+
+  @Test
+  public void testMapCodeToCodeableConceptDoesNotMutateCode() {
+    // Regression test for #1703. mapCodeToCodeableConcept normalized the source
+    // Code.system in place, so the FHIR exporter permanently rewrote module-level
+    // Code singletons and the CSV export read the wrong SYSTEM value depending on
+    // whether FHIR export ran first.
+    Code code = new Code("SNOMED-CT", "123456", "Test display");
+    CodeableConcept concept = FhirR4.mapCodeToCodeableConcept(code, null);
+    assertEquals("SNOMED-CT", code.system);
+    assertEquals("http://snomed.info/sct", concept.getCodingFirstRep().getSystem());
+    assertEquals("123456", concept.getCodingFirstRep().getCode());
+    assertEquals("Test display", concept.getText());
   }
 }

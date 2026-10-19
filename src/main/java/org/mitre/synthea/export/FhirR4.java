@@ -3406,6 +3406,11 @@ public class FhirR4 {
    * Helper function to convert a Code into a CodeableConcept. Takes an optional system, which
    * replaces the Code.system in the resulting CodeableConcept if not null.
    *
+   * <p>The source Code is not modified. Normalizing into a local variable is required because
+   * module Code objects are process-wide singletons and callers may read the Code's system
+   * after this call (e.g. the CSV exporter), so mutating it would corrupt subsequent exports
+   * (see #1702, #1703).
+   *
    * @param from   The Code to create a CodeableConcept from.
    * @param system The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
@@ -3413,7 +3418,7 @@ public class FhirR4 {
   public static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
     system = system == null ? null : ExportHelper.getSystemURI(system);
-    from.system = ExportHelper.getSystemURI(from.system);
+    String fromSystemURI = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -3422,10 +3427,10 @@ public class FhirR4 {
     Coding coding = new Coding();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (from.system == null) {
+    if (fromSystemURI == null) {
       coding.setSystem(system);
     } else {
-      coding.setSystem(from.system);
+      coding.setSystem(fromSystemURI);
     }
     coding.setVersion(from.version); // may be null
 

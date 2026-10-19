@@ -84,6 +84,10 @@ public class Location implements Serializable {
       // class is not serializable
       this.demographics = new HashMap<String, Demographics>(allDemographics.row(state));
 
+      if (demographics.isEmpty()) {
+        throw new Exception("The state " + state + " was not found in the demographics file.");
+      }
+
       if (city != null
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
         throw new Exception("The city " + city
