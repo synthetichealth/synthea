@@ -1,0 +1,43 @@
+{
+  "name": "Observation expressions",
+  "gmf_version": 2.0,
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Standalone"
+    },
+    "Standalone": {
+      "type": "Observation",
+      "expression": "#{factor} * 2.0 + 2.0",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [{"system": "LOINC", "code": "2345-7", "display": "Glucose"}],
+      "direct_transition": "Report"
+    },
+    "Report": {
+      "type": "DiagnosticReport",
+      "codes": [{"system": "LOINC", "code": "24323-8", "display": "Metabolic panel"}],
+      "observations": [{
+        "type": "Observation",
+        "expression": "#{BMI} + #{factor}",
+        "category": "laboratory",
+        "unit": "mg/dL",
+        "codes": [{"system": "LOINC", "code": "2345-7", "display": "Glucose"}]
+      }],
+      "direct_transition": "Components"
+    },
+    "Components": {
+      "type": "MultiObservation",
+      "codes": [{"system": "LOINC", "code": "85354-9", "display": "Blood pressure panel"}],
+      "observations": [{
+        "type": "Observation",
+        "expression": "#{factor} + 70.0",
+        "category": "vital-signs",
+        "unit": "mm[Hg]",
+        "codes": [{"system": "LOINC", "code": "8462-4", "display": "Diastolic blood pressure"}]
+      }],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {"type": "Terminal"}
+  }
+}
