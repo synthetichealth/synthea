@@ -661,6 +661,18 @@ public final class LifecycleModule extends Module {
     return impacts;
   }
 
+  /**
+   * Physiological floor for HbA1c (percent) applied after diabetes medication
+   * impacts. Below roughly 4.0%, HbA1c does not occur in living people
+   * (synthetichealth/synthea#1693); via the ADAG equation (Nathan et al.,
+   * Diabetes Care 2008: estimated average glucose = 28.7 * A1C - 46.7 mg/dL),
+   * 4.0% implies an average glucose of ~68 mg/dL, just below the ADA
+   * hypoglycemia threshold of 70 mg/dL. Stacked medication impacts are purely
+   * additive, so without this clamp they can drive HbA1c to impossible
+   * (even negative) values.
+   */
+  private static final double MIN_HBA1C = 4.0;
+
   private static final int[] CHOLESTEROL_RANGE =
       BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
   private static final int[] TRIGLYCERIDES_RANGE =
@@ -814,6 +826,9 @@ public final class LifecycleModule extends Module {
           hbA1c += impact;
         }
       }
+      // stacked medication impacts can drive HbA1c below survivable levels
+      // (or even negative), so clamp it to a physiological floor
+      hbA1c = Math.max(hbA1c, MIN_HBA1C);
     }
     person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
 
