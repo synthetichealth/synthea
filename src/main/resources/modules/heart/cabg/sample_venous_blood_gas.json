@@ -1,0 +1,74 @@
+{
+  "name": "sample_venous_blood_gas",
+  "remarks": [
+    "Baseline venous specimen for the routine CABG operative gas report. This sampler does not model an acid-base complication or replace disease-specific gas panels.",
+    "Retain the existing pH bounds of 7.31-7.45, PCO2 bounds of 37-50 mmHg and bicarbonate bounds of 22-28 mmol/L by sampling PCO2 conditionally on pH.",
+    "Use the Abbott i-STAT calculated relationships at 37 degrees C: HCO3 = 10^(pH + log10(PCO2) - 7.608) and TCO2 = HCO3 + 0.03 * PCO2. Total CO2 includes bicarbonate and dissolved CO2, so 0.5-2 mmol/L cannot represent total CO2 when bicarbonate is 22-28 mmol/L.",
+    "Source: Abbott i-STAT CG4+ Cartridge Instructions for Use, page 3: https://www.globalpointofcare.abbott/content/dam/ardx/globalpointofcare/apoc/support/i-stat-1/cti-ifu/english-uk/ifu/765788-01B.pdf",
+    "The conditional PCO2 interval is [max(37, 22/coefficient), min(50, 28/coefficient)] with coefficient = 10^(pH - 7.608); it is nonempty throughout the sampled pH interval.",
+    "Each invocation refreshes all specimen attributes; report observations read the resulting snapshot without additional random draws. Oxygen partial pressure remains in the calling report."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Sample_pH"
+    },
+    "Sample_pH": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_ph",
+      "range": {
+        "low": 7.31,
+        "high": 7.45
+      },
+      "direct_transition": "Calculate_Bicarbonate_Coefficient"
+    },
+    "Calculate_Bicarbonate_Coefficient": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_coefficient",
+      "expression": "Power(10.0, #{cabg_venous_blood_gas_ph} - 7.608)",
+      "direct_transition": "Calculate_Minimum_PCO2"
+    },
+    "Calculate_Minimum_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_min_pco2",
+      "expression": "if 22.0 / #{cabg_venous_blood_gas_coefficient} > 37.0 then 22.0 / #{cabg_venous_blood_gas_coefficient} else 37.0",
+      "direct_transition": "Calculate_Maximum_PCO2"
+    },
+    "Calculate_Maximum_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_max_pco2",
+      "expression": "if 28.0 / #{cabg_venous_blood_gas_coefficient} < 50.0 then 28.0 / #{cabg_venous_blood_gas_coefficient} else 50.0",
+      "direct_transition": "Sample_PCO2_Fraction"
+    },
+    "Sample_PCO2_Fraction": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_fraction",
+      "range": {
+        "low": 0,
+        "high": 1
+      },
+      "direct_transition": "Calculate_PCO2"
+    },
+    "Calculate_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_pco2",
+      "expression": "#{cabg_venous_blood_gas_min_pco2} + #{cabg_venous_blood_gas_fraction} * (#{cabg_venous_blood_gas_max_pco2} - #{cabg_venous_blood_gas_min_pco2})",
+      "direct_transition": "Calculate_Bicarbonate"
+    },
+    "Calculate_Bicarbonate": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_bicarbonate",
+      "expression": "#{cabg_venous_blood_gas_coefficient} * #{cabg_venous_blood_gas_pco2}",
+      "direct_transition": "Calculate_Total_CO2"
+    },
+    "Calculate_Total_CO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_venous_blood_gas_total_co2",
+      "expression": "#{cabg_venous_blood_gas_bicarbonate} + 0.03 * #{cabg_venous_blood_gas_pco2}",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
