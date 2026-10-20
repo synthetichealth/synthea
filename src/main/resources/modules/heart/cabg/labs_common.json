@@ -387,7 +387,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -601,7 +601,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
