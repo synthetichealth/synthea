@@ -41,6 +41,7 @@ import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.RosenbrockSolver;
 import org.simulator.math.odes.RungeKutta_EventSolver;
 import org.simulator.sbml.SBMLinterpreter;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -435,7 +436,7 @@ public class PhysiologySimulator {
     }
 
     // Add type descriptions so Yaml knows how to instantiate our Lists
-    Constructor constructor = new Constructor(SimConfig.class);
+    Constructor constructor = new Constructor(SimConfig.class, new LoaderOptions());
     TypeDescription simConfigDescription = new TypeDescription(SimConfig.class);
     simConfigDescription.addPropertyParameters("charts", MultiTableChartConfig.class);
     constructor.addTypeDescription(simConfigDescription);

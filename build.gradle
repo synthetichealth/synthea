@@ -67,19 +67,26 @@ jacoco {
 }
 
 dependencies {
+  constraints {
+    implementation 'com.thoughtworks.xstream:xstream:1.4.21'
+    implementation 'commons-beanutils:commons-beanutils:1.11.0'
+    implementation 'net.minidev:json-smart:2.5.2'
+  }
+
   // This dependency is found on compile classpath of this component and consumers.
   implementation 'com.google.code.gson:gson:2.9.0'
   implementation 'com.jayway.jsonpath:json-path:2.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-caching-caffeine:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:8.12.1'
 
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:8.12.1'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.31'
 
@@ -95,7 +102,7 @@ dependencies {
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
-  implementation 'org.yaml:snakeyaml:1.33'
+  implementation 'org.yaml:snakeyaml:2.7'
   implementation 'org.apache.commons:commons-math3:3.6.1'
   implementation 'org.apache.commons:commons-text:1.9'
   implementation 'commons-validator:commons-validator:1.7'
@@ -152,8 +159,7 @@ dependencies {
   testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
   testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
   testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.2'
-  testImplementation 'com.helger:ph-schematron:5.6.5'
-  testImplementation 'com.helger:ph-commons:9.5.5'
+  testImplementation 'com.helger.schematron:ph-schematron-xslt:7.1.2'
   testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
 }
 
