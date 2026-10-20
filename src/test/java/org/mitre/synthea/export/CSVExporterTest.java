@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -8,9 +9,11 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -24,6 +27,7 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.modules.QualityOfLifeModule;
 
 public class CSVExporterTest {
   /**
@@ -56,6 +60,7 @@ public class CSVExporterTest {
     Config.set("exporter.csv.max_lines_per_file", "");
     Config.set("exporter.csv.append_mode", "false");
     Config.set("exporter.csv.file_number_digits", "");
+    Config.set("exporter.csv.include_quality_of_life_observations", "true");
   }
 
   @Test
@@ -570,5 +575,65 @@ public class CSVExporterTest {
     } catch (IllegalArgumentException e) {
       fail("CSV exporter should not throw an exception when only included files are set");
     }
+  }
+
+  @Test
+  public void testQualityOfLifeObservationsIncludedByDefault() throws Exception {
+    List<? extends Map<String, String>> observations = exportObservations();
+
+    List<String> qualityOfLifeCodes = Arrays.asList(QualityOfLifeModule.QALY,
+        QualityOfLifeModule.DALY, QualityOfLifeModule.QOLS);
+    int qualityOfLifeRows = 0;
+    for (Map<String, String> observation : observations) {
+      if (qualityOfLifeCodes.contains(observation.get("CODE"))) {
+        qualityOfLifeRows++;
+        assertEquals("Quality of life metrics are not tied to an encounter",
+            "", observation.get("ENCOUNTER"));
+      }
+    }
+    assertTrue("Expected QALY, DALY, and QOLS rows in observations.csv", qualityOfLifeRows > 0);
+  }
+
+  @Test
+  public void testQualityOfLifeObservationsCanBeExcluded() throws Exception {
+    Config.set("exporter.csv.include_quality_of_life_observations", "false");
+
+    List<? extends Map<String, String>> observations = exportObservations();
+
+    List<String> qualityOfLifeCodes = Arrays.asList(QualityOfLifeModule.QALY,
+        QualityOfLifeModule.DALY, QualityOfLifeModule.QOLS);
+    assertFalse("Expected clinical observations in observations.csv", observations.isEmpty());
+    for (Map<String, String> observation : observations) {
+      assertFalse("Quality of life metrics should not be exported: " + observation,
+          qualityOfLifeCodes.contains(observation.get("CODE")));
+      assertFalse("Every observation must reference an encounter: " + observation,
+          observation.get("ENCOUNTER").isEmpty());
+    }
+  }
+
+  /**
+   * Generate a small population, export it to CSV, and parse the resulting observations file.
+   * @return the rows of observations.csv
+   * @throws Exception if something goes wrong
+   */
+  private List<? extends Map<String, String>> exportObservations() throws Exception {
+    CSVExporter.getInstance().init();
+
+    int numberOfPeople = 10;
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    exportOpts.deferExports = true;
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = numberOfPeople;
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    generator.options.overflow = false;
+    for (int i = 0; i < numberOfPeople; i++) {
+      generator.generatePerson(i);
+    }
+    Exporter.runPostCompletionExports(generator, exportOpts);
+
+    File observationsFile = exportDir.toPath().resolve("csv").resolve("observations.csv").toFile();
+    assertTrue("observations.csv was not exported", observationsFile.exists());
+    String csvData = new String(Files.readAllBytes(observationsFile.toPath()));
+    return SimpleCSV.parse(csvData);
   }
 }

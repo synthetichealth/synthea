@@ -275,32 +275,8 @@ public class CSVExporter {
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
     CSVExporter.getInstance().exportPatientExpenses(person, cutOff.getTimeInMillis(), time);
-    Calendar now = Calendar.getInstance();
-    Calendar birthDay = Calendar.getInstance();
-    birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
-    String[] gbdMetrics = { QualityOfLifeModule.QALY, QualityOfLifeModule.DALY,
-        QualityOfLifeModule.QOLS };
-    String unit = null;
-    for (String score : gbdMetrics) {
-      if (score.equals(QualityOfLifeModule.QOLS)) {
-        unit = "{score}";
-      } else {
-        // years in UCUM is "a" for Latin "Annus"
-        unit = "a";
-      }
-      @SuppressWarnings("unchecked")
-      Map<Integer, Double> scores = (Map<Integer, Double>) person.attributes.get(score);
-      for (Integer year : scores.keySet()) {
-        birthDay.set(Calendar.YEAR, year);
-        if (birthDay.after(cutOff) && birthDay.before(now)) {
-          Observation obs = person.record.new Observation(
-              birthDay.getTimeInMillis(), score, scores.get(year));
-          obs.unit = unit;
-          Code code = new Code("GBD", score, score);
-          obs.codes.add(code);
-          exportObservation(personID, "", obs);
-        }
-      }
+    if (Config.getAsBoolean("exporter.csv.include_quality_of_life_observations", true)) {
+      exportQualityOfLifeObservations(personID, person, cutOff);
     }
 
     fileManager.flushWriter(CSVConstants.PATIENT_KEY);
@@ -573,6 +549,47 @@ public class CSVExporter {
 
     s.append(NEWLINE);
     fileManager.writeResourceLine(s.toString(), CSVConstants.ALLERGY_KEY);
+  }
+
+  /**
+   * Write the yearly quality of life metrics (QALY, DALY, and QOLS) computed for a patient to
+   * the observations file. These metrics are calculated after the fact from the patient's
+   * disease burden rather than recorded during care, so they are not linked to any encounter
+   * and their ENCOUNTER column is left empty.
+   *
+   * @param personID ID of the person
+   * @param person Person to export
+   * @param cutOff Calendar for the start of the exported history; earlier years are skipped
+   */
+  private void exportQualityOfLifeObservations(String personID, Person person,
+      Calendar cutOff) throws IOException {
+    Calendar now = Calendar.getInstance();
+    Calendar birthDay = Calendar.getInstance();
+    birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
+    String[] gbdMetrics = { QualityOfLifeModule.QALY, QualityOfLifeModule.DALY,
+        QualityOfLifeModule.QOLS };
+    String unit;
+    for (String score : gbdMetrics) {
+      if (score.equals(QualityOfLifeModule.QOLS)) {
+        unit = "{score}";
+      } else {
+        // years in UCUM is "a" for Latin "Annus"
+        unit = "a";
+      }
+      @SuppressWarnings("unchecked")
+      Map<Integer, Double> scores = (Map<Integer, Double>) person.attributes.get(score);
+      for (Integer year : scores.keySet()) {
+        birthDay.set(Calendar.YEAR, year);
+        if (birthDay.after(cutOff) && birthDay.before(now)) {
+          Observation obs = person.record.new Observation(
+              birthDay.getTimeInMillis(), score, scores.get(year));
+          obs.unit = unit;
+          Code code = new Code("GBD", score, score);
+          obs.codes.add(code);
+          exportObservation(personID, "", obs);
+        }
+      }
+    }
   }
 
   /**
