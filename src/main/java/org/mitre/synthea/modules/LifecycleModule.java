@@ -866,9 +866,14 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.UREA_NITROGEN, person.rand(UREA_NITROGEN_RANGE));
     person.setVitalSign(VitalSign.CALCIUM, person.rand(CALCIUM_RANGE));
 
-    index = Math.min(index, 2); // note this continues from the index logic above
-
-    double glucose = person.rand(GLUCOSE_RANGE[index], GLUCOSE_RANGE[index + 1]);
+    // Derive serum glucose from HbA1c so the two values are consistent, using the
+    // regression from the ADAG study: average glucose (mg/dL) = 28.7 x A1C - 46.7
+    // -- Nathan et al., Diabetes Care 2008;31(8):1473-8. https://doi.org/10.2337/dc08-0545
+    // The standard deviation approximates the ADAG 95% prediction interval of ~30 mg/dL.
+    // Note this uses the post-medication HbA1c, so treatment lowers glucose as well.
+    double glucose = 28.7 * hbA1c - 46.7 + 15 * person.randGaussian();
+    // keep glucose at or above the configured normal minimum
+    glucose = Math.max(glucose, GLUCOSE_RANGE[0]);
     person.setVitalSign(VitalSign.GLUCOSE, glucose);
 
     person.setVitalSign(VitalSign.CHLORIDE, person.rand(CHLORIDE_RANGE));
