@@ -1408,8 +1408,8 @@ public class FhirR4 {
       }
     } else if (encounter.provider != null) {
       String providerUrl = TRANSACTION_BUNDLE
-          ? ExportHelper.buildFhirSearchUrl("Location",
-                    encounter.provider.getResourceLocationID())
+          ? ExportHelper.buildFhirSearchUrl("Organization",
+                    encounter.provider.getResourceID())
           : findProviderUrl(encounter.provider, bundle);
       if (providerUrl != null) {
         providerReference = new Reference(providerUrl);

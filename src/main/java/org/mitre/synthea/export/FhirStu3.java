@@ -1409,7 +1409,8 @@ public class FhirStu3 {
       // eob.setProvider(new Reference().setReference(practitionerFullUrl));
       // Instead, we'll create the BlueButton 2.0 reference via identifier...
       Identifier identifier = new Identifier();
-      identifier.setValue(encounter.clinician.getResourceID());
+      identifier.setSystem("http://hl7.org/fhir/sid/us-npi");
+      identifier.setValue(encounter.clinician.npi);
       eob.setProvider(new Reference().setIdentifier(identifier));
     } else {
       Identifier identifier = new Identifier();
