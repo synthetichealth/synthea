@@ -1080,7 +1080,11 @@ public class CSVExporter {
     // START_YEAR
     s.append(iso8601Timestamp(planRecord.getStartTime())).append(',');
     // END_YEAR
-    s.append(iso8601Timestamp(planRecord.getStopTime())).append(',');
+    if (planRecord.getStopTime() != 0L) {
+      s.append(iso8601Timestamp(planRecord.getStopTime())).append(',');
+    } else {
+      s.append(',');
+    }
     // PAYER_ID
     s.append(planRecord.getPlan().getPayer().getResourceID()).append(',');
     // SECONDARY_PAYER_ID
@@ -1628,7 +1632,11 @@ public class CSVExporter {
       // FROMDATE
       s.append(iso8601Timestamp(start)).append(',');
       // TODATE
-      s.append(iso8601Timestamp(stop)).append(',');
+      if (stop != 0L) {
+        s.append(iso8601Timestamp(stop)).append(',');
+      } else {
+        s.append(',');
+      }
       // PLACEOFSERVICE
       s.append(organizationId).append(',');
       // PROCEDURECODE
