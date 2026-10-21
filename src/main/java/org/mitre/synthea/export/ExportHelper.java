@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -99,10 +100,13 @@ public abstract class ExportHelper {
     DecimalFormat df;
 
     if (sampledData.decimalFormat != null) {
-      df = new DecimalFormat(sampledData.decimalFormat);
+      df = new DecimalFormat(sampledData.decimalFormat,
+          DecimalFormatSymbols.getInstance(Locale.US));
     } else {
-      df = new DecimalFormat();
+      df = new DecimalFormat("0.###", DecimalFormatSymbols.getInstance(Locale.US));
     }
+    // FHIR SampledData values use decimal points and cannot contain grouping separators.
+    df.setGroupingUsed(false);
 
     // Build the data string from all list values
     StringBuilder sb = new StringBuilder();
