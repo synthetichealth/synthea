@@ -282,7 +282,7 @@ public class HealthRecord implements Serializable {
     public void mergeReasonList(List<Code> otherCodes) {
       otherCodes.forEach(oc -> {
         if (! this.containsReason(oc.code, oc.system)) {
-          this.codes.add(oc);
+          this.reasons.add(oc);
         }
       });
     }
