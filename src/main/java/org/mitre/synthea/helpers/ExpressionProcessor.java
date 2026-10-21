@@ -146,13 +146,23 @@ public class ExpressionProcessor {
   }
 
   /**
-   * Evaluates the expression with the given numeric parameters, returning the result
-   * as a BigDecimal.
-   * @param params numeric parameters as a map of variable names to values
+   * Evaluates the expression with the given parameters, returning the numeric result
+   * as a BigDecimal. Integer and Long results are converted without losing precision.
+   * @param params parameters as a map of variable names to values
    * @return evaluation result
+   * @throws IllegalArgumentException if the expression does not return a number
    */
   public BigDecimal evaluateNumeric(Map<String,Object> params) {
-    return (BigDecimal) evaluate(params);
+    Object result = evaluate(params);
+    if (result instanceof BigDecimal) {
+      return (BigDecimal) result;
+    }
+    if (result instanceof Number) {
+      return new BigDecimal(result.toString());
+    }
+    throw new IllegalArgumentException("Expression \"" + expression
+        + "\" must evaluate to a number, but returned "
+        + (result == null ? "null" : result.getClass().getSimpleName()) + ".");
   }
 
   /**
