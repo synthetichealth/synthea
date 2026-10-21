@@ -201,7 +201,7 @@ public class CSVFileManager {
 
     OutputStreamWriter writer =
         new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
-    if (!append) {
+    if (!appendToThisFile) {
       writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
     }
 
@@ -236,7 +236,7 @@ public class CSVFileManager {
 
     OutputStreamWriter writer =
         new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
-    if (!append || resourceCount % maxLinesPerFile == 1) {
+    if (!appendToThisFile) {
       writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
     }
 
@@ -302,7 +302,7 @@ public class CSVFileManager {
 
     OutputStreamWriter writer = writerMap.get(resourceKey);
 
-    if (resourceCount % maxLinesPerFile == 1) {
+    if (writer == null || (resourceCount - 1) % maxLinesPerFile == 0) {
       if (writer != null) {
         writer.flush();
       }
