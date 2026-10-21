@@ -771,7 +771,8 @@ public abstract class State implements Cloneable, Serializable {
       if (value instanceof Double) {
         double doubleVal = (double) value;
 
-        if (doubleVal == Math.rint(doubleVal)) {
+        if (doubleVal == Math.rint(doubleVal)
+            && doubleVal >= Integer.MIN_VALUE && doubleVal <= Integer.MAX_VALUE) {
           value = (int) doubleVal;
         }
       }
