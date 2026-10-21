@@ -166,7 +166,7 @@ public class TextExporter {
    */
   public static void exportAll(Person person, String fileTag, long time) throws IOException {
 
-    List<Encounter> encounters = person.record.encounters;
+    List<Encounter> encounters = new ArrayList<>(person.record.encounters);
     List<Entry> conditions = new ArrayList<>();
     List<Entry> allergies = new ArrayList<>();
     List<Report> reports = new ArrayList<>();
@@ -285,7 +285,7 @@ public class TextExporter {
    * @throws IOException if any error occurs writing to the standard export location
    */
   public static void exportEncounter(Person person, long time) throws IOException {
-    List<Encounter> encounters = person.record.encounters;
+    List<Encounter> encounters = new ArrayList<>(person.record.encounters);
     List<Entry> conditions = new ArrayList<>();
     List<Entry> allergies = new ArrayList<>();
     List<Medication> medications = new ArrayList<>();
