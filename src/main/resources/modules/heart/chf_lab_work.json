@@ -4,6 +4,8 @@
   "remarks": [
     "This submodule captures all the initial lab work based on the STS data dictionary and standard of care.",
     "",
+    "The high-sensitivity troponin I baseline is modeled as 0-40 pg/mL (equivalent to 0-0.04 ng/mL). This is a synthetic generation range, not an assay-specific diagnostic or reference limit.",
+    "",
     "- CBC",
     "- CMP",
     "- Magnesium ",
@@ -543,7 +545,7 @@
           ],
           "range": {
             "low": 0,
-            "high": 0.04
+            "high": 40
           }
         }
       ],
