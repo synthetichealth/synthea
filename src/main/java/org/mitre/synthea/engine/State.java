@@ -2059,8 +2059,9 @@ public abstract class State implements Cloneable, Serializable {
           sampledData.setSeriesData(person);
           value = new SampledData(sampledData);
         } else if (attachment != null) {
-          attachment.process(person);
-          value = new Attachment(attachment);
+          Attachment personAttachment = new Attachment(attachment);
+          personAttachment.process(person);
+          value = personAttachment;
         }
       }
 
