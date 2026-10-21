@@ -100,7 +100,7 @@ public class PreGenerator implements Serializable {
       if (argClass.isEnum()) {
         objArgs.add(Enum.valueOf((Class<Enum>) argClass, arg.getValue()));
       } else if (String.class == argClass) {
-        objArgs.add(args.get(i));
+        objArgs.add(arg.getValue());
       } else {
         objArgs.add(Utilities.strToObject(argClass, arg.getValue()));
       }
