@@ -71,10 +71,10 @@ public class CCDAExporter {
     try {
       person.coverage.getPlanRecordAtTime(time);
     } catch (RuntimeException e) {
-      // If requesting the current plan at export time
-      // causes an exception, then we fake an insurance
-      // plan for the purposes of creating the super encounter.
-      person.coverage.setPlanToNoInsurance(time);
+      // If no plan covers the export time (e.g. the last plan's stop == nextEnrollmentPeriod
+      // which can be <= time when the simulation ended just before the next enrollment period),
+      // extend the last plan's stop to cover the export time.
+      person.coverage.getLastPlanRecord().updateStopTime(time + 1);
     }
     // create a super encounter... this makes it easier to access
     // all the Allergies (for example) in the export templates,

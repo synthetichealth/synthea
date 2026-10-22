@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.geography.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -175,6 +177,61 @@ public class CCDAExporterTest {
 
     assertFalse(toExport.coverage.getPlanHistory().stream()
         .anyMatch(planRecord -> planRecord.getStopTime() == Long.MAX_VALUE));
+  }
+
+  /**
+   * Verifies C-CDA allergy severity structure per spec (2.16.840.1.113883.10.20.22.4.7):
+   * - Each reaction's severity (4.8) is nested inside its reaction observation (4.9).
+   * - The allergy-level severity (4.8) appears exactly once as a direct child of the allergy
+   *   observation (4.7), characterizing the overall allergy.
+   */
+  @Test
+  public void testAllergyReactionSeverityNesting() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    TestHelper.loadTestProperties();
+
+    Person person = TestHelper.getGeneratedPeople()[0];
+
+    // Build an allergy with one reaction+severity and a derived allergy-level severity.
+    HealthRecord.Allergy allergy = person.record.new Allergy(0L, "test_penicillin_allergy");
+    allergy.codes.add(new HealthRecord.Code(
+        "http://www.nlm.nih.gov/research/umls/rxnorm", "723", "Amoxicillin"));
+    allergy.allergyType = "allergy";
+    allergy.category = "medication";
+    allergy.reactions = new HashMap<>();
+    allergy.reactions.put(
+        new HealthRecord.Code("http://snomed.info/sct", "247472004", "Wheal (finding)"),
+        HealthRecord.ReactionSeverity.MODERATE);
+    allergy.severity = HealthRecord.ReactionSeverity.MODERATE;
+    person.record.encounters.get(0).allergies.add(allergy);
+
+    String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
+
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    Document doc = builder.parse(IOUtils.toInputStream(ccdaXml, "UTF-8"));
+    XPath xpath = XPathFactory.newInstance().newXPath();
+
+    // Reaction-level severity must be nested inside its reaction observation (4.9).
+    String reactionSeverityPath =
+        "//observation[templateId/@root='2.16.840.1.113883.10.20.22.4.9']"
+        + "/entryRelationship[@typeCode='SUBJ']"
+        + "/observation[templateId/@root='2.16.840.1.113883.10.20.22.4.8']";
+    NodeList reactionSeverities =
+        (NodeList) xpath.evaluate(reactionSeverityPath, doc, XPathConstants.NODESET);
+    assertTrue("Reaction severity must be nested inside its reaction observation",
+        reactionSeverities.getLength() > 0);
+
+    // Allergy-level severity must appear exactly once as a direct child of the allergy obs (4.7).
+    String allergySeverityPath =
+        "//observation[templateId/@root='2.16.840.1.113883.10.20.22.4.7']"
+        + "/entryRelationship[@typeCode='SUBJ'][@inversionInd='true']"
+        + "/observation[templateId/@root='2.16.840.1.113883.10.20.22.4.8']";
+    NodeList allergySeverities =
+        (NodeList) xpath.evaluate(allergySeverityPath, doc, XPathConstants.NODESET);
+    assertEquals("Allergy-level severity must appear exactly once under the allergy observation",
+        1, allergySeverities.getLength());
   }
 
   @Ignore("Manual test to debug failed CCDA exports.")

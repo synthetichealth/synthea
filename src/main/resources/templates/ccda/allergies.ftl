@@ -85,8 +85,22 @@
                 </effectiveTime>
                 <value xsi:type="CD" code="${reaction.code}" codeSystem="2.16.840.1.113883.6.96"
                        codeSystemName="SNOMED CT" displayName="${reaction.display}"/>
+                <entryRelationship typeCode="SUBJ" inversionInd="true">
+                  <observation classCode="OBS" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09" />
+                    <templateId root="2.16.840.1.113883.10.20.22.4.8" />
+                    <code code="SEV" displayName="Severity Observation"
+                          codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" />
+                    <statusCode code="completed" />
+                    <value xsi:type="CD" code="${severity.code}" displayName="${severity.display}"
+                           codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                  </observation>
+                </entryRelationship>
               </observation>
             </entryRelationship>
+            </#list>
+            </#if>
+            <#if entry.severity??>
             <entryRelationship typeCode="SUBJ" inversionInd="true">
               <observation classCode="OBS" moodCode="EVN">
                 <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09" />
@@ -94,11 +108,10 @@
                 <code code="SEV" displayName="Severity Observation"
                       codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" />
                 <statusCode code="completed" />
-                <value xsi:type="CD" code="${severity.code}" displayName="${severity.display}"
+                <value xsi:type="CD" code="${entry.severity.code}" displayName="${entry.severity.display}"
                        codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
               </observation>
             </entryRelationship>
-            </#list>
             </#if>
           </observation>
         </entryRelationship>
