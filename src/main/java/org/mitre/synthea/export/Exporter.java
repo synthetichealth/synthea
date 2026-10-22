@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TreeMap;
@@ -39,6 +40,7 @@ import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.export.rif.CodeMapper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
@@ -48,11 +50,16 @@ import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class Exporter {
+
+  /** Code system key used for ICD-10-CM translations. */
+  static final String ICD10_CM_CODE_SYSTEM = "ICD10-CM";
 
   /**
    * Supported FHIR versions.
@@ -119,9 +126,13 @@ public abstract class Exporter {
             .collect(Collectors.toList());
     codeSystemProperties.forEach(codeSystemProperty -> {
       String codeSystem = codeSystemProperty.strip().replace(
-              "exporter.code_map.", "").toUpperCase();
+              "exporter.code_map.", "").toUpperCase(Locale.ROOT);
       String[] resources = Config.get(codeSystemProperty).split(",");
       for (String resource: resources) {
+        resource = resource.trim();
+        if (resource.isEmpty()) {
+          continue;
+        }
         CodeMapper mapper = new CodeMapper(resource);
         if (codeMappers.containsKey(codeSystem)) {
           codeMappers.get(codeSystem).merge(mapper);
@@ -150,6 +161,26 @@ public abstract class Exporter {
       return Collections.emptyMap();
     }
     return codeMappers;
+  }
+
+  /**
+   * Select a condition translation once with the person's RNG and reuse it across exports.
+   *
+   * @param condition the condition being exported
+   * @param codeSystem the target code system
+   * @param rand the person's random number generator
+   * @return the mapped code, or null when no mapping exists
+   */
+  static Code mapConditionCode(Entry condition, String codeSystem, RandomNumberGenerator rand) {
+    CodeMapper mapper = getCodeMapper(codeSystem);
+    if (mapper == null) {
+      return null;
+    }
+    return condition.getOrCreateMappedCode(codeSystem, () -> {
+      Map.Entry<String, String> mapped =
+          mapper.mapToCodeAndDescription(condition.codes.get(0), rand);
+      return mapped == null ? null : new Code(codeSystem, mapped.getKey(), mapped.getValue());
+    });
   }
 
   /**

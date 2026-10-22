@@ -1,0 +1,21 @@
+{
+  "38341003": [
+    {
+      "code": "I10",
+      "description": "Essential (primary) hypertension",
+      "weight": "1"
+    }
+  ],
+  "44054006": [
+    {
+      "code": "E11.9",
+      "description": "Type 2 diabetes mellitus without complications",
+      "weight": "0.7"
+    },
+    {
+      "code": "E11.65",
+      "description": "Type 2 diabetes mellitus with hyperglycemia",
+      "weight": "0.3"
+    }
+  ]
+}

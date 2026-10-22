@@ -887,6 +887,34 @@ public class FhirR4 {
     }
   }
 
+  /** Select ICD-10-CM consistently with CSV while preserving other FHIR mappings. */
+  private static void addConditionTranslations(HealthRecord.Entry condition, CodeableConcept to,
+      RandomNumberGenerator rand) {
+    Code from = condition.codes.get(0);
+    for (Map.Entry<String, CodeMapper> entry : Exporter.getCodeMappers().entrySet()) {
+      String codeSystem = entry.getKey();
+      CodeMapper mapper = entry.getValue();
+      if (mapper == null || !mapper.canMap(from)) {
+        continue;
+      }
+      if (Exporter.ICD10_CM_CODE_SYSTEM.equals(codeSystem)) {
+        Code mappedCode = Exporter.mapConditionCode(condition, codeSystem, rand);
+        if (mappedCode != null) {
+          to.addCoding(new Coding().setCode(mappedCode.code)
+              .setDisplay(mappedCode.display)
+              .setSystem(ExportHelper.getSystemURI(codeSystem)));
+        }
+      } else {
+        Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(from, rand);
+        if (mappedCode != null) {
+          to.addCoding(new Coding().setCode(mappedCode.getKey())
+              .setDisplay(mappedCode.getValue())
+              .setSystem(ExportHelper.getSystemURI(codeSystem)));
+        }
+      }
+    }
+  }
+
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
@@ -1649,6 +1677,7 @@ public class FhirR4 {
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
    *
+   * @param rand           source of randomness for non-ICD-10-CM translations
    * @param personEntry    The Entry for the Person
    * @param bundle         The Bundle to add to
    * @param encounterEntry The current Encounter entry
@@ -1681,7 +1710,11 @@ public class FhirR4 {
 
     Code code = condition.codes.get(0);
     CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
-    addTranslation(code, concept, rand);
+    if (Exporter.getCodeMapper(Exporter.ICD10_CM_CODE_SYSTEM) == null) {
+      addTranslation(code, concept, rand);
+    } else {
+      addConditionTranslations(condition, concept, rand);
+    }
     conditionResource.setCode(concept);
 
     CodeableConcept verification = new CodeableConcept();
