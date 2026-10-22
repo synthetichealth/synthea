@@ -1643,9 +1643,61 @@ public abstract class State implements Cloneable, Serializable {
     /** The activities listed in the CarePlan */
     private List<Code> activities;
     /** The goals of the CarePlan */
-    private transient List<JsonObject> goals; // TODO: make this a Component
+    private List<JsonObject> goals; // TODO: make this a Component
     /** The reason for starting this CarePlan */
     private String reason;
+
+    /**
+     * Java Serialization support method to serialize the JsonObject goals which aren't
+     * natively serializable.
+     * @param oos the stream to write to
+     * @throws IOException if the object fails to be serialized
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.writeObject(codes);
+      oos.writeObject(activities);
+      oos.writeObject(reason);
+      if (goals != null) {
+        ArrayList<String> goalsJson = new ArrayList<String>(goals.size());
+        for (JsonObject goal : goals) {
+          goalsJson.add(goal.toString());
+        }
+        oos.writeObject(goalsJson);
+      } else {
+        oos.writeObject(null);
+      }
+    }
+
+    /**
+     * Java Serialization support method to deserialize the JsonObject goals which aren't
+     * natively serializable.
+     * @param ois the stream to read from
+     * @throws ClassNotFoundException if JSON object conversion fails
+     * @throws IOException if the object fails to be deserialized
+     */
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      codes = toCodeList(ois.readObject());
+      activities = toCodeList(ois.readObject());
+      reason = (String) ois.readObject();
+      Object goalsJson = ois.readObject();
+      if (goalsJson instanceof List<?>) {
+        Gson gson = Utilities.getGson();
+        goals = new ArrayList<JsonObject>();
+        for (Object goal : (List<?>) goalsJson) {
+          goals.add(gson.fromJson((String) goal, JsonObject.class));
+        }
+      }
+    }
+
+    private static List<Code> toCodeList(Object obj) {
+      if (obj instanceof List<?>) {
+        return ((List<?>) obj).stream()
+            .filter(item -> item instanceof Code)
+            .map(item -> (Code) item)
+            .collect(Collectors.toList());
+      }
+      return null;
+    }
 
     @Override
     public CarePlanStart clone() {

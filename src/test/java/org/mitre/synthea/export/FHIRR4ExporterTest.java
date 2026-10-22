@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -23,7 +24,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CarePlan;
 import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -585,6 +588,60 @@ public class FHIRR4ExporterTest {
     assertFalse("MedicationRequest found but should not have been included", foundMedications);
     assertFalse("Procedure resource found but should not have been included", foundProcedures);
     assertTrue("Condition resource missing but should have been included", foundConditions);
+  }
+
+  @Test
+  public void testCarePlanGoalExport() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.record.provider = stub;
+
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = p.record.provider;
+
+    Module module = Module.getModuleByPath("hypertension");
+    State plan = module.getState("LifeStyle_Modifications_Hypertension_CarePlan");
+    assertTrue(plan.process(p, 0));
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 0);
+
+    List<String> goalUrls = new ArrayList<String>();
+    List<String> goalDescriptions = new ArrayList<String>();
+    CarePlan carePlan = null;
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof Goal) {
+        goalUrls.add(entry.getFullUrl());
+        goalDescriptions.add(((Goal) entry.getResource()).getDescription().getText());
+      } else if (entry.getResource() instanceof CarePlan) {
+        carePlan = (CarePlan) entry.getResource();
+      }
+    }
+
+    assertEquals(2, goalUrls.size());
+    assertEquals("Maintain blood pressure below 140/90 mm[Hg]", goalDescriptions.get(0));
+    assertEquals("Reduce sodium intake to no more than 2,400 mg/day", goalDescriptions.get(1));
+    assertNotNull(carePlan);
+    List<String> carePlanGoals = carePlan.getGoal().stream()
+        .map(goal -> goal.getReference()).collect(Collectors.toList());
+    assertEquals(goalUrls, carePlanGoals);
   }
 
   @Test
