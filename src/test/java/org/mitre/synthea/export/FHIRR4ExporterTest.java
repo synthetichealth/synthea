@@ -590,12 +590,7 @@ public class FHIRR4ExporterTest {
     assertTrue("Condition resource missing but should have been included", foundConditions);
   }
 
-  @Test
-  public void testCarePlanGoalExport() throws Exception {
-    Config.set("exporter.fhir.included_resources", "");
-    Config.set("exporter.fhir.excluded_resources", "");
-    FhirR4.reloadIncludeExclude();
-
+  private static Person carePlanGoalPerson() throws Exception {
     Person p = new Person(0L);
     p.attributes.put(Person.RACE, "dummy value to prevent NPE");
     p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
@@ -620,28 +615,72 @@ public class FHIRR4ExporterTest {
     Module module = Module.getModuleByPath("hypertension");
     State plan = module.getState("LifeStyle_Modifications_Hypertension_CarePlan");
     assertTrue(plan.process(p, 0));
+    return p;
+  }
 
-    Bundle bundle = FhirR4.convertToFHIR(p, 0);
+  private static List<String> goalUrls(Bundle bundle) {
+    return bundle.getEntry().stream()
+        .filter(entry -> entry.getResource() instanceof Goal)
+        .map(entry -> entry.getFullUrl()).collect(Collectors.toList());
+  }
 
-    List<String> goalUrls = new ArrayList<String>();
-    List<String> goalDescriptions = new ArrayList<String>();
-    CarePlan carePlan = null;
-    for (BundleEntryComponent entry : bundle.getEntry()) {
-      if (entry.getResource() instanceof Goal) {
-        goalUrls.add(entry.getFullUrl());
-        goalDescriptions.add(((Goal) entry.getResource()).getDescription().getText());
-      } else if (entry.getResource() instanceof CarePlan) {
-        carePlan = (CarePlan) entry.getResource();
-      }
-    }
+  private static CarePlan carePlan(Bundle bundle) {
+    return bundle.getEntry().stream()
+        .filter(entry -> entry.getResource() instanceof CarePlan)
+        .map(entry -> (CarePlan) entry.getResource()).findFirst().orElse(null);
+  }
 
-    assertEquals(2, goalUrls.size());
+  @Test
+  public void testCarePlanGoalExport() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Bundle bundle = FhirR4.convertToFHIR(carePlanGoalPerson(), 0);
+
+    List<String> goalDescriptions = bundle.getEntry().stream()
+        .filter(entry -> entry.getResource() instanceof Goal)
+        .map(entry -> ((Goal) entry.getResource()).getDescription().getText())
+        .collect(Collectors.toList());
+    assertEquals(2, goalDescriptions.size());
     assertEquals("Maintain blood pressure below 140/90 mm[Hg]", goalDescriptions.get(0));
     assertEquals("Reduce sodium intake to no more than 2,400 mg/day", goalDescriptions.get(1));
+    CarePlan carePlan = carePlan(bundle);
     assertNotNull(carePlan);
     List<String> carePlanGoals = carePlan.getGoal().stream()
         .map(goal -> goal.getReference()).collect(Collectors.toList());
-    assertEquals(goalUrls, carePlanGoals);
+    assertEquals(goalUrls(bundle), carePlanGoals);
+  }
+
+  @Test
+  public void testCarePlanGoalIdsAreStable() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = carePlanGoalPerson();
+    List<String> first = goalUrls(FhirR4.convertToFHIR(p, 0));
+    List<String> second = goalUrls(FhirR4.convertToFHIR(p, 0));
+    assertEquals(2, first.size());
+    assertEquals(first, second);
+  }
+
+  @Test
+  public void testCarePlanGoalExcluded() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "Goal");
+    FhirR4.reloadIncludeExclude();
+    try {
+      Bundle bundle = FhirR4.convertToFHIR(carePlanGoalPerson(), 0);
+
+      assertTrue(goalUrls(bundle).isEmpty());
+      CarePlan carePlan = carePlan(bundle);
+      assertNotNull(carePlan);
+      assertTrue(carePlan.getGoal().isEmpty());
+    } finally {
+      Config.set("exporter.fhir.excluded_resources", "");
+      FhirR4.reloadIncludeExclude();
+    }
   }
 
   @Test

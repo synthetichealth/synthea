@@ -2021,8 +2021,10 @@ public class FhirStu3 {
       }
     }
 
+    int goalIndex = 0;
     for (JsonObject goal : carePlan.goals) {
-      BundleEntryComponent goalEntry = caregoal(person, bundle, carePlan.start, goalStatus, goal);
+      BundleEntryComponent goalEntry =
+          caregoal(person, bundle, carePlan, goalIndex++, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
@@ -2331,7 +2333,8 @@ public class FhirStu3 {
    * @return The added Entry
    */
   private static BundleEntryComponent caregoal(
-      Person person, Bundle bundle, long carePlanStart, GoalStatus goalStatus, JsonObject goal) {
+      Person person, Bundle bundle, CarePlan carePlan, int goalIndex, GoalStatus goalStatus,
+      JsonObject goal) {
 
     org.hl7.fhir.dstu3.model.Goal goalResource =
         new org.hl7.fhir.dstu3.model.Goal();
@@ -2398,10 +2401,8 @@ public class FhirStu3 {
       }
     }
 
-    // note: this ID logic assumes the person will not have 2 careplans
-    // that start at the same timestep with the same description
-    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
-        "CareGoal for " + goalResource.getDescription());
+    String resourceID = ExportHelper.buildUUID(person, carePlan.start,
+        "CareGoal " + goalIndex + " for CarePlan " + carePlan.uuid);
 
     return newEntry(bundle, goalResource, resourceID);
   }

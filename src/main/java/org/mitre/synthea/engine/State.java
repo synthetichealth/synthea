@@ -1647,12 +1647,7 @@ public abstract class State implements Cloneable, Serializable {
     /** The reason for starting this CarePlan */
     private String reason;
 
-    /**
-     * Java Serialization support method to serialize the JsonObject goals which aren't
-     * natively serializable.
-     * @param oos the stream to write to
-     * @throws IOException if the object fails to be serialized
-     */
+    // JsonObject isn't Serializable, so goals are written as JSON strings.
     private void writeObject(ObjectOutputStream oos) throws IOException {
       oos.writeObject(codes);
       oos.writeObject(activities);
@@ -1668,13 +1663,7 @@ public abstract class State implements Cloneable, Serializable {
       }
     }
 
-    /**
-     * Java Serialization support method to deserialize the JsonObject goals which aren't
-     * natively serializable.
-     * @param ois the stream to read from
-     * @throws ClassNotFoundException if JSON object conversion fails
-     * @throws IOException if the object fails to be deserialized
-     */
+    // Reads the fields in the same order writeObject writes them.
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
       codes = toCodeList(ois.readObject());
       activities = toCodeList(ois.readObject());
