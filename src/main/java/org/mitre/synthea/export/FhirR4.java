@@ -544,6 +544,21 @@ public class FhirR4 {
   }
 
   /**
+   * Convert the given FHIR Bundle into a JSON String.
+   *
+   * @param fhirBundle
+   *      FHIR Bundle to convert to JSON
+   * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
+   *         record
+   */
+  public static String convertToFHIRJson(Bundle fhirBundle) {
+    Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
+    String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(pretty)
+            .encodeResourceToString(fhirBundle);
+    return bundleJson;
+  }
+
+  /**
    * Map the given Person to a FHIR Patient resource, and add it to the given Bundle.
    *
    * @param person   The Person

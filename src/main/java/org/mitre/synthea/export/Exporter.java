@@ -1,34 +1,10 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.parser.IParser;
 import com.google.common.base.Strings;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.TreeMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.mitre.synthea.engine.Generator;
@@ -52,6 +28,18 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 public abstract class Exporter {
 
   /**
@@ -60,7 +48,8 @@ public abstract class Exporter {
   public enum SupportedFhirVersion {
     DSTU2,
     STU3,
-    R4
+    R4,
+    R5
   }
 
   private static final List<Pair<Person, Long>> deferredExports =
@@ -369,7 +358,31 @@ public abstract class Exporter {
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }
-      FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
+      if (Config.getAsBoolean("exporter.groups.fhir.export")) {
+        FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
+      }
+      if (Config.getAsBoolean("exporter.groups.fhir_r5.export")) {
+        FhirGroupExporterR5.addPatient((String) person.attributes.get(Person.ID));
+      }
+    }
+    if (Config.getAsBoolean("exporter.fhir_r5.export")) {
+      File outDirectory = getOutputFolder("fhir_r5", person);
+      org.hl7.fhir.r5.model.Bundle bundle = FhirR5.convertToFHIR(person, stopTime);
+      IParser parser = FhirR5.getContext().newJsonParser();
+      if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
+        parser.setPrettyPrint(false);
+        for (org.hl7.fhir.r5.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        parser.setPrettyPrint(true);
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+        writeNewFile(outFilePath, bundleJson);
+      }
     }
     if (Config.getAsBoolean("exporter.ccda.export")) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
@@ -456,15 +469,31 @@ public abstract class Exporter {
 
     if (options.isQueueEnabled()) {
       try {
+        final String fhirJson;
         switch (options.queuedFhirVersion()) {
           case DSTU2:
-            options.recordQueue.put(FhirDstu2.convertToFHIRJson(person, stopTime));
+            Bundle fhirBundleDstu2 = FhirDstu2.convertToFHIR(person, stopTime);
+            BundleExporter.export(fhirBundleDstu2, options.queuedFhirVersion());
+            fhirJson = FhirDstu2.convertToFHIRJson(fhirBundleDstu2);
+            options.recordQueue.put(fhirJson);
             break;
           case STU3:
-            options.recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
+            org.hl7.fhir.dstu3.model.Bundle fhirBundleStu3 = FhirStu3.convertToFHIR(person, stopTime);
+            BundleExporter.export(fhirBundleStu3, options.queuedFhirVersion());
+            fhirJson = FhirStu3.convertToFHIRJson(fhirBundleStu3);
+            options.recordQueue.put(fhirJson);
+            break;
+          case R5:
+            org.hl7.fhir.r5.model.Bundle fhirBundleR5 = FhirR5.convertToFHIR(person, stopTime);
+            BundleExporter.export(fhirBundleR5, options.queuedFhirVersion());
+            fhirJson = FhirR5.convertToFHIRJson(fhirBundleR5);
+            options.recordQueue.put(fhirJson);
             break;
           default:
-            options.recordQueue.put(FhirR4.convertToFHIRJson(person, stopTime));
+            org.hl7.fhir.r4.model.Bundle fhirBundleR4 = FhirR4.convertToFHIR(person, stopTime);
+            BundleExporter.export(fhirBundleR4, options.queuedFhirVersion());
+            fhirJson = FhirR4.convertToFHIRJson(fhirBundleR4);
+            options.recordQueue.put(fhirJson);
             break;
         }
       } catch (InterruptedException ie) {
@@ -561,17 +590,14 @@ public abstract class Exporter {
    */
   public static void runPostCompletionExports(Generator generator, ExporterRuntimeOptions options) {
 
-    if (options.deferExports) {
-      ExporterRuntimeOptions nonDeferredOptions = new ExporterRuntimeOptions(options);
-      nonDeferredOptions.deferExports = false;
-      for (Pair<Person, Long> entry: deferredExports) {
-        export(entry.getLeft(), entry.getRight(), nonDeferredOptions);
-      }
-      deferredExports.clear();
+    try {
+      FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
     try {
-      FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
+      FhirGroupExporterR5.exportAndSave(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -583,7 +609,19 @@ public abstract class Exporter {
     }
 
     try {
+      HospitalExporterR5.export(generator.getRandomizer(), generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
       FhirPractitionerExporterR4.export(generator.getRandomizer(), generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
+      FhirPractitionerExporterR5.export(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -647,6 +685,15 @@ public abstract class Exporter {
 
     if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
       TransitionMetrics.exportMetrics();
+    }
+
+    if (options.deferExports) {
+      ExporterRuntimeOptions nonDeferredOptions = new ExporterRuntimeOptions(options);
+      nonDeferredOptions.deferExports = false;
+      for (Pair<Person, Long> entry: deferredExports) {
+        export(entry.getLeft(), entry.getRight(), nonDeferredOptions);
+      }
+      deferredExports.clear();
     }
 
     if (Config.getAsBoolean("exporter.fhir.bulk_data")) {

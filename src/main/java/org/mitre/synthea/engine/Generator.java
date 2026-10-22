@@ -376,6 +376,11 @@ public class Generator {
     return modules.stream().map(m -> m.name).collect(Collectors.toList());
   }
 
+  public void run(int population) {
+    options.population = population;
+    run();
+  }
+
   /**
    * Generate the population, using the currently set configuration settings.
    */

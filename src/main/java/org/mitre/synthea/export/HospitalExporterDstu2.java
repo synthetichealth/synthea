@@ -44,6 +44,8 @@ public abstract class HospitalExporterDstu2 {
         }
       }
 
+      BundleExporter.export(bundle, Exporter.SupportedFhirVersion.DSTU2);
+
       boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
       File outputFolder = Exporter.getOutputFolder("fhir_dstu2", null);
       IParser parser = FhirDstu2.getContext().newJsonParser();

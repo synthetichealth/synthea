@@ -70,16 +70,19 @@ dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   implementation 'com.google.code.gson:gson:2.9.0'
   implementation 'com.jayway.jsonpath:json-path:2.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r5:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:8.12.1'
 
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:6.1.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-caching-caffeine:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r5:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:8.12.1'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:8.12.1'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.31'
 
@@ -154,6 +157,7 @@ dependencies {
   testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.2'
   testImplementation 'com.helger:ph-schematron:5.6.5'
   testImplementation 'com.helger:ph-commons:9.5.5'
+  testRuntimeOnly 'com.helger:ph-schematron:5.6.5'
   testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
 }
 

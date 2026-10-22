@@ -307,7 +307,17 @@ public class App {
     if (Config.getAsBoolean("exporter.fhir.transaction_bundle")
             && ! Config.getAsBoolean("exporter.practitioner.fhir.export")
             && ! Config.getAsBoolean("exporter.hospital.fhir.export")) {
-      System.out.println("Warning: Synthea is configured to export FHIR transaction bundles "
+      System.out.println("Warning: Synthea is configured to export FHIR R4 transaction bundles "
+              + "for generated patients but not to export the practitioners and organizations "
+              + "that the patient bundle entries will reference. "
+              + "See https://github.com/synthetichealth/synthea/wiki/FHIR-Transaction-Bundles "
+              + "for more information."
+      );
+    }
+    if (Config.getAsBoolean("exporter.fhir.transaction_bundle")
+            && ! Config.getAsBoolean("exporter.practitioner.fhir_r5.export")
+            && ! Config.getAsBoolean("exporter.hospital.fhir_r5.export")) {
+      System.out.println("Warning: Synthea is configured to export FHIR R5 transaction bundles "
               + "for generated patients but not to export the practitioners and organizations "
               + "that the patient bundle entries will reference. "
               + "See https://github.com/synthetichealth/synthea/wiki/FHIR-Transaction-Bundles "

@@ -5,8 +5,6 @@ import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
-import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
-import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 
@@ -21,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public class ValidationResources {
   private FhirValidator validatorSTU3;
   private FhirValidator validatorR4;
+  private FhirValidator validatorR5;
   static final Logger logger = LoggerFactory.getLogger(ValidationResources.class);
 
   private ValidationResources() {
@@ -48,16 +47,26 @@ public class ValidationResources {
     return vr;
   }
 
+  /**
+   * Create FHIR context, validator, and validation chain for FHIR R5.
+   * US Core 3, 4, 5, and 6 support is optional; only one may be loaded at a time.
+   *
+   * @param usCoreVersion The version of US Core definitions to load
+   */
+  public static ValidationResources forR5(FhirR5.USCoreVersion usCoreVersion) {
+    ValidationResources vr = new ValidationResources();
+    vr.initializeR5(usCoreVersion);
+    return vr;
+  }
+
   private void initializeSTU3() {
     FhirContext ctx = FhirStu3.getContext();
+    ctx.setValidationSupport(new DefaultProfileValidationSupport(ctx));
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
-    ValidationSupportChain chain = new ValidationSupportChain(
-            new ValidationSupportSTU3(ctx),
-            new DefaultProfileValidationSupport(ctx),
-            new InMemoryTerminologyServerValidationSupport(ctx),
-            new CommonCodeSystemsTerminologyService(ctx)
-    );
+    ValidationSupportChain chain = new ValidationSupportChain();
+    chain.addValidationSupport(new ValidationSupportSTU3(ctx));
+    chain.addValidationSupport(new DefaultProfileValidationSupport(ctx));
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
     instanceValidator.setErrorForUnknownProfiles(false);
@@ -66,18 +75,30 @@ public class ValidationResources {
 
   private void initializeR4(FhirR4.USCoreVersion usCoreVersion) {
     FhirContext ctx = FhirR4.getContext();
+    ctx.setValidationSupport(new DefaultProfileValidationSupport(ctx));
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
-    ValidationSupportChain chain = new ValidationSupportChain(
-            new ValidationSupportR4(ctx, usCoreVersion),
-            new DefaultProfileValidationSupport(ctx),
-            new CommonCodeSystemsTerminologyService(ctx),
-            new InMemoryTerminologyServerValidationSupport(ctx)
-    );
+    ValidationSupportChain chain = new ValidationSupportChain();
+    chain.addValidationSupport(new ValidationSupportR4(ctx, usCoreVersion));
+    chain.addValidationSupport(new DefaultProfileValidationSupport(ctx));
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
     instanceValidator.setErrorForUnknownProfiles(true);
     validatorR4 = ctx.newValidator().registerValidatorModule(instanceValidator);
+  }
+
+  private void initializeR5(FhirR5.USCoreVersion usCoreVersion) {
+    FhirContext ctx = FhirR5.getContext();
+    ctx.setValidationSupport(new DefaultProfileValidationSupport(ctx));
+    FhirInstanceValidator instanceValidator =
+        new FhirInstanceValidator(ctx);
+    ValidationSupportChain chain = new ValidationSupportChain();
+//    chain.addValidationSupport(new ValidationSupportR5(ctx, usCoreVersion));  // the structureDefinitions of R5 are not available
+    chain.addValidationSupport(new DefaultProfileValidationSupport(ctx));
+    instanceValidator.setValidationSupport(chain);
+    instanceValidator.setAnyExtensionsAllowed(true);
+    instanceValidator.setErrorForUnknownProfiles(true);
+    validatorR5 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
   /**
@@ -98,6 +119,17 @@ public class ValidationResources {
    */
   public ValidationResult validateR4(IBaseResource theResource) {
     ValidationResult result = validatorR4.validateWithResult(theResource);
+    logIssues(result);
+    return result;
+  }
+
+  /**
+   * Runs validation on a given resource, logs the results, and returns the response.
+   * @param theResource the resource to be validated
+   * @return ValidationResult
+   */
+  public ValidationResult validateR5(IBaseResource theResource) {
+    ValidationResult result = validatorR5.validateWithResult(theResource);
     logIssues(result);
     return result;
   }

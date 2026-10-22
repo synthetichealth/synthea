@@ -13,12 +13,13 @@ Currently, Synthea<sup>TM</sup> features include:
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
-  - HL7 FHIR (R4, STU3 v3.0.1, and DSTU2 v1.0.2)
+  - HL7 FHIR (R5, R4, STU3 v3.0.1, and DSTU2 v1.0.2)
   - Bulk FHIR in ndjson format (set `exporter.fhir.bulk_data = true` to activate)
   - C-CDA (set `exporter.ccda.export = true` to activate)
   - CSV (set `exporter.csv.export = true` to activate)
   - CPCDS (set `exporter.cpcds.export = true` to activate)
 - Rendering Rules and Disease Modules with Graphviz
+- BundleExporter.class to consume FHIR bundle objects in Java projects before being exported to files
 
 ## Developer Quick Start
 
