@@ -236,6 +236,12 @@ public class Claim implements Serializable {
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
         // Check if the payer has an adjustment
         BigDecimal adjustment = plan.adjustClaim(this, person);
+        // The adjustment is a share of the full cost, but the copay and deductible
+        // may have already been paid out of that cost.
+        if (adjustment.compareTo(remainingBalance) > 0) {
+          adjustment = remainingBalance;
+          this.adjustment = adjustment;
+        }
         remainingBalance = remainingBalance.subtract(adjustment);
       }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
