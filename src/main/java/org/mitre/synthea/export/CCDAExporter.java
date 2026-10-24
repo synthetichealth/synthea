@@ -74,6 +74,9 @@ public class CCDAExporter {
       // If requesting the current plan at export time
       // causes an exception, then we fake an insurance
       // plan for the purposes of creating the super encounter.
+      while (person.coverage.newEnrollmentPeriod(time)) {
+        // Export may occur several enrollment periods after the last plan ended.
+      }
       person.coverage.setPlanToNoInsurance(time);
     }
     // create a super encounter... this makes it easier to access
