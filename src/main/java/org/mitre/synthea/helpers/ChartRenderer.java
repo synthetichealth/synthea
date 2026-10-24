@@ -405,6 +405,7 @@ public class ChartRenderer {
 
   /**
    * Create a JFreeChart object based on values from a MultiTable.
+   * Samples at or after the configured start time and before the end time are plotted.
    *
    * @param table the MultiTable to retrieve values from.
    * @param config the chart configuration options.
@@ -412,6 +413,9 @@ public class ChartRenderer {
    */
   public static JFreeChart createChart(MultiTable table, MultiTableChartConfig config) {
 
+    if (table.getRowCount() == 0) {
+      throw new IllegalArgumentException("Cannot chart simulation results without samples");
+    }
     double lastTimePoint = table.getTimePoint(table.getRowCount() - 1);
 
     // If no chart type was provided, throw an exception
@@ -454,6 +458,12 @@ public class ChartRenderer {
 
     int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
     int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
+    if (startIndex < 0) {
+      startIndex = -startIndex - 1;
+    }
+    if (endIndex < 0) {
+      endIndex = -endIndex - 1;
+    }
 
     // Add the table values to the list of x axis values within the provided time range
     for (int i = startIndex; i < endIndex; i++) {
