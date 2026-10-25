@@ -1209,9 +1209,11 @@ public class HealthRecord implements Serializable {
   public Observation getLatestObservation(String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      Observation obs = encounter.findObservation(type);
-      if (obs != null) {
-        return obs;
+      for (int j = encounter.observations.size() - 1; j >= 0; j--) {
+        Observation obs = encounter.observations.get(j);
+        if (obs.type.equals(type)) {
+          return obs;
+        }
       }
     }
     return null;
