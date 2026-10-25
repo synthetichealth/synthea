@@ -140,6 +140,7 @@ public abstract class Components {
       upperLimit = other.upperLimit;
       attributes = other.attributes;
       series = other.series;
+      decimalFormat = other.decimalFormat;
     }
 
     /**
