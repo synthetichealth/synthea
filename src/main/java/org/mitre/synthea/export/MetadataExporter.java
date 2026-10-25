@@ -96,6 +96,15 @@ public class MetadataExporter {
       metadata.put(configSetting, Config.get(configSetting));
     }
 
+    // Explicit export flags, using the same boolean parsing as the exporters.
+    String[] exportSettings = {
+        "exporter.csv.export", "exporter.fhir.export", "exporter.fhir_stu3.export",
+        "exporter.fhir_dstu2.export", "exporter.fhir.bulk_data"
+    };
+    for (String exportSetting : exportSettings) {
+      metadata.put(exportSetting, Config.getAsBoolean(exportSetting));
+    }
+
     // note that nulls don't get exported, so if gender, age, city, etc, aren't specified
     // then they won't even be in the output file
     String gender = opts.gender;

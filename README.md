@@ -44,7 +44,26 @@ By default, synthea does not generate CCDA, CPCDA, CSV, or Bulk FHIR (ndjson). Y
 adjust this file to activate these features.  See the [wiki](https://github.com/synthetichealth/synthea/wiki)
 for more details, or use our [guided customizer tool](https://synthetichealth.github.io/spt/#/customizer).
 
+### Run metadata
 
+When `exporter.metadata.export` is enabled (the default), Synthea writes run metadata
+to the `metadata` subdirectory of `exporter.baseDirectory`. Alongside the existing
+run ID, seeds, version, counts and run settings, the JSON includes these boolean fields:
+
+| Field | Configuration recorded |
+| --- | --- |
+| `exporter.csv.export` | CSV export enabled |
+| `exporter.fhir.export` | FHIR R4 export enabled |
+| `exporter.fhir_stu3.export` | FHIR STU3 export enabled |
+| `exporter.fhir_dstu2.export` | FHIR DSTU2 export enabled |
+| `exporter.fhir.bulk_data` | Bulk FHIR (NDJSON) mode enabled |
+
+These fields reflect configuration at metadata export time, using the same boolean
+parsing as the exporters. They are not an inventory or guarantee of files produced;
+for example, the bulk flag can be true even when FHIR export is disabled. Existing
+metadata fields and filenames are unchanged, including the string-valued
+`exporter.years_of_history`. Only the listed export flags are added; arbitrary
+configuration values and output paths are not included.
 
 ### Generate Synthetic Patients
 Generating the population one at a time...
