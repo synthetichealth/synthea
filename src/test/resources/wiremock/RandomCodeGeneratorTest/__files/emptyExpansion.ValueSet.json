@@ -1,0 +1,10 @@
+{
+  "resourceType": "ValueSet",
+  "url": "http://example.org/fhir/ValueSet/empty-expansion",
+  "status": "active",
+  "expansion": {
+    "timestamp": "2020-04-16T14:14:38+10:00",
+    "total": 0,
+    "contains": []
+  }
+}
