@@ -1194,6 +1194,7 @@ public class FhirStu3 {
       p.setDate(proc.getDate());
       p.setSequence(proc.getSequence());
       p.setProcedure(proc.getProcedure());
+      eobProc.add(p);
     }
     eob.setProcedure(eobProc);
 
@@ -1209,6 +1210,7 @@ public class FhirStu3 {
       itemComponent.setQuantity(item.getQuantity());
       itemComponent.setUnitPrice(item.getUnitPrice());
       itemComponent.setCareTeamLinkId(item.getCareTeamLinkId());
+      itemComponent.setProcedureLinkId(item.getProcedureLinkId());
 
       if (item.hasService()) {
         itemComponent
