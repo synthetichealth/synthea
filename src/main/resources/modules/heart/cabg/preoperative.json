@@ -4,6 +4,8 @@
   "remarks": [
     "This submodule of Cardiac Surgery models Preoperative Testing. The tests completed depend on the schedule priority of the patient and time available before surgery. Labs and imaging are as follows: ",
     "",
+    "The high-sensitivity troponin I baseline is modeled as 0-40 pg/mL (equivalent to 0-0.04 ng/mL). This is a synthetic generation range, not an assay-specific diagnostic or reference limit.",
+    "",
     "# Priority 1+ =  Common Labs",
     "- CBC",
     "- CMP",
@@ -99,7 +101,7 @@
           ],
           "range": {
             "low": 0,
-            "high": 0.04
+            "high": 40
           }
         }
       ],
