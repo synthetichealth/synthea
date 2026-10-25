@@ -1137,10 +1137,6 @@ public class FhirStu3 {
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
         .setValue(claim.getId());
-    // Hardcoded group id
-    eob.addIdentifier()
-        .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
-        .setValue("99999999999");
 
     eob.setStatus(org.hl7.fhir.dstu3.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
     if (!inpatient && !outpatient) {
