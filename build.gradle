@@ -250,6 +250,12 @@ shadowJar {
   }
 }
 
+shadowJar.doFirst {
+  def versionFile = new File("$projectDir/src/main/resources/version.txt")
+  def currentVersion = versionFile.exists() ? versionFile.text.trim() : "synthea-java"
+  shadowJar.manifest.attributes('Build-Version': currentVersion)
+}
+
 task uberJar() {
 }
 
@@ -315,29 +321,59 @@ task physiology(type: JavaExec) {
 task versionTxt() {
   group = 'Build'
   description = 'Generates a version file.'
+  def versionFile = new File("$projectDir/src/main/resources/version.txt")
+  def fallbackVersion = "synthea-java"
   doLast {
     try {
       // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
       // "git describe" can use tags or fallback to the commit hash if necessary.
       // this assumes (as does the ruby version) that git will always be present when building
       String[] cmd = ["git", "describe", "--tags", "--always"]
-      Process p = Runtime.getRuntime().exec(cmd)
-      p.waitFor()
+      Process p = new ProcessBuilder(cmd).directory(projectDir).redirectErrorStream(true).start()
       def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
-      def file = new File("$projectDir/src/main/resources/version.txt")
-      file.createNewFile()
-      file.text = version
+      int exitCode = p.waitFor()
+      if (exitCode != 0 || version.trim().isEmpty()) {
+        throw new GradleException("git describe exited with code ${exitCode}")
+      }
+      versionFile.text = version.trim() + System.lineSeparator()
     } catch (e) {
-      // ex. if git is not installed, or if we can't write the file for some reason. it's not critical to the execution so don't crash
-      logger.warn("Warning: unable to create version.txt. Generated records will not indicate which version of Synthea was used to create them.")
+      // If git is unavailable, write the same fallback used by Utilities at runtime.
+      logger.warn("Warning: unable to determine the Synthea version; using ${fallbackVersion}.")
       logger.warn(e.getMessage())
+      versionFile.text = fallbackVersion + System.lineSeparator()
     }
   }
 }
 
 compileJava.dependsOn versionTxt
+processResources.dependsOn versionTxt
+shadowJar.dependsOn versionTxt
 uberJar.dependsOn versionTxt
 uberJar.dependsOn shadowJar
+
+task verifyBuildProvenance {
+  group = 'Verification'
+  description = 'Checks that the packaged version and manifest use the same provenance.'
+  dependsOn shadowJar
+  doLast {
+    File jarFile = shadowJar.archiveFile.get().asFile
+    java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)
+    try {
+      String manifestVersion = jar.manifest.mainAttributes.getValue('Build-Version')
+      def versionEntry = jar.getEntry('version.txt')
+      String bundledVersion = versionEntry == null ? null
+          : jar.getInputStream(versionEntry).getText('UTF-8')
+      manifestVersion = manifestVersion == null ? null : manifestVersion.trim()
+      bundledVersion = bundledVersion == null ? null : bundledVersion.trim()
+      if (!manifestVersion || manifestVersion != bundledVersion) {
+        throw new GradleException("Packaged provenance mismatch: manifest=${manifestVersion}, "
+            + "version.txt=${bundledVersion}")
+      }
+    } finally {
+      jar.close()
+    }
+  }
+}
 
 task cleanOutput {
   doLast {
