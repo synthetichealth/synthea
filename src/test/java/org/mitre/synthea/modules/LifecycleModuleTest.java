@@ -2,15 +2,23 @@ package org.mitre.synthea.modules;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.PhysiologyValueGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LifecycleModuleTest {
@@ -141,5 +149,56 @@ public class LifecycleModuleTest {
       }
     }
     Assert.assertTrue("Expected at least some passports to be issued", issued > 0);
+  }
+
+  @Test
+  public void testHbA1cMedicationImpactsDoNotGoBelowPhysiologicalFloor() throws Exception {
+    // regression test for https://github.com/synthetichealth/synthea/issues/1693
+    // stacked diabetes drug impacts drove HbA1c to impossible (even negative) values
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
+
+    Person person = new Person(0L);
+    long time = System.currentTimeMillis();
+    long birth = time - Utilities.convertTime("years", 55);
+    person.attributes.put(Person.BIRTHDATE, birth);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put("diabetes", true);
+    person.coverage.setPlanToNoInsurance(birth);
+    // extend the single no-insurance record so medication claims can be created
+    person.coverage.getLastPlanRecord().updateStopTime(Long.MAX_VALUE);
+    // medicationStart needs a provider for the current encounter
+    Provider provider = new Provider();
+    for (EncounterType type : EncounterType.values()) {
+      provider.servicesProvided.add(type);
+    }
+    RandomNumberGenerator rng = new DefaultRandomNumberGenerator(0L);
+    Clinician doc = new Clinician(0L, rng, 0L, provider);
+    ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
+    clinicians.add(doc);
+    provider.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, clinicians);
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
+    person.setVitalSign(VitalSign.BMI, 26.0);
+
+    // activate every drug in DIABETES_DRUG_HBA1C_IMPACTS
+    long medStart = time - Utilities.convertTime("years", 1);
+    String[] drugCodes = {"860975", "897122", "1373463", "106892", "865098"};
+    for (String code : drugCodes) {
+      person.record.medicationStart(medStart, code, true);
+    }
+
+    java.lang.reflect.Method vitalSignsMethod = LifecycleModule.class.getDeclaredMethod(
+        "calculateVitalSigns", Person.class, long.class);
+    vitalSignsMethod.setAccessible(true);
+    vitalSignsMethod.invoke(null, person, time);
+
+    double hbA1c = person.getVitalSign(VitalSign.BLOOD_GLUCOSE, time);
+    // baseline is 6.6 for BMI 26, impacts total -11.5, so unclamped = -4.9
+    Assert.assertEquals("HbA1c must be clamped to the physiological floor",
+        4.0, hbA1c, 0.0001);
+    Assert.assertTrue("HbA1c must never be below the physiological floor",
+        hbA1c >= 4.0);
   }
 }
