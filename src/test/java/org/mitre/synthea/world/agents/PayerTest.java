@@ -23,6 +23,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility;
 import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
@@ -784,6 +785,44 @@ public class PayerTest {
     assertTrue(person.coverage.getTotalCoverage().equals(Claim.ZERO_CENTS));
     // Person's expenses should equal the total cost of the encounter.
     assertEquals(person.coverage.getTotalOutOfPocketExpenses(), encounter.getCost());
+  }
+
+  @Test
+  public void payerAdjustmentDoesNotExceedRemainingBalance() {
+    Costs.loadCostData();
+    long time = 0L;
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.INCOME, 0);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    healthInsModule.process(person, time);
+    // The payer adjusts the full cost of every claim, after the patient pays the copay.
+    testPrivatePayer1.setPayerAdjustment(new PayerAdjustmentFixed(1.0));
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
+    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
+    HealthRecord healthRecord = new HealthRecord(person);
+    Encounter encounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
+    encounter.provider = new Provider();
+    encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
+    healthRecord.encounterEnd(time, EncounterType.INPATIENT);
+
+    Claim.ClaimEntry totals = encounter.claim.totals;
+    BigDecimal copay = plan.determineCopay(encounter.type, encounter.start);
+    assertTrue(copay.compareTo(Claim.ZERO_CENTS) > 0);
+    assertEquals(0, copay.compareTo(totals.copayPaidByPatient));
+    // The adjustment covers what is left after the copay, not the full cost.
+    BigDecimal expectedAdjustment = encounter.getCost().subtract(totals.copayPaidByPatient);
+    assertTrue("Expected an adjustment of " + expectedAdjustment + " but was "
+        + totals.adjustment, expectedAdjustment.compareTo(totals.adjustment) == 0);
+    BigDecimal resultCost = totals.copayPaidByPatient
+        .add(totals.deductiblePaidByPatient)
+        .add(totals.adjustment)
+        .add(totals.coinsurancePaidByPayer)
+        .add(totals.paidByPayer)
+        .add(totals.paidBySecondaryPayer)
+        .add(totals.patientOutOfPocket);
+    assertTrue("Encounter cost was " + encounter.getCost() + " and the result was "
+        + resultCost + ". Expected equality.", encounter.getCost().compareTo(resultCost) == 0);
   }
 
   @Test
