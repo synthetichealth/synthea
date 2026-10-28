@@ -33,6 +33,10 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -175,6 +179,43 @@ public class CCDAExporterTest {
 
     assertFalse(toExport.coverage.getPlanHistory().stream()
         .anyMatch(planRecord -> planRecord.getStopTime() == Long.MAX_VALUE));
+  }
+
+  @Test
+  public void testResultValuesAreExported() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Config.set("exporter.ccda.export", "true");
+    Person person = TestHelper.getGeneratedPeople()[0];
+    Encounter encounter = person.record.encounters.get(0);
+    long time = encounter.start;
+
+    Observation coded = person.record.new Observation(time, "5778-6",
+        new Code("SNOMED-CT", "371254008", "Brown color (qualifier value)"));
+    coded.codes.add(new Code("LOINC", "5778-6", "Color of Urine"));
+    Observation text = person.record.new Observation(time, "630-4",
+        "Greater than 100,000 colony forming units per volume of specimen");
+    text.codes.add(new Code("LOINC", "630-4", "Bacteria identified in Urine by Culture"));
+    Report report = person.record.new Report(time, "24356-8", List.of(coded, text));
+    report.codes.add(new Code("LOINC", "24356-8", "Urinalysis complete panel - Urine"));
+    encounter.reports.add(report);
+
+    Document doc = parse(CCDAExporter.export(person, System.currentTimeMillis()));
+    XPath xpath = XPathFactory.newInstance().newXPath();
+    String codedValue = "//observation[id/@root=\"" + coded.uuid + "\"]/value";
+    assertEquals("CD", xpath.evaluate(codedValue + "/@*[name()=\"xsi:type\"]", doc));
+    assertEquals("371254008", xpath.evaluate(codedValue + "/@code", doc));
+    assertEquals("2.16.840.1.113883.6.96", xpath.evaluate(codedValue + "/@codeSystem", doc));
+    String textValue = "//observation[id/@root=\"" + text.uuid + "\"]/value";
+    assertEquals("ST", xpath.evaluate(textValue + "/@*[name()=\"xsi:type\"]", doc));
+    assertEquals(text.value, xpath.evaluate(textValue, doc));
+  }
+
+  private static Document parse(String xml) throws Exception {
+    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    return builder.parse(IOUtils.toInputStream(xml, "UTF-8"));
   }
 
   @Ignore("Manual test to debug failed CCDA exports.")
