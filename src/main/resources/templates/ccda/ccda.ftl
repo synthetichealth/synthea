@@ -38,7 +38,11 @@
         <#else>
         <raceCode code="${race_lookup[race]}" displayName="${race}" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
         </#if>
-        <ethnicGroupCode code="${ethnicity_lookup[race]}" displayName="${ethnicity_display_lookup[race]}" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
+        <#if ethnicity?? && ethnicity == "hispanic">
+        <ethnicGroupCode code="2135-2" displayName="Hispanic or Latino" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
+        <#else>
+        <ethnicGroupCode code="2186-5" displayName="Not Hispanic or Latino" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
+        </#if>
         <languageCommunication>
           <languageCode code="en-US"/>
         </languageCommunication>

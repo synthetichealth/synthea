@@ -177,6 +177,33 @@ public class CCDAExporterTest {
         .anyMatch(planRecord -> planRecord.getStopTime() == Long.MAX_VALUE));
   }
 
+  @Test
+  public void testEthnicGroupCodeUsesEthnicityAttribute() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Config.set("exporter.ccda.export", "true");
+    XPathExpression ethnicGroupCode = XPathFactory.newInstance().newXPath().compile(
+        "/ClinicalDocument/recordTarget/patientRole/patient/ethnicGroupCode/@code");
+    Person[] people = TestHelper.getGeneratedPeople();
+
+    Person hispanic = people[0];
+    hispanic.attributes.put(Person.ETHNICITY, "hispanic");
+    Document doc = parse(CCDAExporter.export(hispanic, System.currentTimeMillis()));
+    assertEquals("2135-2", ethnicGroupCode.evaluate(doc));
+
+    Person nonHispanic = people[1];
+    nonHispanic.attributes.put(Person.ETHNICITY, "nonhispanic");
+    doc = parse(CCDAExporter.export(nonHispanic, System.currentTimeMillis()));
+    assertEquals("2186-5", ethnicGroupCode.evaluate(doc));
+  }
+
+  private static Document parse(String xml) throws Exception {
+    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    return builder.parse(IOUtils.toInputStream(xml, "UTF-8"));
+  }
+
   @Ignore("Manual test to debug failed CCDA exports.")
   @Test
   public void testFailedCCDAExports() throws Exception {
