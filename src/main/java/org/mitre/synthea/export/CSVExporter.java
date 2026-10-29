@@ -39,6 +39,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -1348,13 +1349,11 @@ public class CSVExporter {
     simulateClaimProcess(person, claim, claimId, encounter, encounterID, claim.mainEntry,
         diagnosisCodes, departmentId, true);
 
-    // Each Entry...
+    // Each line item that carries a charge (procedures, immunizations, reports, devices and
+    // supplies), so that the transactions of the claim add up to the claim total.
     for (int i = 0; i < claim.items.size(); i++) {
       Claim.ClaimEntry claimEntry = claim.items.get(i);
-      Entry entry = claimEntry.entry;
-      if ((entry instanceof HealthRecord.Procedure)
-          || (entry instanceof HealthRecord.Immunization)
-          || (entry instanceof HealthRecord.Medication)) {
+      if (Costs.hasCost(claimEntry.entry)) {
         simulateClaimProcess(person, claim, claimId, encounter, encounterID, claimEntry,
             diagnosisCodes, departmentId, false);
       }
