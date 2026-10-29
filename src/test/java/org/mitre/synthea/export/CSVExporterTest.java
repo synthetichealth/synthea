@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -35,9 +36,13 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.HealthRecord.Supply;
 import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 
 public class CSVExporterTest {
@@ -762,5 +767,87 @@ public class CSVExporterTest {
     assertEquals("payer_transitions.END_DATE must be empty when the plan has no stop time; "
         + "the exporter wrote the Unix epoch into the end-date field instead: " + endDate,
         "", endDate);
+  }
+
+  /**
+   * Regression test: claims_transactions.csv must hold a charge for every line item of a claim
+   * that carries a cost, so that the transactions of a claim add up to the claim total written to
+   * encounters.csv.
+   *
+   * <p>Diagnostic reports, devices and supplies are line items of the encounter claim and their
+   * costs are part of the claim total, but the exporter only wrote transactions for procedures and
+   * immunizations, so the transactions of a claim with a lab panel did not add up to its total.
+   *
+   * @throws Exception if the export fails
+   */
+  @Test
+  public void testClaimTransactionsCoverEveryCostedLineItem() throws Exception {
+    PayerManager.loadNoInsurance();
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, "test-patient");
+    person.attributes.put(Person.INCOME, 0);
+    person.attributes.put(Person.COORDINATE, new Point2D.Double(0.0, 0.0));
+    person.attributes.put(QualityOfLifeModule.QALY, new HashMap<Integer, Double>());
+    person.attributes.put(QualityOfLifeModule.DALY, new HashMap<Integer, Double>());
+    person.attributes.put(QualityOfLifeModule.QOLS, new HashMap<Integer, Double>());
+    person.coverage.setPlanToNoInsurance(0L);
+
+    long start = 86_400_000L;
+    Encounter encounter = person.record.encounterStart(start, EncounterType.WELLNESS);
+    encounter.codes.add(new Code("SNOMED-CT", "410620009", "Well child visit (procedure)"));
+    Procedure procedure = person.record.procedure(start, "430193006");
+    procedure.codes.add(
+        new Code("SNOMED-CT", "430193006", "Medication reconciliation (procedure)"));
+    Report report = person.record.report(start, "58410-2", 0);
+    report.codes.add(new Code("LOINC", "58410-2", "CBC panel - Blood by Automated count"));
+    Device device = person.record.deviceImplant(start, "337414009");
+    device.codes.add(new Code("SNOMED-CT", "337414009", "Blood glucose meter (physical object)"));
+    Supply supply = person.record.useSupply(start,
+        new Code("SNOMED-CT", "337388004", "Blood glucose testing strips (physical object)"), 50);
+    person.record.encounterEnd(start + 900_000L, EncounterType.WELLNESS);
+
+    Claim claim = encounter.claim;
+    assertEquals("fixture: the claim must have four line items", 4, claim.items.size());
+    for (Claim.ClaimEntry item : claim.items) {
+      assertTrue("fixture: " + item.entry.type + " must carry a cost",
+          item.cost.compareTo(Claim.ZERO_CENTS) > 0);
+    }
+
+    CSVExporter.getInstance().init();
+    CSVExporter.getInstance().export(person, start + 86_400_000L);
+
+    File transactionsFile = exportDir.toPath().resolve("csv")
+        .resolve(CSVConstants.CLAIM_TRANSACTION_KEY + ".csv").toFile();
+    assertTrue("the export must have written " + transactionsFile, transactionsFile.exists());
+    List<LinkedHashMap<String, String>> transactions = SimpleCSV.parse(
+        new String(Files.readAllBytes(transactionsFile.toPath()), StandardCharsets.UTF_8));
+
+    Set<String> chargedCodes = new HashSet<>();
+    BigDecimal charged = Claim.ZERO_CENTS;
+    for (LinkedHashMap<String, String> row : transactions) {
+      if (claim.uuid.toString().equals(field(row, "CLAIMID"))
+          && "CHARGE".equals(field(row, "TYPE"))) {
+        chargedCodes.add(field(row, "PROCEDURECODE"));
+        charged = charged.add(new BigDecimal(field(row, "AMOUNT")));
+      }
+    }
+    Set<String> expectedCodes = new HashSet<>(Arrays.asList(encounter.codes.get(0).code,
+        procedure.codes.get(0).code, report.codes.get(0).code, device.codes.get(0).code,
+        supply.codes.get(0).code));
+    assertEquals("claims_transactions.csv must hold a CHARGE for every line item of the claim",
+        expectedCodes, chargedCodes);
+    assertEquals("the charges of the claim must add up to the claim total "
+        + claim.getTotalClaimCost() + " but were " + charged,
+        0, claim.getTotalClaimCost().compareTo(charged));
+
+    File encountersFile = exportDir.toPath().resolve("csv")
+        .resolve(CSVConstants.ENCOUNTER_KEY + ".csv").toFile();
+    List<LinkedHashMap<String, String>> encounters = SimpleCSV.parse(
+        new String(Files.readAllBytes(encountersFile.toPath()), StandardCharsets.UTF_8));
+    assertEquals("the fixture must export exactly one encounter", 1, encounters.size());
+    BigDecimal totalClaimCost = new BigDecimal(field(encounters.get(0), "TOTAL_CLAIM_COST"));
+    assertEquals("the charges of the claim must add up to encounters.TOTAL_CLAIM_COST "
+        + totalClaimCost + " but were " + charged, 0, totalClaimCost.compareTo(charged));
   }
 }
