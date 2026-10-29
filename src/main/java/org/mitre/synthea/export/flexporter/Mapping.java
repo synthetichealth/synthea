@@ -13,6 +13,7 @@ import java.util.Map;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -39,7 +40,7 @@ public class Mapping {
   public static Mapping parseMapping(File mappingFile)
       throws FileNotFoundException, IOException {
     try (InputStream selectorInputSteam = new FileInputStream(mappingFile)) {
-      Yaml yaml = new Yaml(new Constructor(Mapping.class));
+      Yaml yaml = new Yaml(new Constructor(Mapping.class, new LoaderOptions()));
       return yaml.loadAs(selectorInputSteam, Mapping.class);
     }
   }
