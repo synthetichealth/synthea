@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +32,7 @@ import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
@@ -175,6 +177,29 @@ public class CCDAExporterTest {
 
     assertFalse(toExport.coverage.getPlanHistory().stream()
         .anyMatch(planRecord -> planRecord.getStopTime() == Long.MAX_VALUE));
+  }
+
+  @Test
+  public void testExportAfterCoverageEndsDoesNotChangeCoverage() throws Exception {
+    TestHelper.loadTestProperties();
+    Person toExport = TestHelper.getGeneratedPeople()[0];
+    // Model a living patient whose coverage ended more than an enrollment period ago.
+    toExport.attributes.remove(Person.DEATHDATE);
+    long exportTime = toExport.coverage.getLastPlanRecord().getStopTime()
+        + Utilities.convertTime("years", 2);
+    List<Long> stopTimes = toExport.coverage.getPlanHistory().stream()
+        .map(plan -> plan.getStopTime()).sorted().collect(Collectors.toList());
+
+    String ccdaXml = CCDAExporter.export(toExport, exportTime);
+
+    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        .parse(IOUtils.toInputStream(ccdaXml, "UTF-8"));
+    for (XPathExpression expression : sectionExpressions.values()) {
+      assertEquals(1, ((NodeList) expression.evaluate(doc, XPathConstants.NODESET)).getLength());
+    }
+    assertEquals("Export must not create or alter insurance coverage", stopTimes,
+        toExport.coverage.getPlanHistory().stream()
+            .map(plan -> plan.getStopTime()).sorted().collect(Collectors.toList()));
   }
 
   @Ignore("Manual test to debug failed CCDA exports.")

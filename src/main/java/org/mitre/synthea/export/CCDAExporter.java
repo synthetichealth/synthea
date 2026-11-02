@@ -68,46 +68,31 @@ public class CCDAExporter {
    * @return String of CCDA R2.1 XML.
    */
   public static String export(Person person, long time) {
-    try {
-      person.coverage.getPlanRecordAtTime(time);
-    } catch (RuntimeException e) {
-      // If requesting the current plan at export time
-      // causes an exception, then we fake an insurance
-      // plan for the purposes of creating the super encounter.
-      person.coverage.setPlanToNoInsurance(time);
-    }
-    // create a super encounter... this makes it easier to access
-    // all the Allergies (for example) in the export templates,
-    // instead of having to iterate through all the encounters.
-    Encounter superEncounter = person.record.new Encounter(time, "super");
-    for (Encounter encounter : person.record.encounters) {
-      if (encounter.start <= time) {
-        superEncounter.observations.addAll(encounter.observations);
-        superEncounter.reports.addAll(encounter.reports);
-        superEncounter.conditions.addAll(encounter.conditions);
-        superEncounter.allergies.addAll(encounter.allergies);
-        superEncounter.procedures.addAll(encounter.procedures);
-        superEncounter.immunizations.addAll(encounter.immunizations);
-        superEncounter.medications.addAll(encounter.medications);
-        superEncounter.careplans.addAll(encounter.careplans);
-        superEncounter.imagingStudies.addAll(encounter.imagingStudies);
-      } else {
-        break;
-      }
-    }
+    // Aggregate existing clinical data without creating an encounter or insurance claim.
+    List<Encounter> encounters = person.record.encounters.stream()
+        .takeWhile(encounter -> encounter.start <= time)
+        .collect(Collectors.toList());
+    List<Observation> observations = encounters.stream()
+        .flatMap(encounter -> encounter.observations.stream()).collect(Collectors.toList());
 
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
     person.attributes.put("UUID", new UUIDGenerator(person));
     person.attributes.put("ehr_encounters", person.record.encounters);
-    person.attributes.put("ehr_conditions", superEncounter.conditions);
-    person.attributes.put("ehr_allergies", superEncounter.allergies);
-    person.attributes.put("ehr_procedures", superEncounter.procedures);
-    person.attributes.put("ehr_immunizations", superEncounter.immunizations);
-    person.attributes.put("ehr_medications", superEncounter.medications);
-    person.attributes.put("ehr_careplans", superEncounter.careplans);
+    person.attributes.put("ehr_conditions", encounters.stream()
+        .flatMap(encounter -> encounter.conditions.stream()).collect(Collectors.toList()));
+    person.attributes.put("ehr_allergies", encounters.stream()
+        .flatMap(encounter -> encounter.allergies.stream()).collect(Collectors.toList()));
+    person.attributes.put("ehr_procedures", encounters.stream()
+        .flatMap(encounter -> encounter.procedures.stream()).collect(Collectors.toList()));
+    person.attributes.put("ehr_immunizations", encounters.stream()
+        .flatMap(encounter -> encounter.immunizations.stream()).collect(Collectors.toList()));
+    person.attributes.put("ehr_medications", encounters.stream()
+        .flatMap(encounter -> encounter.medications.stream()).collect(Collectors.toList()));
+    person.attributes.put("ehr_careplans", encounters.stream()
+        .flatMap(encounter -> encounter.careplans.stream()).collect(Collectors.toList()));
 
-    List<Observation> vitalSigns = superEncounter.observations
+    List<Observation> vitalSigns = observations
             .stream()
             .filter(vs -> vs.category != null && vs.category.equals("vital-signs"))
             .filter(vs -> vs.value != null)
@@ -119,7 +104,7 @@ public class CCDAExporter {
     person.attributes.put("ehr_vital_signs_stop", vitalSigns.stream()
         .mapToLong(vs -> vs.start).max().orElse(time));
 
-    List<Observation> surveyResults = superEncounter.observations
+    List<Observation> surveyResults = observations
             .stream()
             .filter(vs -> vs.category != null && vs.category.equals("survey"))
             .filter(vs -> vs.value != null && vs.value instanceof Double)
@@ -128,7 +113,8 @@ public class CCDAExporter {
     // sadly, the correct plural of status is statuses and not stati
     person.attributes.put("ehr_functional_statuses", surveyResults);
 
-    person.attributes.put("ehr_results", superEncounter.reports);
+    person.attributes.put("ehr_results", encounters.stream()
+        .flatMap(encounter -> encounter.reports.stream()).collect(Collectors.toList()));
 
     Observation smokingHistory = person.record.getLatestObservation("72166-2");
 
