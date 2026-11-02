@@ -68,18 +68,18 @@ public class CCDAExporter {
    * @return String of CCDA R2.1 XML.
    */
   public static String export(Person person, long time) {
-    try {
-      person.coverage.getPlanRecordAtTime(time);
-    } catch (RuntimeException e) {
-      // If requesting the current plan at export time
-      // causes an exception, then we fake an insurance
-      // plan for the purposes of creating the super encounter.
+    if (person.coverage.getPlanHistory().isEmpty()) {
+      // Someone who never had a plan, only possible in their first year: the super encounter
+      // needs one.
       person.coverage.setPlanToNoInsurance(time);
     }
     // create a super encounter... this makes it easier to access
     // all the Allergies (for example) in the export templates,
     // instead of having to iterate through all the encounters.
-    Encounter superEncounter = person.record.new Encounter(time, "super");
+    // It starts at birth, when the person has a plan. They may have none at the export time, and
+    // a plan faked for that would stay in their coverage, for the CSV export to write.
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    Encounter superEncounter = person.record.new Encounter(birthdate, "super");
     for (Encounter encounter : person.record.encounters) {
       if (encounter.start <= time) {
         superEncounter.observations.addAll(encounter.observations);
