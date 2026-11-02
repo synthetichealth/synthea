@@ -33,6 +33,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 import org.mitre.synthea.world.geography.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -175,6 +176,23 @@ public class CCDAExporterTest {
 
     assertFalse(toExport.coverage.getPlanHistory().stream()
         .anyMatch(planRecord -> planRecord.getStopTime() == Long.MAX_VALUE));
+  }
+
+  @Test
+  public void testExportAfterTheLastPlanLeavesCoverageUnchanged() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    TestHelper.loadTestProperties();
+    Person toExport = TestHelper.getGeneratedPeople()[0];
+    PlanRecord lastPlan = toExport.coverage.getLastPlanRecord();
+    long lastPlanStop = lastPlan.getStopTime();
+    int plans = toExport.coverage.getPlanHistory().size();
+
+    // A plan stops just before its stop time, so the person has none at that time
+    CCDAExporter.export(toExport, lastPlanStop);
+
+    assertEquals(plans, toExport.coverage.getPlanHistory().size());
+    assertEquals(lastPlanStop, lastPlan.getStopTime());
   }
 
   @Ignore("Manual test to debug failed CCDA exports.")
