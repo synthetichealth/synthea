@@ -433,8 +433,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "713106006",
-          "display": "Screening for drug abuse (procedure)"
+          "code": "370854007",
+          "display": "Screening for substance abuse (procedure)"
         }
       ],
       "distribution": {
