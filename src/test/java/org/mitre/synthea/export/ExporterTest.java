@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.years;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -15,6 +17,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.ProviderTest;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -256,6 +259,37 @@ public class ExporterTest {
     assertEquals("something_permanent", filtered.record.encounters.get(0).conditions.get(0).type);
     assertEquals(1, record.encounters.get(0).claim.items.size());
     assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
+  }
+
+  @Test
+  public void testExportFilterShouldRecomputeClaimTotalsWhenItemsAreRemoved() {
+    long start = time - years(10);
+    record.encounterStart(start, EncounterType.EMERGENCY);
+    record.conditionStart(start, "something_permanent");
+    record.procedure(start, "xray");
+    record.encounterEnd(start + Utilities.convertTime("hours", 1), EncounterType.EMERGENCY);
+
+    Claim claim = record.encounters.get(0).claim;
+    BigDecimal encounterCost = claim.mainEntry.cost;
+    BigDecimal procedureCost = claim.items.get(1).cost;
+    assertTrue("fixture: the encounter must have a cost",
+        encounterCost.compareTo(Claim.ZERO_CENTS) > 0);
+    assertTrue("fixture: the procedure must have a cost",
+        procedureCost.compareTo(Claim.ZERO_CENTS) > 0);
+    assertEquals(0, claim.getTotalClaimCost().compareTo(encounterCost.add(procedureCost)));
+    assertEquals(0, claim.getTotalPatientCost().compareTo(encounterCost.add(procedureCost)));
+
+    Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
+    // the procedure is removed from the encounter and from the claim items,
+    // so the claim totals must only cover the encounter and the kept condition
+    assertEquals(1, filtered.record.encounters.size());
+    assertEquals(0, filtered.record.encounters.get(0).procedures.size());
+    assertEquals(1, claim.items.size());
+    assertEquals("something_permanent", claim.items.get(0).entry.type);
+    assertEquals("claim total must not include the removed procedure",
+        0, claim.getTotalClaimCost().compareTo(encounterCost));
+    assertEquals("patient cost must not include the removed procedure",
+        0, claim.getTotalPatientCost().compareTo(encounterCost));
   }
 
   @Test
