@@ -1,0 +1,32 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "loinc-clinical-note-types",
+  "url": "http://loinc.org",
+  "name": "LoincClinicalNoteTypes",
+  "status": "active",
+  "description": "Local test fragment of LOINC clinical note types enumerated in the bundled US Core ValueSets. This is not the complete LOINC code system.",
+  "copyright": "This material contains content from [LOINC](http://loinc.org). LOINC is copyright \u00a9 1995-2020, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC\u00ae is a registered United States trademark of Regenstrief Institute, Inc",
+  "caseSensitive": true,
+  "content": "fragment",
+  "concept": [
+    {
+      "code": "18842-5"
+    },
+    {
+      "code": "11488-4"
+    },
+    {
+      "code": "34117-2"
+    },
+    {
+      "code": "11506-3"
+    },
+    {
+      "code": "28570-0"
+    },
+    {
+      "code": "51847-2",
+      "display": "Evaluation+Plan note"
+    }
+  ]
+}

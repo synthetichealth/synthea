@@ -58,6 +58,9 @@ public class ValidationResources {
             new InMemoryTerminologyServerValidationSupport(ctx),
             new CommonCodeSystemsTerminologyService(ctx)
     );
+    // A required CodeableConcept binding needs one coding in the ValueSet, not every
+    // translation (the EOB also carries CMS claim-type codings). FHIR STU3 section 4.1.5.1.
+    chain.setCodeableConceptValidationSuccessfulIfNotAllCodingsAreValid(true);
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
     instanceValidator.setErrorForUnknownProfiles(false);
