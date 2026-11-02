@@ -1,0 +1,37 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "eob-type",
+  "url": "https://bluebutton.cms.gov/resources/codesystem/eob-type",
+  "name": "eob-type",
+  "status": "active",
+  "publisher": "Centers for Medicare & Medicaid Services",
+  "description": "Local test terminology from https://bluebutton.cms.gov/resources/codesystem/eob-type/",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "CARRIER"
+    },
+    {
+      "code": "DME"
+    },
+    {
+      "code": "HHA"
+    },
+    {
+      "code": "HOSPICE"
+    },
+    {
+      "code": "INPATIENT"
+    },
+    {
+      "code": "OUTPATIENT"
+    },
+    {
+      "code": "PDE"
+    },
+    {
+      "code": "SNF"
+    }
+  ]
+}

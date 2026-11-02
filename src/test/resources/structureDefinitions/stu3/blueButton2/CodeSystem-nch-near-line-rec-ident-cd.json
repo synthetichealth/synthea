@@ -1,0 +1,28 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "nch-near-line-rec-ident-cd",
+  "url": "https://bluebutton.cms.gov/resources/variables/nch_near_line_rec_ident_cd",
+  "name": "nch-near-line-rec-ident-cd",
+  "status": "active",
+  "publisher": "Centers for Medicare & Medicaid Services",
+  "description": "Local test terminology from https://bluebutton.cms.gov/resources/variables/nch_near_line_rec_ident_cd/",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "M"
+    },
+    {
+      "code": "O"
+    },
+    {
+      "code": "U"
+    },
+    {
+      "code": "V"
+    },
+    {
+      "code": "W"
+    }
+  ]
+}

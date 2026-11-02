@@ -13,15 +13,20 @@ import ca.uhn.fhir.validation.ValidationResult;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.ExplanationOfBenefit;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Media;
+import org.hl7.fhir.dstu3.model.Money;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.SampledData;
@@ -99,6 +104,69 @@ public class FHIRSTU3ExporterTest {
     assertTrue(v instanceof Quantity);
     q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
+  }
+
+  @Test
+  public void testBlueButtonExtensionIdsSurviveJsonRoundTrip() throws Exception {
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    TestHelper.exportOff();
+    Person person = TestHelper.getGeneratedPeople()[0];
+    FhirContext ctx = FhirStu3.getContext();
+    Bundle bundle = ctx.newJsonParser().parseResource(Bundle.class,
+        FhirStu3.convertToFHIRJson(person, System.currentTimeMillis()));
+    ExplanationOfBenefit sample = null;
+    String requiredExtensionUrl = "https://bluebutton.cms.gov/assets/ig/"
+        + "StructureDefinition-bluebutton-outpatient-nch-profnl-cmpnt-chrg-amt-extension";
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof ExplanationOfBenefit) {
+        ExplanationOfBenefit eob = (ExplanationOfBenefit) entry.getResource();
+        Set<String> ids = new HashSet<>();
+        for (Extension extension : ctx.newTerser()
+            .getAllPopulatedChildElementsOfType(eob, Extension.class)) {
+          if (extension.getUrl().startsWith("https://bluebutton.cms.gov/assets/ig/")) {
+            assertTrue("Missing Blue Button extension ID: " + extension.getUrl(),
+                extension.hasId());
+            assertTrue("Duplicate extension ID", ids.add(extension.getId()));
+          }
+        }
+        if (eob.hasExtension(requiredExtensionUrl)) {
+          sample = eob;
+        }
+      }
+    }
+    Assert.assertNotNull("Expected an outpatient ExplanationOfBenefit", sample);
+    ValidationResources validator = ValidationResources.forSTU3();
+    ValidationResult result = validator.validateSTU3(sample);
+    // Keep the existing test's exception for the legacy guide's invalid extension contexts.
+    assertTrue("Exported Blue Button extensions should satisfy their profiles: "
+        + result.getMessages(), result.getMessages().stream().noneMatch(message ->
+            message.getSeverity() == ResultSeverityEnum.ERROR
+                && !message.getMessage().contains("extension https://bluebutton.cms.gov/assets")));
+
+    ExplanationOfBenefit invalidType = sample.copy();
+    invalidType.getType().getCoding().forEach(coding -> coding.setCode("not-a-claim-type"));
+    assertTrue("A claim type without any valid bound coding must still fail",
+        validator.validateSTU3(invalidType).getMessages().stream().anyMatch(message ->
+            message.getSeverity() == ResultSeverityEnum.ERROR
+                && message.getMessage().contains("None of the codings provided")));
+
+    // Prove that the profile still enforces the ID and the monetary value independently.
+    ExplanationOfBenefit missingId = sample.copy();
+    missingId.getExtensionByUrl(requiredExtensionUrl).setId((String) null);
+    assertTrue(validator.validateSTU3(missingId).getMessages().stream().anyMatch(message ->
+        message.getSeverity() == ResultSeverityEnum.ERROR
+            && message.getMessage().contains("Extension.id: minimum required = 1")));
+    ExplanationOfBenefit missingValue = sample.copy();
+    Money amount = (Money) missingValue.getExtensionByUrl(requiredExtensionUrl).getValue();
+    amount.setValue((BigDecimal) null);
+    ValidationResult missingValueResult = validator.validateSTU3(missingValue);
+    assertTrue("A monetary extension without an amount must still fail profile validation: "
+        + missingValueResult.getMessages(),
+        missingValueResult.getMessages().stream().anyMatch(message ->
+            message.getSeverity() == ResultSeverityEnum.ERROR
+                && message.getMessage().contains("minimum required = 1")
+                && message.getMessage().contains(".value")));
   }
 
   @Test

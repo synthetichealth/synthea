@@ -1,0 +1,43 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "nch-clm-type-cd",
+  "url": "https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd",
+  "name": "nch-clm-type-cd",
+  "status": "active",
+  "publisher": "Centers for Medicare & Medicaid Services",
+  "description": "Local test terminology from https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd/",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "10"
+    },
+    {
+      "code": "20"
+    },
+    {
+      "code": "30"
+    },
+    {
+      "code": "40"
+    },
+    {
+      "code": "50"
+    },
+    {
+      "code": "60"
+    },
+    {
+      "code": "71"
+    },
+    {
+      "code": "72"
+    },
+    {
+      "code": "81"
+    },
+    {
+      "code": "82"
+    }
+  ]
+}

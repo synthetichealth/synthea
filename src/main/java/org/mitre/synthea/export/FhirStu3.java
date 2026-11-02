@@ -1450,13 +1450,23 @@ public class FhirStu3 {
             // the eob-type, making the clm_type the only real
             // category that needs to be dynamically chosen
             .setCode("professional")
-            .setDisplay("Claim Type"))
+            .setDisplay("Professional"))
         .addCoding(new Coding()
             .setSystem("https://bluebutton.cms.gov/resources/variables/nch_near_line_rec_ident_cd")
             // also dependent on clm-type
             .setCode("O")
             .setDisplay("Part B physician/supplier claim record (processed by local "
                       + "carriers; can include DMEPOS services)")));
+
+    // Blue Button profiles require Extension.id, including extensions nested in line items.
+    // Use resource-local IDs without consuming the patient's simulation RNG.
+    int extensionIndex = 0;
+    for (Extension extension : getContext().newTerser()
+        .getAllPopulatedChildElementsOfType(eob, Extension.class)) {
+      if (extension.getUrl().startsWith("https://bluebutton.cms.gov/assets/ig/")) {
+        extension.setId("bb-extension-" + ++extensionIndex);
+      }
+    }
 
     String uuid = ExportHelper.buildUUID(person, encounter.claim.mainEntry.entry.start,
         "ExplanationOfBenefit for Claim" + encounter.claim.uuid);
