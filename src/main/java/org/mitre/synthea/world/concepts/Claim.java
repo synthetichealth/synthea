@@ -324,16 +324,28 @@ public class Claim implements Serializable {
    */
   public void assignCosts() {
     mainEntry.assignCosts(planRecord);
-    totals = new ClaimEntry(mainEntry.entry);
-    totals.addCosts(mainEntry);
     for (ClaimEntry item : items) {
       item.assignCosts(planRecord);
-      totals.addCosts(item);
     }
+    recomputeTotals();
 
     planRecord.incrementOutOfPocketExpenses(getTotalPatientCost());
     planRecord.incrementPrimaryCoverage(getTotalCoveredCost());
     planRecord.incrementSecondaryCoverage(getTotalPaidBySecondaryPayer());
+  }
+
+  /**
+   * Recompute the claim totals from the main entry and the current line items, without
+   * assigning costs again. Call this after line items have been removed from the claim
+   * (e.g. when the exporter drops history outside the export window) so that the totals
+   * keep matching the items that remain on the claim.
+   */
+  public void recomputeTotals() {
+    totals = new ClaimEntry(mainEntry.entry);
+    totals.addCosts(mainEntry);
+    for (ClaimEntry item : items) {
+      totals.addCosts(item);
+    }
   }
 
   /**

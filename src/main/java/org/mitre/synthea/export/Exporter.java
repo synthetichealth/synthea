@@ -734,6 +734,7 @@ public abstract class Exporter {
 
     for (Encounter encounter : record.encounters) {
       List<Claim.ClaimEntry> claimItems = encounter.claim.items;
+      int claimItemCount = claimItems.size();
       // keep a condition if it was active at any point since the cutoff date
       filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, entryIsActive);
 
@@ -761,6 +762,12 @@ public abstract class Exporter {
 
       // keep careplans if they are still active, regardless of start date
       filterEntries(encounter.careplans, claimItems, cutoffDate, endTime, entryIsActive);
+
+      if (claimItems.size() != claimItemCount) {
+        // line items were removed from the claim, so the totals assigned when the
+        // encounter ended no longer match the items that are left to export
+        encounter.claim.recomputeTotals();
+      }
     }
 
     // if ANY of these are not empty, the encounter is not empty
