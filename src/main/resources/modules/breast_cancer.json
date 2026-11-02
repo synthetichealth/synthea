@@ -310,8 +310,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "241055006",
-          "display": "Mammogram - symptomatic (procedure)"
+          "code": "71651007",
+          "display": "Mammography (procedure)"
         }
       ],
       "duration": {

@@ -1029,8 +1029,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 64544008,
-          "display": "Gingivectomy or gingivoplasty, per tooth (procedure)"
+          "code": "234681007",
+          "display": "Gingivectomy (procedure)"
         }
       ],
       "distribution": {
