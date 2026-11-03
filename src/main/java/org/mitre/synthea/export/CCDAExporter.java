@@ -1,11 +1,15 @@
 package org.mitre.synthea.export;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +17,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
@@ -38,6 +44,69 @@ public class CCDAExporter {
     public String toString() {
       return rand.randUUID().toString();
     }
+  }
+
+  /**
+   * A care plan goal, flattened for use by the FreeMarker templates.
+   * Care plan goals are stored as raw JSON from the module definitions,
+   * which is awkward to work with inside a template.
+   */
+  public static class CarePlanGoal implements Serializable {
+    /** Unique identifier for the Goal Observation entry. */
+    public final String uuid;
+    /** Human readable description of the goal. */
+    public final String text;
+    /** Coded description of the goal, if one is available. May be null. */
+    public final Code code;
+
+    /**
+     * Create a new CarePlanGoal.
+     * @param uuid unique identifier for the goal entry
+     * @param text human readable description of the goal
+     * @param code coded description of the goal, may be null
+     */
+    public CarePlanGoal(String uuid, String text, Code code) {
+      this.uuid = uuid;
+      this.text = text;
+      this.code = code;
+    }
+  }
+
+  /**
+   * Convert the goals of a care plan into a list of CarePlanGoals for the templates.
+   * The description logic mirrors the FHIR exporters: goals may be defined with
+   * free text, with codes, or with an observation threshold.
+   *
+   * @param person the person, used to generate unique identifiers
+   * @param carePlan the care plan
+   * @return list of goals, never null
+   */
+  static List<CarePlanGoal> carePlanGoals(Person person, CarePlan carePlan) {
+    List<CarePlanGoal> goals = new ArrayList<>();
+    if (carePlan.goals == null) {
+      return goals;
+    }
+    for (JsonObject goal : carePlan.goals) {
+      String text = null;
+      Code code = null;
+      if (goal.has("text")) {
+        text = goal.get("text").getAsString();
+      } else if (goal.has("codes")) {
+        code = new Code(goal.get("codes").getAsJsonArray().get(0).getAsJsonObject());
+        text = code.display;
+      } else if (goal.has("observation")) {
+        JsonObject logic = goal.get("observation").getAsJsonObject();
+        JsonArray codes = logic.get("codes").getAsJsonArray();
+        code = new Code(codes.get(0).getAsJsonObject());
+        text = String.join(" ", code.display,
+            logic.get("operator").getAsString(),
+            logic.get("value").getAsString());
+      }
+      if (text != null) {
+        goals.add(new CarePlanGoal(person.randUUID().toString(), text, code));
+      }
+    }
+    return goals;
   }
 
   private static Configuration templateConfiguration() {
@@ -106,6 +175,12 @@ public class CCDAExporter {
     person.attributes.put("ehr_immunizations", superEncounter.immunizations);
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
+    // goals for each care plan, in the same order as ehr_careplans
+    List<List<CarePlanGoal>> careplanGoals = new ArrayList<>();
+    for (CarePlan carePlan : superEncounter.careplans) {
+      careplanGoals.add(carePlanGoals(person, carePlan));
+    }
+    person.attributes.put("ehr_careplan_goals", careplanGoals);
 
     List<Observation> vitalSigns = superEncounter.observations
             .stream()
