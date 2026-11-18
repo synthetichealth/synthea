@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
@@ -60,7 +61,7 @@ public abstract class RIFExporter {
   static String bb2DateFromTimestamp(long time) {
     SimpleDateFormat dateFormat = BB2_DATE_FORMAT.get();
     if (dateFormat == null) {
-      dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+      dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ROOT);
       BB2_DATE_FORMAT.set(dateFormat);
     }
     return dateFormat.format(new Date(time));
@@ -150,7 +151,7 @@ public abstract class RIFExporter {
   }
 
   protected static long parseSimpleDate(String dateStr) {
-    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.ROOT);
     format.setTimeZone(TimeZone.getTimeZone("UTC"));
     try {
       return format.parse(dateStr).getTime();

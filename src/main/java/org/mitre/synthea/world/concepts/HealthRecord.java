@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -692,7 +693,7 @@ public class HealthRecord implements Serializable {
     }
 
     private String udiDate(long time) {
-      SimpleDateFormat format = new SimpleDateFormat("YYMMdd");
+      SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.ROOT);
       return format.format(new Date(time));
     }
 
