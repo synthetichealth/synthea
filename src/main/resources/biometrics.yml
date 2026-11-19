@@ -47,6 +47,7 @@ metabolic:
       normal: # Creatine clearance test results: https://www.nlm.nih.gov/medlineplus/ency/article/003611.htm
         male: [77,160] # ml/min/BSA
         female: [56,161] # ml/min/BSA
+      stage_1_kidney_damage: [90,120] # ml/min/BSA
       mild_kidney_damage: [60,90] # ml/min/BSA
       moderate_kidney_damage: [30,59] # ml/min/BSA
       severe_kidney_damage: [15,29] # ml/min/BSA

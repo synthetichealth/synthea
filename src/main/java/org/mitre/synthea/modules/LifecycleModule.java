@@ -677,6 +677,8 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
 
 
+  private static final int[] STAGE_1_KIDNEY_DMG_CC_RANGE =
+      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.stage_1_kidney_damage");
   private static final int[] MILD_KIDNEY_DMG_CC_RANGE =
       BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
   private static final int[] MODERATE_KIDNEY_DMG_CC_RANGE =
@@ -825,24 +827,28 @@ public final class LifecycleModule extends Module {
     }
     person.setVitalSign(VitalSign.OXYGEN_SATURATION, oxygenSaturation);
 
-    // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney damage
+    // CKD == stage of "Chronic Kidney Disease", 5 being end-stage renal disease
     int kidneyDamage = (Integer) person.attributes.getOrDefault("ckd", 0);
     int[] ccRange;
     int[] mcrRange;
     switch (kidneyDamage) {
       case 1:
-        ccRange = MILD_KIDNEY_DMG_CC_RANGE;
+        ccRange = STAGE_1_KIDNEY_DMG_CC_RANGE;
         mcrRange = NORMAL_MCR_RANGE;
         break;
       case 2:
-        ccRange = MODERATE_KIDNEY_DMG_CC_RANGE;
+        ccRange = MILD_KIDNEY_DMG_CC_RANGE;
         mcrRange = CONTROLLED_MCR_RANGE;
         break;
       case 3:
-        ccRange = SEVERE_KIDNEY_DMG_CC_RANGE;
+        ccRange = MODERATE_KIDNEY_DMG_CC_RANGE;
         mcrRange = UNCONTROLLED_MCR_RANGE;
         break;
       case 4:
+        ccRange = SEVERE_KIDNEY_DMG_CC_RANGE;
+        mcrRange = PROTEINURIA_MCR_RANGE;
+        break;
+      case 5:
         ccRange = ESRD_CC_RANGE;
         mcrRange = PROTEINURIA_MCR_RANGE;
         break;
