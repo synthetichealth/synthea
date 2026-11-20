@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.TimeZone;
 
@@ -99,7 +100,7 @@ public class App {
             // note that Y = "week year" and y = "year" per the formatting guidelines
             // and D = "day in year" and d = "day in month", so what we actually want is yyyyMMdd
             // see: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.ROOT);
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             options.referenceTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-e")) {
@@ -107,7 +108,7 @@ public class App {
               overrideFutureDateError = true;
             }
             String value = argsQ.poll();
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.ROOT);
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             options.endTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-p")) {

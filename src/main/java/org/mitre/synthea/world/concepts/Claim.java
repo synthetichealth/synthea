@@ -236,6 +236,12 @@ public class Claim implements Serializable {
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
         // Check if the payer has an adjustment
         BigDecimal adjustment = plan.adjustClaim(this, person);
+        // The adjustment is a share of the full cost, but the copay and deductible
+        // may have already been paid out of that cost.
+        if (adjustment.compareTo(remainingBalance) > 0) {
+          adjustment = remainingBalance;
+          this.adjustment = adjustment;
+        }
         remainingBalance = remainingBalance.subtract(adjustment);
       }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
@@ -324,16 +330,28 @@ public class Claim implements Serializable {
    */
   public void assignCosts() {
     mainEntry.assignCosts(planRecord);
-    totals = new ClaimEntry(mainEntry.entry);
-    totals.addCosts(mainEntry);
     for (ClaimEntry item : items) {
       item.assignCosts(planRecord);
-      totals.addCosts(item);
     }
+    recomputeTotals();
 
     planRecord.incrementOutOfPocketExpenses(getTotalPatientCost());
     planRecord.incrementPrimaryCoverage(getTotalCoveredCost());
     planRecord.incrementSecondaryCoverage(getTotalPaidBySecondaryPayer());
+  }
+
+  /**
+   * Recompute the claim totals from the main entry and the current line items, without
+   * assigning costs again. Call this after line items have been removed from the claim
+   * (e.g. when the exporter drops history outside the export window) so that the totals
+   * keep matching the items that remain on the claim.
+   */
+  public void recomputeTotals() {
+    totals = new ClaimEntry(mainEntry.entry);
+    totals.addCosts(mainEntry);
+    for (ClaimEntry item : items) {
+      totals.addCosts(item);
+    }
   }
 
   /**
