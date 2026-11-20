@@ -257,6 +257,12 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the total cost to the patient, which includes copay, coinsurance, and deductible.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recomputeTotals()" class="member-name-link">recomputeTotals</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Recompute the claim totals from the main entry and the current line items, without
+ assigning costs again.</div>
+</div>
 </div>
 </div>
 </div>
@@ -361,6 +367,16 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>assignCosts</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">assignCosts</span>()</div>
 <div class="block">Assign costs between the payer and patient for all ClaimEntries in this claim.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="recomputeTotals()">
+<h3>recomputeTotals</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">recomputeTotals</span>()</div>
+<div class="block">Recompute the claim totals from the main entry and the current line items, without
+ assigning costs again. Call this after line items have been removed from the claim
+ (e.g. when the exporter drops history outside the export window) so that the totals
+ keep matching the items that remain on the claim.</div>
 </section>
 </li>
 <li>
