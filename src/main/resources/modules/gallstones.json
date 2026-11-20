@@ -41,7 +41,9 @@
         "North American Indians have the highest reported rates of cholelithiasis, afflicting 64.1% of women and 29.5% of men. White Americans have an overall prevalence of 16.6% in women and 8.6% in men. Intermediate prevalence rates occur in Asian populations and Black Americans (13.9% of women; 5.3% of men)",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343155/",
         "The age-adjusted prevalence of gallstone disease (gallstones + cholecystectomy) among Mexican American men (7.2%) was 1.7 times that of Cuban American men and 1.8 times that of Puerto Rican men. The prevalence for Mexican American women (23.2%) was 1.5 times that of Cuban American women and 1.7 times that of Puerto Rican women.",
-        "https://www.ncbi.nlm.nih.gov/pubmed/2642879"
+        "https://www.ncbi.nlm.nih.gov/pubmed/2642879",
+        "Default, for groups without their own figure (other, hawaiian): 17.7%, the five groups' figures above weighted by their shares of the 2020 US population (Hispanic 18.73%, non-Hispanic White 57.84%, Black 12.05%, Asian 5.92%, American Indian and Alaska Native 0.68%; 2020 Census, table P2). Without it they followed the last branch, Hispanic women's 23.2%.",
+        "https://data.census.gov/table/DECENNIALPL2020.P2?g=010XX00US"
       ],
       "complex_transition": [
         {
@@ -123,6 +125,18 @@
               "distribution": 0.768
             }
           ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Female_Gallstone_Formation",
+              "distribution": 0.177
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.823
+            }
+          ]
         }
       ]
     },
@@ -132,7 +146,9 @@
         "North American Indians have the highest reported rates of cholelithiasis, afflicting 64.1% of women and 29.5% of men. White Americans have an overall prevalence of 16.6% in women and 8.6% in men. Intermediate prevalence rates occur in Asian populations and Black Americans (13.9% of women; 5.3% of men)",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343155/",
         "The age-adjusted prevalence of gallstone disease (gallstones + cholecystectomy) among Mexican American men (7.2%) was 1.7 times that of Cuban American men and 1.8 times that of Puerto Rican men. The prevalence for Mexican American women (23.2%) was 1.5 times that of Cuban American women and 1.7 times that of Puerto Rican women.",
-        "https://www.ncbi.nlm.nih.gov/pubmed/2642879"
+        "https://www.ncbi.nlm.nih.gov/pubmed/2642879",
+        "Default, for groups without their own figure (other, hawaiian): 7.9%, the five groups' figures above weighted by their shares of the 2020 US population (Hispanic 18.73%, non-Hispanic White 57.84%, Black 12.05%, Asian 5.92%, American Indian and Alaska Native 0.68%; 2020 Census, table P2). Without it they followed the last branch, Hispanic men's 7.2%.",
+        "https://data.census.gov/table/DECENNIALPL2020.P2?g=010XX00US"
       ],
       "complex_transition": [
         {
@@ -212,6 +228,18 @@
             {
               "transition": "Terminal",
               "distribution": 0.928
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Male_Gallstone_Formation",
+              "distribution": 0.079
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.921
             }
           ]
         }

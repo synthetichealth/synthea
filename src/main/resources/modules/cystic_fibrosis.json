@@ -61,12 +61,45 @@
             "condition_type": "Race",
             "race": "asian"
           }
+        },
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "native"
+          },
+          "distributions": [
+            {
+              "transition": "Cystic_Fibrosis",
+              "distribution": 0.000091743
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999908257
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Cystic_Fibrosis",
+              "distribution": 0.000234672
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999765328
+            }
+          ]
         }
       ],
       "remarks": [
         "https://ghr.nlm.nih.gov/condition/cystic-fibrosis#statistics",
         "",
-        "The frequency dropdown shows statistics about fibrosis prevalence by race."
+        "The frequency dropdown shows statistics about fibrosis prevalence by race.",
+        "",
+        "Native American: 1 in 10,900 live births (Hamosh et al. 1998, J Pediatr 132:255-259, as cited by Heim et al. 2001, Genetics in Medicine 3:168). Without this branch, native patients followed the last branch, Asian patients' 1 in 35,000.",
+        "https://www.nature.com/articles/gim200137",
+        "Default, for groups without their own figure (other, hawaiian): 1 in 4,261, the White, Black, Asian and Native American figures above and Hispanic births' 1 in 9,200 (Hamosh et al. 1998, as above) weighted by their shares of the 2020 US population (non-Hispanic White 57.84%, Black 12.05%, Asian 5.92%, American Indian and Alaska Native 0.68%, Hispanic 18.73%; 2020 Census, table P2).",
+        "https://data.census.gov/table/DECENNIALPL2020.P2?g=010XX00US"
       ]
     },
     "Cystic_Fibrosis": {
