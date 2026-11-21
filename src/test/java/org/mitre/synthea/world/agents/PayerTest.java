@@ -901,6 +901,13 @@ public class PayerTest {
   }
 
   @Test
+  public void qolsAverageWithoutCustomers() {
+    // A payer that nobody enrolled with still gets a row in payers.csv.
+    assertEquals(0, testPrivatePayer1.getNumYearsCovered());
+    assertEquals(0.0, testPrivatePayer1.getQolsAverage(), 0.0);
+  }
+
+  @Test
   public void checkCopayPaid() {
     long time = Utilities.convertCalendarYearsToTime(1960);
     Person person = new Person(0L);
