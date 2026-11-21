@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -70,7 +71,7 @@ public class PlanFinderBestRates implements IPlanFinder {
    * @return The number of encounters during the last 12 months.
    */
   protected int twelveMonthEncounterCount(HealthRecord record, long time) {
-    Calendar c = Calendar.getInstance();
+    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     c.setTimeInMillis(time);
     c.add(Calendar.YEAR, -1);
     long oneYearAgo = c.getTimeInMillis();
