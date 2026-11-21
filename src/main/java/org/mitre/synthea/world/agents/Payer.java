@@ -463,10 +463,13 @@ public class Payer implements Serializable {
 
   /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
-   * @return the average QOLS of the payer's patients.
+   * @return the average QOLS of the payer's patients, or 0 if the payer covered no one.
    */
   public double getQolsAverage() {
     int numYears = this.getNumYearsCovered();
+    if (numYears == 0) {
+      return 0.0;
+    }
     return this.totalQOLS / numYears;
   }
 
