@@ -1047,6 +1047,9 @@ public class HealthRecord implements Serializable {
   public Long death;
   /** The person's demographics at the time of record creation. */
   public Map<String, Object> demographicsAtRecordCreation;
+  /** Claims that had line items added after their costs were assigned. */
+  @JSONSkip
+  private List<Claim> claimsWithUncostedItems;
 
   /**
    * Construct a health record for the supplied person.
@@ -1493,6 +1496,35 @@ public class HealthRecord implements Serializable {
         return;
       }
     }
+  }
+
+  /**
+   * Track a claim that had a line item added after its costs were assigned, for example when a
+   * module records a procedure after a delay that outlasted the encounter, so that the costs of
+   * the new item can be assigned by {@link #assignCostsToUncostedItems()}.
+   * @param claim the claim with a line item that has not been assigned costs.
+   */
+  public void addClaimWithUncostedItems(Claim claim) {
+    if (claimsWithUncostedItems == null) {
+      claimsWithUncostedItems = new ArrayList<Claim>();
+    }
+    if (!claimsWithUncostedItems.contains(claim)) {
+      claimsWithUncostedItems.add(claim);
+    }
+  }
+
+  /**
+   * Assign costs to the line items that were added to claims after their costs were assigned.
+   * This should be called once the codes of those line items have been set.
+   */
+  public void assignCostsToUncostedItems() {
+    if (claimsWithUncostedItems == null || claimsWithUncostedItems.isEmpty()) {
+      return;
+    }
+    for (Claim claim : claimsWithUncostedItems) {
+      claim.assignCosts();
+    }
+    claimsWithUncostedItems.clear();
   }
 
   /**

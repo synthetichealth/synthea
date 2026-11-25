@@ -40,12 +40,14 @@ import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -969,6 +971,45 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes Mellitus", code.display);
+  }
+
+  @Test
+  public void wellness_procedure_after_delay_is_costed() throws Exception {
+    Module module = TestHelper.getFixture("wellness_procedure_after_delay.json");
+    simulateWellnessEncounter(module, person, time);
+    Encounter encounter = person.record.currentEncounter(time);
+
+    // The screening lasts longer than the rest of the time step, so the module waits in it.
+    assertFalse(module.process(person, time));
+    // At the end of the time step the encounter module ends the wellness encounter,
+    // which assigns the costs of its claim.
+    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    assertTrue(encounter.ended);
+    Claim claim = encounter.claim;
+    BigDecimal costWhenEnded = claim.getTotalClaimCost();
+    PlanRecord planRecord = person.coverage.getPlanRecordAtTime(time);
+    BigDecimal outOfPocketWhenEnded = planRecord.getOutOfPocketExpenses();
+
+    // In the next time step the delay is rewound and the follow-up procedure is recorded
+    // on the wellness encounter, after its costs were assigned.
+    assertTrue(module.process(person, time + Utilities.convertTime("days", 7)));
+    assertEquals(2, encounter.procedures.size());
+    assertEquals(2, claim.items.size());
+    Claim.ClaimEntry followUp = claim.items.get(1);
+    assertEquals("715252007", followUp.entry.codes.get(0).code);
+
+    // The follow-up is costed from its own code, and added to the claim and plan totals.
+    BigDecimal followUpCost = followUp.entry.getCost();
+    assertTrue(followUpCost.compareTo(Claim.ZERO_CENTS) > 0);
+    assertEquals(followUpCost, followUp.cost);
+    assertEquals(followUpCost, followUp.patientOutOfPocket);
+    assertEquals(costWhenEnded.add(followUpCost), claim.getTotalClaimCost());
+    assertEquals(outOfPocketWhenEnded.add(followUpCost), planRecord.getOutOfPocketExpenses());
+
+    // Assigning costs again does not count anything twice.
+    claim.assignCosts();
+    assertEquals(costWhenEnded.add(followUpCost), claim.getTotalClaimCost());
+    assertEquals(outOfPocketWhenEnded.add(followUpCost), planRecord.getOutOfPocketExpenses());
   }
 
   @Test
