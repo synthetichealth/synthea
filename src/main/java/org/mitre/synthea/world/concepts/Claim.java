@@ -287,6 +287,12 @@ public class Claim implements Serializable {
   public final UUID uuid;
   /** The plan record associated with the claim. */
   private final PlanRecord planRecord;
+  /** Whether costs have been assigned to the main entry of this claim. */
+  @JSONSkip
+  private boolean costsAssigned = false;
+  /** The number of line items, from the start of the list, that have been assigned costs. */
+  @JSONSkip
+  private int costedItemCount = 0;
 
   /**
    * Constructor of a Claim for an Entry.
@@ -323,21 +329,36 @@ public class Claim implements Serializable {
   public void addLineItem(Entry entry) {
     ClaimEntry claimEntry = new ClaimEntry(entry);
     this.items.add(claimEntry);
+    if (costsAssigned) {
+      // The claim's costs were already assigned (e.g. its encounter has ended). The item's codes
+      // are usually set after it is added, so its costs are assigned once that is done.
+      person.record.addClaimWithUncostedItems(this);
+    }
   }
 
   /**
-   * Assign costs between the payer and patient for all ClaimEntries in this claim.
+   * Assign costs between the payer and patient for all ClaimEntries in this claim that have
+   * not been assigned costs yet. The first call assigns costs to the main entry and all line
+   * items; later calls only assign costs to line items added since, so nothing is counted twice.
    */
   public void assignCosts() {
-    mainEntry.assignCosts(planRecord);
-    for (ClaimEntry item : items) {
-      item.assignCosts(planRecord);
+    ClaimCost newCosts = new ClaimCost();
+    if (!costsAssigned) {
+      mainEntry.assignCosts(planRecord);
+      newCosts.addCosts(mainEntry);
+      costsAssigned = true;
     }
+    for (int i = costedItemCount; i < items.size(); i++) {
+      ClaimEntry item = items.get(i);
+      item.assignCosts(planRecord);
+      newCosts.addCosts(item);
+    }
+    costedItemCount = items.size();
     recomputeTotals();
 
-    planRecord.incrementOutOfPocketExpenses(getTotalPatientCost());
-    planRecord.incrementPrimaryCoverage(getTotalCoveredCost());
-    planRecord.incrementSecondaryCoverage(getTotalPaidBySecondaryPayer());
+    planRecord.incrementOutOfPocketExpenses(newCosts.getPatientCost());
+    planRecord.incrementPrimaryCoverage(newCosts.getCoveredCost());
+    planRecord.incrementSecondaryCoverage(newCosts.paidBySecondaryPayer);
   }
 
   /**

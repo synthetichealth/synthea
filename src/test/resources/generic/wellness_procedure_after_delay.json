@@ -1,0 +1,44 @@
+{
+  "name": "Wellness Procedure After Delay",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wellness"
+    },
+    "Wellness": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Screening"
+    },
+    "Screening": {
+      "type": "Procedure",
+      "duration": {
+        "low": 15,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "171207006",
+          "display": "Depression screening (procedure)"
+        }
+      ],
+      "direct_transition": "Follow_Up"
+    },
+    "Follow_Up": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "715252007",
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -234,6 +234,9 @@ public abstract class State implements Cloneable, Serializable {
       this.entered = time;
     }
     boolean exit = process(person, time);
+    // If this state added line items to the claim of an encounter that has already ended,
+    // assign their costs now that the state has finished setting them up.
+    person.record.assignCostsToUncostedItems();
 
     if (exit) {
       // Delayable states return a special value for exited,
