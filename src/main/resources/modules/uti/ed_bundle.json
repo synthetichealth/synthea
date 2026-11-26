@@ -1068,8 +1068,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "788-0",
-              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
+              "code": "115742-9",
+              "display": "Erythrocytes [DistWidth] in Red Blood Cells by Standard deviation"
             }
           ],
           "range": {
@@ -1248,8 +1248,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "788-0",
-              "display": "Erythrocyte [DistWidth] in Blood by Automated count"
+              "code": "115742-9",
+              "display": "Erythrocytes [DistWidth] in Red Blood Cells by Standard deviation"
             }
           ],
           "range": {
@@ -1608,7 +1608,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -1826,7 +1826,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -2044,7 +2044,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -2172,7 +2172,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
