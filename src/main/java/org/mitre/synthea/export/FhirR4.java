@@ -1449,10 +1449,6 @@ public class FhirR4 {
     eob.addIdentifier()
         .setSystem("https://bluebutton.cms.gov/resources/variables/clm_id")
         .setValue(claimResource.getId());
-    // Hardcoded group id
-    eob.addIdentifier()
-        .setSystem("https://bluebutton.cms.gov/resources/identifier/claim-group")
-        .setValue("99999999999");
     eob.setClaim(new Reference().setReference(claimEntry.getFullUrl()));
     eob.setCreated(encounterResource.getPeriod().getEnd());
     eob.setType(claimResource.getType());
