@@ -8,6 +8,7 @@
     "• Activated clotting time ",
     "• Arterial blood gas ",
     "• Venous blood gas",
+    "The routine CABG gas reports use baseline specimen samplers to keep pH, carbon dioxide partial pressure, bicarbonate and venous total carbon dioxide internally consistent.",
     "• Magnesium",
     "• Gas and Carbon monoxide and Electrolytes panel - Arterial blood, which includes sodium, potassium, chloride, ionized calcium, glucose, hemoglobin, and lactate.",
     "",
@@ -38,11 +39,16 @@
           "display": "Activated clotting time (ACT) of Blood by Coagulation assay"
         }
       ],
-      "direct_transition": "Arterial_Blood_Gas",
+      "direct_transition": "Prepare_Arterial_Blood_Gas",
       "range": {
         "low": 110,
         "high": 130
       }
+    },
+    "Prepare_Arterial_Blood_Gas": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/sample_arterial_blood_gas",
+      "direct_transition": "Arterial_Blood_Gas"
     },
     "Arterial_Blood_Gas": {
       "type": "DiagnosticReport",
@@ -64,10 +70,7 @@
               "display": "pH of Arterial blood"
             }
           ],
-          "range": {
-            "low": 6.8,
-            "high": 7.3
-          }
+          "attribute": "cabg_arterial_blood_gas_ph"
         },
         {
           "category": "laboratory",
@@ -79,10 +82,7 @@
               "display": "Carbon dioxide [Partial pressure] in Arterial blood"
             }
           ],
-          "range": {
-            "low": 35,
-            "high": 45
-          }
+          "attribute": "cabg_arterial_blood_gas_pco2"
         },
         {
           "category": "laboratory",
@@ -109,10 +109,7 @@
               "display": "Bicarbonate [Moles/volume] in Arterial blood"
             }
           ],
-          "range": {
-            "low": 22,
-            "high": 27
-          }
+          "attribute": "cabg_arterial_blood_gas_bicarbonate"
         },
         {
           "category": "vital-signs",
@@ -132,6 +129,11 @@
           "vital_sign": "Oxygen Saturation"
         }
       ],
+      "direct_transition": "Prepare_Venous_Blood_Gas"
+    },
+    "Prepare_Venous_Blood_Gas": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/sample_venous_blood_gas",
       "direct_transition": "Venous Blood Gas"
     },
     "Venous Blood Gas": {
@@ -154,10 +156,7 @@
               "display": "pH of Venous blood"
             }
           ],
-          "range": {
-            "low": 7.31,
-            "high": 7.45
-          }
+          "attribute": "cabg_venous_blood_gas_ph"
         },
         {
           "category": "laboratory",
@@ -169,10 +168,7 @@
               "display": "Carbon dioxide [Partial pressure] in Venous blood"
             }
           ],
-          "range": {
-            "low": 37,
-            "high": 50
-          }
+          "attribute": "cabg_venous_blood_gas_pco2"
         },
         {
           "category": "laboratory",
@@ -199,10 +195,7 @@
               "display": "Bicarbonate [Moles/volume] in Venous blood"
             }
           ],
-          "range": {
-            "low": 22,
-            "high": 28
-          }
+          "attribute": "cabg_venous_blood_gas_bicarbonate"
         },
         {
           "category": "laboratory",
@@ -214,10 +207,7 @@
               "display": "Carbon dioxide, total [Moles/volume] in Venous blood"
             }
           ],
-          "range": {
-            "low": 0.5,
-            "high": 2
-          }
+          "attribute": "cabg_venous_blood_gas_total_co2"
         }
       ],
       "direct_transition": "Magnesium"

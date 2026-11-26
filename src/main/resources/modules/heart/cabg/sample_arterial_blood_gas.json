@@ -1,0 +1,68 @@
+{
+  "name": "sample_arterial_blood_gas",
+  "remarks": [
+    "Baseline arterial specimen for the routine CABG preoperative and operative gas reports. This sampler does not model an acid-base complication or replace disease-specific gas panels.",
+    "Sample pH within 7.35-7.45, then sample PCO2 conditionally within 35-45 mmHg while retaining the existing bicarbonate bounds of 22-27 mmol/L.",
+    "Use the Abbott i-STAT calculated bicarbonate relationship at 37 degrees C: HCO3 = 10^(pH + log10(PCO2) - 7.608). The coefficient below is 10^(pH - 7.608), so HCO3 = coefficient * PCO2.",
+    "Source: Abbott i-STAT CG4+ Cartridge Instructions for Use, page 3: https://www.globalpointofcare.abbott/content/dam/ardx/globalpointofcare/apoc/support/i-stat-1/cti-ifu/english-uk/ifu/765788-01B.pdf",
+    "The conditional PCO2 interval is [max(35, 22/coefficient), min(45, 27/coefficient)]; it is nonempty throughout the sampled pH interval. Draw one fraction within that interval rather than sampling mutually inconsistent analytes independently.",
+    "Each invocation refreshes all specimen attributes; report observations read the resulting snapshot without additional random draws. Oxygen partial pressure and saturation remain in the calling report."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Sample_pH"
+    },
+    "Sample_pH": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_ph",
+      "range": {
+        "low": 7.35,
+        "high": 7.45
+      },
+      "direct_transition": "Calculate_Bicarbonate_Coefficient"
+    },
+    "Calculate_Bicarbonate_Coefficient": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_coefficient",
+      "expression": "Power(10.0, #{cabg_arterial_blood_gas_ph} - 7.608)",
+      "direct_transition": "Calculate_Minimum_PCO2"
+    },
+    "Calculate_Minimum_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_min_pco2",
+      "expression": "if 22.0 / #{cabg_arterial_blood_gas_coefficient} > 35.0 then 22.0 / #{cabg_arterial_blood_gas_coefficient} else 35.0",
+      "direct_transition": "Calculate_Maximum_PCO2"
+    },
+    "Calculate_Maximum_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_max_pco2",
+      "expression": "if 27.0 / #{cabg_arterial_blood_gas_coefficient} < 45.0 then 27.0 / #{cabg_arterial_blood_gas_coefficient} else 45.0",
+      "direct_transition": "Sample_PCO2_Fraction"
+    },
+    "Sample_PCO2_Fraction": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_fraction",
+      "range": {
+        "low": 0,
+        "high": 1
+      },
+      "direct_transition": "Calculate_PCO2"
+    },
+    "Calculate_PCO2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_pco2",
+      "expression": "#{cabg_arterial_blood_gas_min_pco2} + #{cabg_arterial_blood_gas_fraction} * (#{cabg_arterial_blood_gas_max_pco2} - #{cabg_arterial_blood_gas_min_pco2})",
+      "direct_transition": "Calculate_Bicarbonate"
+    },
+    "Calculate_Bicarbonate": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_blood_gas_bicarbonate",
+      "expression": "#{cabg_arterial_blood_gas_coefficient} * #{cabg_arterial_blood_gas_pco2}",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

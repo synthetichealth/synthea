@@ -2,7 +2,8 @@
   "name": "labs_common",
   "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
-    "Reuseable lab block."
+    "Reuseable lab block.",
+    "The routine CABG arterial gas panel uses a shared baseline specimen sampler so pH, carbon dioxide partial pressure and calculated bicarbonate describe the same specimen."
   ],
   "states": {
     "Initial": {
@@ -11,6 +12,11 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Prepare_Arterial_Blood_Gas": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/sample_arterial_blood_gas",
+      "direct_transition": "Arterial_Blood_Gas"
     },
     "Arterial_Blood_Gas": {
       "type": "DiagnosticReport",
@@ -32,10 +38,7 @@
               "display": "pH of Arterial blood"
             }
           ],
-          "range": {
-            "low": 6.8,
-            "high": 7.3
-          }
+          "attribute": "cabg_arterial_blood_gas_ph"
         },
         {
           "category": "laboratory",
@@ -47,10 +50,7 @@
               "display": "Carbon dioxide [Partial pressure] in Arterial blood"
             }
           ],
-          "range": {
-            "low": 35,
-            "high": 45
-          }
+          "attribute": "cabg_arterial_blood_gas_pco2"
         },
         {
           "category": "laboratory",
@@ -77,10 +77,7 @@
               "display": "Bicarbonate [Moles/volume] in Arterial blood"
             }
           ],
-          "range": {
-            "low": 22,
-            "high": 27
-          }
+          "attribute": "cabg_arterial_blood_gas_bicarbonate"
         },
         {
           "category": "vital-signs",
@@ -655,8 +652,8 @@
             }
           ],
           "range": {
-            "low": 6,
-            "high": 15
+            "low": 0.3,
+            "high": 1.2
           }
         },
         {
@@ -834,7 +831,7 @@
         "low": 25,
         "high": 40
       },
-      "direct_transition": "Arterial_Blood_Gas"
+      "direct_transition": "Prepare_Arterial_Blood_Gas"
     },
     "Record_LipidPanel": {
       "type": "DiagnosticReport",
