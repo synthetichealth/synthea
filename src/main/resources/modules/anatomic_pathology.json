@@ -1,0 +1,213 @@
+{
+  "name": "Anatomic Pathology",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Adult Guard"
+    },
+    "Adult Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Case Chance"
+    },
+    "Case Chance": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.6,
+          "transition": "Pathology Encounter"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Case Interval"
+        }
+      ]
+    },
+    "Case Interval": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "years"
+      },
+      "direct_transition": "Case Chance"
+    },
+    "Pathology Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "http://synthea.mitre.org/pathology/encounter",
+          "code": "AP",
+          "display": "Anatomic pathology encounter"
+        }
+      ],
+      "direct_transition": "Select Subspecialty"
+    },
+    "Select Subspecialty": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Subspecialty Male"
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "transition": "Subspecialty Female"
+        },
+        {
+          "transition": "Subspecialty Female"
+        }
+      ]
+    },
+    "Subspecialty Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "distribution": 0.04, "transition": "Breast Report" },
+        { "distribution": 0.18, "transition": "GI Report" },
+        { "distribution": 0.14, "transition": "GU Report" },
+        { "distribution": 0.11, "transition": "Lung Report" },
+        { "distribution": 0.06, "transition": "Thoracic Report" },
+        { "distribution": 0.08, "transition": "Heme Report" },
+        { "distribution": 0.06, "transition": "Neuro Report" },
+        { "distribution": 0.06, "transition": "Renal Report" },
+        { "distribution": 0.11, "transition": "Cytology Report" },
+        { "distribution": 0.04, "transition": "Eye Report" },
+        { "distribution": 0.12, "transition": "Head Neck Report" }
+      ]
+    },
+    "Subspecialty Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "distribution": 0.18, "transition": "Breast Report" },
+        { "distribution": 0.16, "transition": "GI Report" },
+        { "distribution": 0.08, "transition": "GU Report" },
+        { "distribution": 0.10, "transition": "Lung Report" },
+        { "distribution": 0.05, "transition": "Thoracic Report" },
+        { "distribution": 0.08, "transition": "Heme Report" },
+        { "distribution": 0.06, "transition": "Neuro Report" },
+        { "distribution": 0.05, "transition": "Renal Report" },
+        { "distribution": 0.12, "transition": "Cytology Report" },
+        { "distribution": 0.04, "transition": "Eye Report" },
+        { "distribution": 0.08, "transition": "Head Neck Report" }
+      ]
+    },
+    "Breast Report": {
+      "type": "PathologyReport",
+      "subspecialty": "breast",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "breast", "display": "Breast pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Lung Report": {
+      "type": "PathologyReport",
+      "subspecialty": "lung",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "lung", "display": "Pulmonary pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "GI Report": {
+      "type": "PathologyReport",
+      "subspecialty": "gi",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "gi", "display": "Gastrointestinal pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "GU Report": {
+      "type": "PathologyReport",
+      "subspecialty": "gu",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "gu", "display": "Genitourinary pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Renal Report": {
+      "type": "PathologyReport",
+      "subspecialty": "renal",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "renal", "display": "Renal pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Neuro Report": {
+      "type": "PathologyReport",
+      "subspecialty": "neuro",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "neuro", "display": "Neuropathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Heme Report": {
+      "type": "PathologyReport",
+      "subspecialty": "heme",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "heme", "display": "Hematopathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Cytology Report": {
+      "type": "PathologyReport",
+      "subspecialty": "cytology",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "cytology", "display": "Cytopathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Thoracic Report": {
+      "type": "PathologyReport",
+      "subspecialty": "thoracic",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "thoracic", "display": "Thoracic pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Eye Report": {
+      "type": "PathologyReport",
+      "subspecialty": "eye",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "eye", "display": "Ophthalmic pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "Head Neck Report": {
+      "type": "PathologyReport",
+      "subspecialty": "head_neck",
+      "codes": [
+        { "system": "LOINC", "code": "11502-2", "display": "Surgical pathology report" },
+        { "system": "http://synthea.mitre.org/pathology/subspecialty", "code": "head_neck", "display": "Head and neck pathology" }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Case Interval"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
