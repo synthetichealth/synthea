@@ -239,17 +239,23 @@ public class ExpressionProcessor {
 
   /**
    * Evaluates the provided expression given the simulation results.
+   * Model parameters contain samples at or after the lead time, including an exact match.
    * @param results table of simulation results
    * @param leadTime lead time in seconds before using table values
    * @return BigDecimal result value
+   * @throws IllegalArgumentException if a referenced model parameter is missing or has no
+   *     samples at or after the lead time
    */
   public BigDecimal evaluateFromSimResults(MultiTable results, double leadTime) {
 
     // Create our map of expression parameters
     Map<String,Object> expParams = new HashMap<String,Object>();
 
-    // Get the index past the lead time to start getting values
+    // Start at an exact match or the first sample after the lead time.
     int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
+    if (leadTimeIdx < 0) {
+      leadTimeIdx = -leadTimeIdx - 1;
+    }
 
     // Add all model outputs to the expression parameter map as lists of decimals
     for (String param : getParamNames()) {
@@ -259,6 +265,10 @@ public class ExpressionProcessor {
       if (col == null) {
         throw new IllegalArgumentException("Invalid model parameter \"" + param
             + "\" in expression \"" + expression + "\".");
+      }
+      if (leadTimeIdx >= col.getRowCount()) {
+        throw new IllegalArgumentException("No simulation samples at or after lead time "
+            + leadTime + " for expression \"" + expression + "\".");
       }
 
       for (int i = leadTimeIdx; i < col.getRowCount(); i++) {
