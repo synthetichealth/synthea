@@ -1,0 +1,40 @@
+{
+  "name": "Wellness After Delay",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Annual_Delay"
+    },
+    "Annual_Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Wellness"
+    },
+    "Wellness": {
+      "type": "Encounter",
+      "wellness": true,
+      "direct_transition": "Examination"
+    },
+    "Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410006001",
+          "display": "Digital examination of rectum (procedure)"
+        }
+      ],
+      "direct_transition": "End_Wellness"
+    },
+    "End_Wellness": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

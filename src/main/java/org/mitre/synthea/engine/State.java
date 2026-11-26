@@ -951,6 +951,12 @@ public abstract class State implements Cloneable, Serializable {
         if (person.hasCurrentEncounter()
             && person.getCurrentEncounterModule().equals(EncounterModule.NAME)) {
           HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+          // A delay may rewind time before the reserved wellness encounter started.
+          // Wait until that encounter is available instead of entering a historical visit
+          // (or the future first visit returned by currentEncounter's fallback).
+          if (encounter.ended || encounter.start > time) {
+            return false;
+          }
           entry = encounter;
           String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + module.name;
           if (person.attributes.containsKey(activeKey)) {
