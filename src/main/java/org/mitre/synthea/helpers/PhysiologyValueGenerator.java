@@ -21,6 +21,7 @@ import org.mitre.synthea.helpers.physiology.PreGenerator.PreGeneratorArg;
 import org.mitre.synthea.helpers.physiology.SimRunner;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -233,7 +234,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     }
 
     // Add type descriptions so Yaml knows how to instantiate our Lists
-    Constructor constructor = new Constructor(PhysiologyGeneratorConfig.class);
+    Constructor constructor = new Constructor(PhysiologyGeneratorConfig.class, new LoaderOptions());
     TypeDescription configDescription = new TypeDescription(PhysiologyGeneratorConfig.class);
     configDescription.addPropertyParameters("inputs", IoMapper.class);
     configDescription.addPropertyParameters("outputs", IoMapper.class);

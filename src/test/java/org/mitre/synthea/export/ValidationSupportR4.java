@@ -171,6 +171,26 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
           for (ConceptSetComponent csc : vscc.getInclude()) {
             if ((theCodeSystem == null
                 || (theCodeSystem != null && theCodeSystem.equals(csc.getSystem()))))  {
+              // The local terminology service cannot evaluate custom concept properties.
+              // Resolve equality filters only when the bundled CodeSystem supplies the property.
+              CodeSystem cs = (CodeSystem) this.fetchCodeSystem(csc.getSystem());
+              if (cs != null && csc.hasFilter() && !vscc.hasExclude()) {
+                for (ConceptDefinitionComponent concept : cs.getConcept()) {
+                  if (concept.hasCode() && concept.getCode().equals(theCode)
+                      && csc.getFilter().stream().allMatch(
+                          filter -> filter.getOp() == ValueSet.FilterOperator.EQUAL
+                              && concept.getProperty().stream().anyMatch(property ->
+                                  filter.getProperty().equals(property.getCode())
+                                      && property.hasValue() && filter.getValue().equals(
+                                          property.getValue().primitiveValue())))) {
+                    result = new CodeValidationResult();
+                    result.setCode(theCode);
+                    result.setDisplay(concept.getDisplay());
+                    result.setMessage("Included");
+                    result.setSeverity(IssueSeverity.INFORMATION);
+                  }
+                }
+              }
               for (ConceptReferenceComponent crc : csc.getConcept())  {
                 if (crc.hasCode() && crc.getCode().equals(theCode)) {
                   result = new CodeValidationResult();
