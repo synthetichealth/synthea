@@ -96,6 +96,30 @@ Some settings can be changed in `./src/main/resources/synthea.properties`.
 
 Synthea<sup>TM</sup> will output patient records in C-CDA and FHIR formats in `./output`.
 
+### Lookup-table matching
+
+Lookup-table transitions use an immutable age/time rectangle quadtree by default.
+Exact person attributes select a group of rules, then the tree finds rules whose
+inclusive age and time ranges contain the person and simulation time. Rules that
+cross a split remain at the parent, so each rule is stored once. Age-only and
+time-only tables use a split along the available dimension.
+
+Set `generate.lookup_tables.implementation` before modules are loaded to choose
+`quadtree`, `age_buckets` (five-year age buckets), or `scan` (the reference range
+scan). For example, pass `--generate.lookup_tables.implementation=scan` on the
+command line. `generate.lookup_tables` continues to specify the CSV directory.
+
+Matching retains duplicate and overlapping rules in CSV order. Transitions use
+the first matching row's probability vector, or the JSON default probabilities
+when no row matches. Probability sampling and random draw counts are unchanged.
+This makes overlap selection deterministic: the previous containment-based hash
+keys could discard nested rows or select overlaps according to hash-map order.
+Results can therefore change at overlapping boundaries in existing tables.
+
+Tables are cached by full path, destination-state schema and implementation,
+with their attribute schema and index shared together for concurrent reads.
+Changes to an already cached CSV at the same path take effect on the next run.
+
 ### Synthea<sup>TM</sup> GraphViz
 Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 ```
