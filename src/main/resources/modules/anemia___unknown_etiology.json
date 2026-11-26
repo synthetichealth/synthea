@@ -102,6 +102,16 @@
               }
             ]
           }
+        },
+        {
+          "transition": "Other_Males",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "Other_Females"
         }
       ]
     },
@@ -252,6 +262,68 @@
         {
           "transition": "Terminal",
           "distribution": 0.9075
+        }
+      ]
+    },
+    "Other_Males": {
+      "type": "Simple",
+      "remarks": [
+        "Default, for men without their own figures (asian, native, other, hawaiian): the White, Black and Hispanic men's figures above weighted by their shares of the 2020 US population (non-Hispanic White 57.84%, Black 12.05%, Hispanic 18.73%; 2020 Census, table P2), 4.9% in all. Without it these men followed the last branch, Hispanic women's figures (9.3%).",
+        "https://data.census.gov/table/DECENNIALPL2020.P2?g=010XX00US",
+        "Anemia among people outside these three groups is close to the US average: 6.1% (95% CI 5.0-7.3) against 5.6% for the whole population (Le 2016, NHANES 2003-2012, table 1).",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5112924/"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.0065,
+          "transition": "Delay_0_14"
+        },
+        {
+          "distribution": 0.0053,
+          "transition": "Delay_15-49"
+        },
+        {
+          "distribution": 0.0224,
+          "transition": "Delay_50_79"
+        },
+        {
+          "distribution": 0.0149,
+          "transition": "Delay_80_85"
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9509
+        }
+      ]
+    },
+    "Other_Females": {
+      "type": "Simple",
+      "remarks": [
+        "Default, for women without their own figures (asian, native, other, hawaiian): the White, Black and Hispanic women's figures above weighted by their shares of the 2020 US population (non-Hispanic White 57.84%, Black 12.05%, Hispanic 18.73%; 2020 Census, table P2), 9.3% in all.",
+        "https://data.census.gov/table/DECENNIALPL2020.P2?g=010XX00US",
+        "Anemia among people outside these three groups is close to the US average: 6.1% (95% CI 5.0-7.3) against 5.6% for the whole population (Le 2016, NHANES 2003-2012, table 1).",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5112924/"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.0094,
+          "transition": "Delay_0_14"
+        },
+        {
+          "distribution": 0.0458,
+          "transition": "Delay_15-49"
+        },
+        {
+          "distribution": 0.0267,
+          "transition": "Delay_50_79"
+        },
+        {
+          "distribution": 0.0114,
+          "transition": "Delay_80_85"
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9067
         }
       ]
     },
