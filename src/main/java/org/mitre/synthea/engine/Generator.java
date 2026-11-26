@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -403,6 +404,7 @@ public class Generator {
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
+    AtomicReference<Throwable> taskFailure = new AtomicReference<>();
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;
@@ -430,7 +432,7 @@ public class Generator {
         for (int i = 0; i < initialPopulation.size(); i++) {
           final int index = i;
           final Person p = initialPopulation.get(i);
-          threadPool.submit(() -> updateRecordExportPerson(p, index));
+          threadPool.submit(trackFailure(() -> updateRecordExportPerson(p, index), taskFailure));
         }
       }
     } else if (this.options.singlePersonSeed == null) {
@@ -438,7 +440,7 @@ public class Generator {
       for (int i = 0; i < this.options.population; i++) {
         final int index = i;
         final long seed = this.populationRandom.randLong();
-        threadPool.submit(() -> generatePerson(index, seed));
+        threadPool.submit(trackFailure(() -> generatePerson(index, seed), taskFailure));
       }
     } else {
       // we have a single fixed seed to generate, don't bother with threadpool
@@ -453,6 +455,13 @@ public class Generator {
     } catch (InterruptedException e) {
       System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
       threadPool.shutdownNow();
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException("Population generation interrupted", e);
+    }
+
+    Throwable failure = taskFailure.get();
+    if (failure != null) {
+      throw new IllegalStateException("Population generation failed", failure);
     }
 
     // Save a snapshot of the generated population using Java Serialization
@@ -487,6 +496,23 @@ public class Generator {
             FORMATTED_DONATION_LINK,
             ANSI_RESET,
             DONATION_LINK);
+  }
+
+  /**
+   * Preserve the first background failure so run cannot report a partial population as complete.
+   * @param task Patient generation or snapshot-update task
+   * @param firstFailure Shared failure for this run
+   * @return A task that records and rethrows unchecked failures
+   */
+  private static Runnable trackFailure(Runnable task, AtomicReference<Throwable> firstFailure) {
+    return () -> {
+      try {
+        task.run();
+      } catch (RuntimeException | Error failure) {
+        firstFailure.compareAndSet(null, failure);
+        throw failure;
+      }
+    };
   }
 
   /**
