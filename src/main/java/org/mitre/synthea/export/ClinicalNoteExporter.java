@@ -78,26 +78,27 @@ public class ClinicalNoteExporter {
     // encounter.
     long encounterTime = encounter.start;
     for (Encounter pastEncounter : person.record.encounters) {
-      if (pastEncounter == encounter || pastEncounter.stop >= encounterTime) {
+      // Earlier encounters can overlap this one; entry dates determine what was active.
+      if (pastEncounter == encounter) {
         break;
       }
       for (Entry allergy : pastEncounter.allergies) {
-        if (allergy.stop != 0L || allergy.stop > encounterTime) {
+        if (isActive(allergy, encounterTime)) {
           activeAllergies.add(allergy.codes.get(0).display);
         }
       }
       for (Entry condition : pastEncounter.conditions) {
-        if (condition.stop != 0L || condition.stop > encounterTime) {
+        if (isActive(condition, encounterTime)) {
           activeConditions.add(condition.codes.get(0).display);
         }
       }
       for (Medication medication : pastEncounter.medications) {
-        if (medication.stop != 0L || medication.stop > encounterTime) {
+        if (isActive(medication, encounterTime)) {
           activeMedications.add(medication.codes.get(0).display);
         }
       }
       for (Procedure procedure : pastEncounter.procedures) {
-        if (procedure.stop != 0L || procedure.stop > encounterTime) {
+        if (isActive(procedure, encounterTime)) {
           activeProcedures.add(procedure.codes.get(0).display);
         }
       }
@@ -154,5 +155,9 @@ public class ClinicalNoteExporter {
       e.printStackTrace();
     }
     return writer.toString();
+  }
+
+  private static boolean isActive(Entry entry, long time) {
+    return entry.start <= time && (entry.stop == 0L || entry.stop > time);
   }
 }
