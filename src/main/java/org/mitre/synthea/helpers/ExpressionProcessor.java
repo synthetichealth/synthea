@@ -347,16 +347,16 @@ public class ExpressionProcessor {
       if (!typeKey.isEmpty()) {
         switch (typeKey) {
           case "d":
-            paramTypeMap.put(cqlParam, "Decimal");
+            paramTypeMap.put(param, "Decimal");
             break;
           case "l":
-            paramTypeMap.put(cqlParam, "List<Decimal>");
+            paramTypeMap.put(param, "List<Decimal>");
             break;
           case "b":
-            paramTypeMap.put(cqlParam, "Boolean");
+            paramTypeMap.put(param, "Boolean");
             break;
           case "s":
-            paramTypeMap.put(cqlParam, "String");
+            paramTypeMap.put(param, "String");
             break;
           default:
             break;
