@@ -59,6 +59,10 @@ public final class LifecycleModule extends Module {
   public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
   /** Attribute key for the age at which a person quit alcoholism */
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
+  /** Age at which it is decided whether a person smokes */
+  public static final int SMOKING_START_AGE = 16;
+  /** Age at which it is decided whether a person is an alcoholic */
+  public static final int ALCOHOLISM_START_AGE = 25;
   /** Attribute key for a person's probability to follow doctor's orders and recommendations */
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
@@ -1070,7 +1074,8 @@ public final class LifecycleModule extends Module {
   private static void startSmoking(Person person, long time) {
     // 9/10 smokers start before age 18. We will use 16.
     // http://www.cdc.gov/tobacco/data_statistics/fact_sheets/youth_data/tobacco_use/
-    if (person.attributes.get(Person.SMOKER) == null && person.ageInYears(time) == 16) {
+    if (person.attributes.get(Person.SMOKER) == null
+        && person.ageInYears(time) == SMOKING_START_AGE) {
       int year = Utilities.getYear(time);
       Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
       person.attributes.put(Person.SMOKER, smoker);
@@ -1105,7 +1110,8 @@ public final class LifecycleModule extends Module {
     // there are various types of alcoholics with different characteristics
     // including age of onset of dependence. we pick 25 as a starting point
     // https://www.therecoveryvillage.com/alcohol-abuse/types-alcoholics/
-    if (person.attributes.get(Person.ALCOHOLIC) == null && person.ageInYears(time) == 25) {
+    if (person.attributes.get(Person.ALCOHOLIC) == null
+        && person.ageInYears(time) == ALCOHOLISM_START_AGE) {
       // assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);

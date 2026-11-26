@@ -137,10 +137,20 @@ public class ClinicalNoteExporter {
       person.attributes.put("ehr_note", encounter.note);
     }
     person.attributes.put("time", encounter.start);
-    if (person.attributes.containsKey(LifecycleModule.QUIT_SMOKING_AGE)) {
-      person.attributes.put("quit_smoking_age",
-          person.attributes.get(LifecycleModule.QUIT_SMOKING_AGE));
+    // The smoking and alcoholism attributes hold their values at the end of the simulation,
+    // so work out what they were at the time of this encounter.
+    int age = person.ageInYears(encounter.start);
+    Integer quitSmokingAge = (Integer) person.attributes.get(LifecycleModule.QUIT_SMOKING_AGE);
+    person.attributes.put("ehr_smoker", habitActiveAtAge(age, LifecycleModule.SMOKING_START_AGE,
+        person.attributes.get(Person.SMOKER), quitSmokingAge));
+    if (quitSmokingAge != null && age >= quitSmokingAge) {
+      person.attributes.put("ehr_quit_smoking_age", quitSmokingAge);
+    } else {
+      person.attributes.remove("ehr_quit_smoking_age");
     }
+    person.attributes.put("ehr_alcoholic", habitActiveAtAge(age,
+        LifecycleModule.ALCOHOLISM_START_AGE, person.attributes.get(Person.ALCOHOLIC),
+        (Integer) person.attributes.get(LifecycleModule.QUIT_ALCOHOLISM_AGE)));
     person.attributes.put("race_lookup", RaceAndEthnicity.LOOK_UP_CDC_RACE);
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
     person.attributes.put("ethnicity_display_lookup",
@@ -154,5 +164,26 @@ public class ClinicalNoteExporter {
       e.printStackTrace();
     }
     return writer.toString();
+  }
+
+  /**
+   * Whether a habit that LifecycleModule decides at a fixed age, and that the person
+   * may quit later, was active at the given age.
+   *
+   * @param age Age of the person at the encounter.
+   * @param startAge Age at which LifecycleModule decides whether the person has the habit.
+   * @param finalValue Value of the habit attribute at the end of the simulation.
+   * @param quitAge Age at which the person quit the habit, or null if they never did.
+   * @return true if the person had the habit at the given age.
+   */
+  private static boolean habitActiveAtAge(int age, int startAge, Object finalValue,
+      Integer quitAge) {
+    if (age < startAge) {
+      return false;
+    }
+    if (quitAge != null) {
+      return age < quitAge;
+    }
+    return Boolean.TRUE.equals(finalValue);
   }
 }
