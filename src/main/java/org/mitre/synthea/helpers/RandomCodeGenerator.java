@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -176,10 +175,11 @@ public abstract class RandomCodeGenerator {
         ValueSetExpansionComponent expansion = valueSet.getExpansion();
 
         validateExpansion(expansion);
-        List<ValueSetExpansionContainsComponent> contains = expansion.getContains();
-        List<Code> containsCodes = contains.stream()
-            .map(c -> new Code(c.getSystem(), c.getCode(), c.getDisplay()))
-            .collect(Collectors.toList());
+        List<Code> containsCodes = new ArrayList<>();
+        addExpansionCodes(expansion.getContains(), containsCodes);
+        if (containsCodes.isEmpty()) {
+          throw new RuntimeException("ValueSet expansion does not contain any codes");
+        }
         codeListCache.put(valueSetUri, containsCodes);
 
       } else if (valueSet.hasCompose()) {
@@ -213,8 +213,17 @@ public abstract class RandomCodeGenerator {
     if (expansion.getContains() == null
         || expansion.getContains().isEmpty()) {
       throw new RuntimeException("ValueSet expansion does not contain any codes");
-    } else if (expansion.getTotal() == 0) {
-      throw new RuntimeException("No total element in ValueSet expand result");
+    }
+  }
+
+  /** Collect selectable codes from both flat and hierarchical expansions. */
+  private static void addExpansionCodes(List<ValueSetExpansionContainsComponent> contains,
+      List<Code> codes) {
+    for (ValueSetExpansionContainsComponent concept : contains) {
+      if (!concept.getAbstract()) {
+        codes.add(new Code(concept.getSystem(), concept.getCode(), concept.getDisplay()));
+      }
+      addExpansionCodes(concept.getContains(), codes);
     }
   }
 

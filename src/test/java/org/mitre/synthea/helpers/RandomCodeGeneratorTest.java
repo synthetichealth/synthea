@@ -67,16 +67,16 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenNoTotal() throws IOException {
-    prepareServer("noTotal.ValueSet.json", false);
+  public void throwsWhenExpansionIsExplicitlyEmpty() throws IOException {
+    prepareServer("emptyExpansion.ValueSet.json", false);
 
     try {
       RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
     } catch (RuntimeException e) {
-      Assert.assertEquals("No total element in ValueSet expand result", e.getMessage());
+      Assert.assertEquals("ValueSet expansion does not contain any codes", e.getMessage());
       return;
     }
-    Assert.fail("Should have thrown a no total element exception");
+    Assert.fail("Should have thrown an empty expansion exception");
   }
 
   @Test
