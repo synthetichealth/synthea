@@ -1,0 +1,6 @@
+# Ignore build outputs and local cache
+build/
+output/
+.gradle/
+*.log
+*.tmp
