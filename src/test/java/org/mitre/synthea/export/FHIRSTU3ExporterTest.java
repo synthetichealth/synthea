@@ -21,6 +21,7 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Goal;
 import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
@@ -371,6 +372,40 @@ public class FHIRSTU3ExporterTest {
         }
       }
     }
+  }
+
+  @Test
+  public void testCarePlanGoalIdsAreStable() throws Exception {
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
+    Provider mock = Mockito.mock(Provider.class);
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
+    p.setProvider(EncounterType.WELLNESS, mock);
+    p.record.provider = mock;
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = mock;
+
+    Module module = Module.getModuleByPath("hypertension");
+    State plan = module.getState("LifeStyle_Modifications_Hypertension_CarePlan");
+    assertTrue(plan.process(p, 0));
+
+    List<List<String>> runs = new ArrayList<List<String>>();
+    for (int i = 0; i < 2; i++) {
+      List<String> goalUrls = new ArrayList<String>();
+      for (BundleEntryComponent entry : FhirStu3.convertToFHIR(p, 0).getEntry()) {
+        if (entry.getResource() instanceof Goal) {
+          goalUrls.add(entry.getFullUrl());
+        }
+      }
+      runs.add(goalUrls);
+    }
+    assertEquals(2, runs.get(0).size());
+    assertEquals(runs.get(0), runs.get(1));
   }
 
   @Test

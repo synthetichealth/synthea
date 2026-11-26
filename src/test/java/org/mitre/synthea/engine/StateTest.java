@@ -10,7 +10,13 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.withSettings;
 
+import com.google.gson.JsonObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1530,6 +1536,50 @@ public class StateTest {
     Code activity = cp.activities.iterator().next();
     assertEquals("160670007", activity.code);
     assertEquals("Diabetic diet", activity.display);
+  }
+
+  @Test
+  public void careplan_start_with_goals() throws Exception {
+    Module module = Module.getModuleByPath("hypertension");
+    simulateWellnessEncounter(module, person, time);
+
+    State plan = module.getState("LifeStyle_Modifications_Hypertension_CarePlan");
+    assertTrue(plan.process(person, time));
+
+    HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
+    assertCarePlanGoals(cp);
+  }
+
+  @Test
+  public void careplan_start_goals_survive_serialization() throws Exception {
+    Module module = Module.getModuleByPath("hypertension");
+    State plan = module.getState("LifeStyle_Modifications_Hypertension_CarePlan").clone();
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ObjectOutputStream oos = new ObjectOutputStream(baos);
+    oos.writeObject(plan);
+    oos.close();
+    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+    State rehydrated = (State) ois.readObject();
+    ois.close();
+
+    simulateWellnessEncounter(module, person, time);
+    assertTrue(rehydrated.process(person, time));
+
+    HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
+    assertEquals("443402002", cp.codes.get(0).code);
+    assertEquals(4, cp.activities.size());
+    assertCarePlanGoals(cp);
+  }
+
+  private void assertCarePlanGoals(HealthRecord.CarePlan cp) {
+    List<String> goals = new ArrayList<String>();
+    for (JsonObject goal : cp.goals) {
+      goals.add(goal.get("text").getAsString());
+    }
+    assertEquals(2, goals.size());
+    assertEquals("Maintain blood pressure below 140/90 mm[Hg]", goals.get(0));
+    assertEquals("Reduce sodium intake to no more than 2,400 mg/day", goals.get(1));
   }
 
   @Test

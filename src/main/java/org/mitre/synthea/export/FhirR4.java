@@ -2790,10 +2790,14 @@ public class FhirR4 {
     }
 
 
-    for (JsonObject goal : carePlan.goals) {
-      BundleEntryComponent goalEntry =
-          careGoal(person, bundle, personEntry, carePlan.start, goalStatus, goal);
-      careplanResource.addGoal().setReference(goalEntry.getFullUrl());
+    if (shouldExport(Goal.class)) {
+      // if goals are not exported, we can't reference them
+      int goalIndex = 0;
+      for (JsonObject goal : carePlan.goals) {
+        BundleEntryComponent goalEntry =
+            careGoal(person, bundle, personEntry, carePlan, goalIndex++, goalStatus, goal);
+        careplanResource.addGoal().setReference(goalEntry.getFullUrl());
+      }
     }
 
     careplanResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
@@ -2812,7 +2816,7 @@ public class FhirR4 {
    */
   private static BundleEntryComponent careGoal(
       Person person, Bundle bundle,
-      BundleEntryComponent personEntry, long carePlanStart,
+      BundleEntryComponent personEntry, CarePlan carePlan, int goalIndex,
       CodeableConcept goalStatus, JsonObject goal) {
 
     Goal goalResource = new Goal();
@@ -2860,7 +2864,7 @@ public class FhirR4 {
       goalResource.setDescription(descriptionCodeableConcept);
     }
     goalResource.addTarget().setMeasure(goalResource.getDescription())
-        .setDue(new DateType(new Date(carePlanStart + Utilities.convertTime("days", 30))));
+        .setDue(new DateType(new Date(carePlan.start + Utilities.convertTime("days", 30))));
 
     if (goal.has("addresses")) {
       for (JsonElement reasonElement : goal.get("addresses").getAsJsonArray()) {
@@ -2882,10 +2886,8 @@ public class FhirR4 {
       }
     }
 
-    // note: this ID logic assumes the person will not have 2 careplans
-    // that start at the same timestep with the same description
-    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
-        "CareGoal for " + goalResource.getDescription());
+    String resourceID = ExportHelper.buildUUID(person, carePlan.start,
+        "CareGoal " + goalIndex + " for CarePlan " + carePlan.uuid);
 
     return newEntry(bundle, goalResource, resourceID);
   }
