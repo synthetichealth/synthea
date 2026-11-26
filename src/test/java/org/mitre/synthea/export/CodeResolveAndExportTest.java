@@ -84,6 +84,7 @@ public class CodeResolveAndExportTest {
     TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Config.set("exporter.fhir.export", "true");
+    Config.set("exporter.fhir_r5.export", "true");
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
     Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");

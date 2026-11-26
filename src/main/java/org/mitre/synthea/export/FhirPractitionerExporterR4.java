@@ -68,6 +68,8 @@ public abstract class FhirPractitionerExporterR4 {
         }
       }
 
+      BundleExporter.export(bundle, Exporter.SupportedFhirVersion.R4);
+
       boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
       File outputFolder = Exporter.getOutputFolder("fhir", null);
       IParser parser = FhirR4.getContext().newJsonParser();

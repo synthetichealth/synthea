@@ -278,9 +278,21 @@ public class FhirStu3 {
    */
   public static String convertToFHIRJson(Person person, long stopTime) {
     Bundle bundle = convertToFHIR(person, stopTime);
+    return convertToFHIRJson(bundle);
+  }
+
+  /**
+   * Convert the given FHIR Bundle into a JSON String.
+   *
+   * @param fhirBundle
+   *      FHIR Bundle to convert to JSON
+   * @return String containing a JSON representation of a FHIR Bundle containing the Person's health
+   *         record
+   */
+  public static String convertToFHIRJson(Bundle fhirBundle) {
     Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
     String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(pretty)
-        .encodeResourceToString(bundle);
+        .encodeResourceToString(fhirBundle);
     return bundleJson;
   }
 

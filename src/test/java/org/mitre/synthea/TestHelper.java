@@ -111,6 +111,7 @@ public abstract class TestHelper {
     Config.set("exporter.metadata.export", "false");
     Config.set("exporter.ccda.export", "false");
     Config.set("exporter.fhir.export", "false");
+    Config.set("exporter.fhir_r5.export", "false");
     Config.set("exporter.fhir_stu3.export", "false");
     Config.set("exporter.fhir_dstu2.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
@@ -118,10 +119,13 @@ public abstract class TestHelper {
     Config.set("exporter.fhir.included_resources", "");
     Config.set("exporter.fhir.excluded_resources", "");
     Config.set("exporter.groups.fhir.export", "false");
+    Config.set("exporter.groups.fhir_r5.export", "false");
     Config.set("exporter.hospital.fhir.export", "false");
+    Config.set("exporter.hospital.fhir_r5.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");
     Config.set("exporter.hospital.fhir_dstu2.export", "false");
     Config.set("exporter.practitioner.fhir.export", "false");
+    Config.set("exporter.practitioner.fhir_r5.export", "false");
     Config.set("exporter.practitioner.fhir_stu3.export", "false");
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
     Config.set("exporter.json.export", "false");
