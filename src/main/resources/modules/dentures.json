@@ -119,7 +119,7 @@
     },
     "Finish_Dental_x_ray_system": {
       "type": "DeviceEnd",
-      "device": "Dental x-ray system",
+      "device": "Dental_x_ray_system",
       "direct_transition": "Dental Impression Supplies"
     },
     "Dental Impression Supplies": {
@@ -523,7 +523,7 @@
     },
     "Exit_Operating_room": {
       "type": "DeviceEnd",
-      "device": "Operating room",
+      "device": "Operating_room",
       "direct_transition": "Postoperative_care_for_dental_procedure"
     },
     "Postoperative_care_for_dental_procedure": {

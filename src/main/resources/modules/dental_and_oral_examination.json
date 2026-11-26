@@ -678,7 +678,7 @@
     },
     "Exit_Operating_room": {
       "type": "DeviceEnd",
-      "device": "Operating room",
+      "device": "Operating_room",
       "direct_transition": "Postoperative_care_for_dental_procedure"
     },
     "Postoperative_care_for_dental_procedure": {
@@ -990,7 +990,7 @@
     },
     "Exit_Operating_room_2": {
       "type": "DeviceEnd",
-      "device": "Operating room",
+      "device": "Operating_room_2",
       "direct_transition": "Postoperative_care_for_dental_procedure_2"
     },
     "Postoperative_care_for_dental_procedure_2": {
