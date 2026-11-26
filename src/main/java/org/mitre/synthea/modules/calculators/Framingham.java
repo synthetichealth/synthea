@@ -462,6 +462,10 @@ public class Framingham {
   };
 
   private static final int getIndexForValueInRangelist(int value, int[] data) {
+    // Defensively clamp sub-range values to index 0 (lowest-risk bucket)
+    if (value < data[0]) {
+      return 0;
+    }
     for (int i = 0; i < data.length - 1; i++) {
       if (data[i] <= value && value <= data[i + 1]) {
         return i;
