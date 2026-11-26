@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
@@ -134,7 +135,7 @@ public class CoverageRecord implements Serializable {
       this.nextEnrollmentPeriod = (long) person.attributes.get(Person.BIRTHDATE);
     }
     if (time >= nextEnrollmentPeriod) {
-      Calendar c = Calendar.getInstance();
+      Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
       c.setTimeInMillis(nextEnrollmentPeriod);
       c.add(Calendar.YEAR, 1);
       nextEnrollmentPeriod = c.getTimeInMillis();
