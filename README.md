@@ -109,6 +109,21 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 ./gradlew attributes
 ```
 
+### ICD-10-CM codes in CSV condition exports
+
+When an ICD-10-CM code map is configured, `conditions.csv` includes
+`ICD10_CODE` and `ICD10_DESCRIPTION` after the original SNOMED code and description.
+Conditions without a mapping have empty ICD-10-CM fields. Without a configured map,
+the existing seven-column CSV format is unchanged.
+When appending to an existing `conditions.csv`, its column count must match the
+configured format; Synthea rejects a mismatch before writing new CSV rows.
+
+Use a [CodeMapper](src/main/java/org/mitre/synthea/export/rif/CodeMapper.java) JSON file
+whose keys are source SNOMED codes and whose values contain `code` and `description`.
+Place it in `src/main/resources/export/`, then configure
+`exporter.code_map.icd10-cm=export/your_code_map.json` in `synthea.properties` or a
+local configuration file. The same map can also supply translations to FHIR exports.
+
 # License
 
 Copyright 2017-2025 The MITRE Corporation

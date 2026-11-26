@@ -1,5 +1,6 @@
 package org.mitre.synthea.export;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class CSVFileManager {
     initializeFileNumberDigits();
     initializeOutputDirectory();
     initializeIncludedAndExcludedFiles();
+    validateConditionSchemaOnAppend();
   }
 
   private void initializeAppend() {
@@ -181,6 +183,81 @@ public class CSVFileManager {
       || excludedFiles.contains(baseFilename);
   }
 
+  private String headerLine(String resourceKey) {
+    if (hasMappedConditionSchema(resourceKey)) {
+      return CSVConstants.CONDITION_HEADER_LINE_WITH_ICD10;
+    }
+    return CSVConstants.HEADER_LINE_MAP.get(resourceKey);
+  }
+
+  private boolean hasMappedConditionSchema(String resourceKey) {
+    return CSVConstants.CONDITION_KEY.equals(resourceKey) && icd10MapConfigured();
+  }
+
+  private boolean icd10MapConfigured() {
+    return Exporter.getCodeMapper(Exporter.ICD10_CM_CODE_SYSTEM) != null;
+  }
+
+  private boolean shouldAppendToFile(File file, boolean mappedCondition) {
+    return append && file.exists() && (!mappedCondition || file.length() > 0);
+  }
+
+  private void validateConditionSchemaOnAppend() {
+    if (!append || resourceIsExcluded(CSVConstants.CONDITION_KEY)) {
+      return;
+    }
+    try {
+      if (multipleFilesPerResource()) {
+        File[] files = outputDirectory.toFile().listFiles((dir, name) ->
+            name.matches("conditions-\\d+\\.csv"));
+        if (files == null) {
+          throw new IllegalStateException("Cannot list CSV output directory: " + outputDirectory);
+        }
+        for (File file : files) {
+          checkConditionHeaderForAppend(CSVConstants.CONDITION_KEY, file);
+        }
+      } else {
+        File file = outputDirectory.resolve(filename(CSVConstants.CONDITION_KEY)).toFile();
+        checkConditionHeaderForAppend(CSVConstants.CONDITION_KEY, file);
+      }
+    } catch (IOException e) {
+      throw new IllegalStateException(e.getMessage(), e);
+    }
+  }
+
+  private void checkConditionHeaderForAppend(String resourceKey, File file) throws IOException {
+    if (!CSVConstants.CONDITION_KEY.equals(resourceKey) || !file.exists()) {
+      return;
+    }
+    try (BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)) {
+      String firstLine = reader.readLine();
+      if (firstLine == null) {
+        return;
+      }
+      // Leave legacy append behavior alone unless this feature is enabled or the file
+      // was previously written with its nine-column schema.
+      if (!icd10MapConfigured()
+          && !firstLine.equals(CSVConstants.CONDITION_HEADER_LINE_WITH_ICD10.trim())) {
+        return;
+      }
+      String expectedHeader = headerLine(resourceKey).trim();
+      boolean firstLineIsHeader =
+          firstLine.equals(CSVConstants.CONDITION_HEADER_LINE.trim())
+          || firstLine.equals(CSVConstants.CONDITION_HEADER_LINE_WITH_ICD10.trim());
+      boolean compatible;
+      if (firstLineIsHeader) {
+        compatible = firstLine.equals(expectedHeader);
+      } else {
+        // Earlier append-mode files have no header. Exported values have commas cleaned out.
+        compatible = firstLine.split(",", -1).length == expectedHeader.split(",", -1).length;
+      }
+      if (!compatible) {
+        throw new IOException("Cannot append conditions.csv with a different ICD-10-CM schema: "
+            + file);
+      }
+    }
+  }
+
   /**
    * Helper method to instantiate, if necessary, and return the writer for the
    * resource type's CSV file. Returns a "no-op" writer for any excluded files.
@@ -197,12 +274,17 @@ public class CSVFileManager {
     String filename = filename(resourceKey);
     File file = outputDirectory.resolve(filename).toFile();
     // file writing may fail if we tell it to append to a file that doesn't already exist
-    boolean appendToThisFile = append && file.exists();
+    boolean mappedCondition = hasMappedConditionSchema(resourceKey);
+    boolean appendToThisFile = shouldAppendToFile(file, mappedCondition);
+
+    if (appendToThisFile) {
+      checkConditionHeaderForAppend(resourceKey, file);
+    }
 
     OutputStreamWriter writer =
         new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
-    if (!append) {
-      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    if (mappedCondition ? !appendToThisFile : !append) {
+      writer.write(headerLine(resourceKey));
     }
 
     return writer;
@@ -232,12 +314,18 @@ public class CSVFileManager {
 
     File file = outputDirectory.resolve(filename).toFile();
     // file writing may fail if we tell it to append to a file that doesn't already exist
-    boolean appendToThisFile = append && file.exists();
+    boolean mappedCondition = hasMappedConditionSchema(resourceKey);
+    boolean appendToThisFile = shouldAppendToFile(file, mappedCondition);
+
+    if (appendToThisFile) {
+      checkConditionHeaderForAppend(resourceKey, file);
+    }
 
     OutputStreamWriter writer =
         new OutputStreamWriter(new FileOutputStream(file, appendToThisFile), charset);
-    if (!append || resourceCount % maxLinesPerFile == 1) {
-      writer.write(CSVConstants.HEADER_LINE_MAP.get(resourceKey));
+    if (mappedCondition ? !appendToThisFile
+        : (!append || resourceCount % maxLinesPerFile == 1)) {
+      writer.write(headerLine(resourceKey));
     }
 
     return writer;
@@ -265,6 +353,7 @@ public class CSVFileManager {
     int resourceCount = (fileNumber - 1) * maxLinesPerFile;
 
     if (file.exists()) {
+      checkConditionHeaderForAppend(resourceKey, file);
       String csvData = new String(Files.readAllBytes(file.toPath()));
       resourceCount += SimpleCSV.parse(csvData).size();
     }
@@ -298,20 +387,29 @@ public class CSVFileManager {
       return NO_OP;
     }
 
-    int resourceCount = incrementResourceCount(resourceKey);
+    Integer previousCount = resourceCountMap.get(resourceKey);
+    try {
+      int resourceCount = incrementResourceCount(resourceKey);
+      OutputStreamWriter writer = writerMap.get(resourceKey);
 
-    OutputStreamWriter writer = writerMap.get(resourceKey);
+      if (resourceCount % maxLinesPerFile == 1) {
+        if (writer != null) {
+          writer.flush();
+        }
 
-    if (resourceCount % maxLinesPerFile == 1) {
-      if (writer != null) {
-        writer.flush();
+        writer = initializeResourceWriter(resourceKey, resourceCount);
+        writerMap.put(resourceKey, writer);
       }
 
-      writer = initializeResourceWriter(resourceKey, resourceCount);
-      writerMap.put(resourceKey, writer);
+      return writer;
+    } catch (IOException e) {
+      if (previousCount == null) {
+        resourceCountMap.remove(resourceKey);
+      } else {
+        resourceCountMap.put(resourceKey, previousCount);
+      }
+      throw e;
     }
-
-    return writer;
   }
 
   /**

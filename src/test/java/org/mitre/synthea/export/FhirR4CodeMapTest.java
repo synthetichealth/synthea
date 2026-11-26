@@ -21,6 +21,7 @@ import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 /**
  * Tests the code translations that the FHIR R4 exporter emits for the code maps
@@ -96,6 +97,78 @@ public class FhirR4CodeMapTest {
     assertEquals("http://hl7.org/fhir/sid/icd-10-cm", translation.getSystem());
   }
 
+  /** A weighted condition mapping must agree in CSV and FHIR after one person RNG draw. */
+  @Test
+  public void testWeightedConditionTranslationAgreesWithCsv() {
+    Config.set(ICD10_PROPERTY, "export/test_icd10cm_code_map.json");
+    Exporter.loadCodeMappers();
+
+    Person person = personWithEncounterReason();
+    Entry condition = addWeightedCondition(person);
+
+    long countBeforeCsv = person.getCount();
+    String[] csv = CSVExporter.conditionLine("patient", "encounter", condition, person).trim()
+        .split(",", -1);
+    assertEquals(countBeforeCsv + 1, person.getCount());
+
+    Bundle bundle = FhirR4.convertToFHIR(person, 0);
+    assertEquals(countBeforeCsv + 1, person.getCount());
+    Coding translation = conditionTranslation(bundle);
+
+    assertNotNull("Weighted ICD-10-CM condition translation was not exported", translation);
+    assertEquals(csv[7], translation.getCode());
+    assertEquals(csv[8], translation.getDisplay());
+
+    long countAfterFhir = person.getCount();
+    String[] repeatedCsv = CSVExporter.conditionLine("patient", "encounter", condition, person)
+        .trim()
+        .split(",", -1);
+    assertEquals(countAfterFhir, person.getCount());
+    assertEquals(csv[7], repeatedCsv[7]);
+    assertEquals(csv[8], repeatedCsv[8]);
+  }
+
+  @Test
+  public void testFhirConditionTranslationIsReusedByCsv() {
+    Config.set(ICD10_PROPERTY, "export/test_icd10cm_code_map.json");
+    Exporter.loadCodeMappers();
+
+    Person person = personWithEncounterReason();
+    Entry condition = addWeightedCondition(person);
+    long countBeforeFhir = person.getCount();
+    Coding translation = conditionTranslation(FhirR4.convertToFHIR(person, 0));
+    assertNotNull(translation);
+    assertEquals(countBeforeFhir + 1, person.getCount());
+
+    long countAfterFhir = person.getCount();
+    String[] csv = CSVExporter.conditionLine("patient", "encounter", condition, person).trim()
+        .split(",", -1);
+    assertEquals(countAfterFhir, person.getCount());
+    assertEquals(translation.getCode(), csv[7]);
+    assertEquals(translation.getDisplay(), csv[8]);
+  }
+
+  private Entry addWeightedCondition(Person person) {
+    Entry condition = person.record.conditionStart(0, "44054006");
+    condition.codes.add(new Code("SNOMED-CT", "44054006", "Type 2 diabetes mellitus"));
+    return condition;
+  }
+
+  private Coding conditionTranslation(Bundle bundle) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof org.hl7.fhir.r4.model.Condition) {
+        org.hl7.fhir.r4.model.Condition resource =
+            (org.hl7.fhir.r4.model.Condition) entry.getResource();
+        for (Coding coding : resource.getCode().getCoding()) {
+          if ("http://hl7.org/fhir/sid/icd-10-cm".equals(coding.getSystem())) {
+            return coding;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * Export a person with a single encounter whose reason is a code the test code map
    * knows about, and return the translated coding that was added to that reason.
@@ -103,6 +176,25 @@ public class FhirR4CodeMapTest {
    * @return the translated coding, or null if no translation was added
    */
   private Coding translationOfEncounterReason() {
+    Person person = personWithEncounterReason();
+
+    Bundle bundle = FhirR4.convertToFHIR(person, 0);
+
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof org.hl7.fhir.r4.model.Encounter) {
+        org.hl7.fhir.r4.model.Encounter resource =
+            (org.hl7.fhir.r4.model.Encounter) entry.getResource();
+        for (Coding coding : resource.getReasonCodeFirstRep().getCoding()) {
+          if ("ABC20.9".equals(coding.getCode())) {
+            return coding;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  private Person personWithEncounterReason() {
     Person person = new Person(0L);
     person.attributes.put(Person.RACE, "dummy value to prevent NPE");
     person.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
@@ -125,20 +217,6 @@ public class FhirR4CodeMapTest {
     HealthRecord.Encounter encounter = person.record.encounterStart(0, EncounterType.AMBULATORY);
     encounter.provider = person.record.provider;
     encounter.reason = new Code("SNOMED-CT", "10509002", "Acute bronchitis (disorder)");
-
-    Bundle bundle = FhirR4.convertToFHIR(person, 0);
-
-    for (BundleEntryComponent entry : bundle.getEntry()) {
-      if (entry.getResource() instanceof org.hl7.fhir.r4.model.Encounter) {
-        org.hl7.fhir.r4.model.Encounter resource =
-            (org.hl7.fhir.r4.model.Encounter) entry.getResource();
-        for (Coding coding : resource.getReasonCodeFirstRep().getCoding()) {
-          if ("ABC20.9".equals(coding.getCode())) {
-            return coding;
-          }
-        }
-      }
-    }
-    return null;
+    return person;
   }
 }
