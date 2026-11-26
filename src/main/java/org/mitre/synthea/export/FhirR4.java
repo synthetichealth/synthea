@@ -1478,6 +1478,7 @@ public class FhirR4 {
       p.setDate(proc.getDate());
       p.setSequence(proc.getSequence());
       p.setProcedure(proc.getProcedure());
+      eobProc.add(p);
     }
     eob.setProcedure(eobProc);
 
@@ -1491,6 +1492,7 @@ public class FhirR4 {
       itemComponent.setUnitPrice(item.getUnitPrice());
       itemComponent.setCareTeamSequence(item.getCareTeamSequence());
       itemComponent.setDiagnosisSequence(item.getDiagnosisSequence());
+      itemComponent.setProcedureSequence(item.getProcedureSequence());
       itemComponent.setInformationSequence(item.getInformationSequence());
       itemComponent.setNet(item.getNet());
       itemComponent.setEncounter(item.getEncounter());
