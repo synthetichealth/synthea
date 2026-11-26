@@ -258,14 +258,12 @@ public abstract class Transition implements Serializable {
    */
   public static class LookupTableTransition extends Transition {
 
-    /** Map of lookupTables */
-    private static HashMap<String, HashMap<LookupTableKey, List<DistributedTransitionOption>>>
-        lookupTables = new HashMap<String, HashMap<LookupTableKey,
-        List<DistributedTransitionOption>>>();
+    /** Parsed lookup tables, including the column metadata needed to use their rows. */
+    private static final Map<String, LookupTable> lookupTables = new HashMap<>();
     /** List of options for transitioning to */
     private final List<LookupTableTransitionOption> transitions;
-    /** List of attributes for this transition */
-    private List<String> attributes;
+    /** The parsed table shared by transitions that reference the same CSV. */
+    private final LookupTable lookupTable;
     /** Default transition options */
     private List<DistributedTransitionOption> defaultTransitions;
     /** The name of the lookup table to use for this transition */
@@ -284,8 +282,33 @@ public abstract class Transition implements Serializable {
         throw new RuntimeException(
           "LOOKUP TABLE JSON ERROR: Table name cannot be null.");
       }
-      if (!lookupTables.containsKey(lookupTableName)) {
-        loadLookupTable();
+      synchronized (lookupTables) {
+        LookupTable table = lookupTables.get(lookupTableName);
+        if (table == null) {
+          table = loadLookupTable();
+          lookupTables.put(lookupTableName, table);
+        }
+        this.lookupTable = table;
+      }
+      validateTransitionStates(lookupTable.transitionStates);
+    }
+
+    /**
+     * A table's rows and their column metadata must be cached together.
+     */
+    private static class LookupTable implements Serializable {
+      /** Patient attribute column names. */
+      private final List<String> attributes;
+      /** Destination state column names. */
+      private final List<String> transitionStates;
+      /** Parsed probability rows keyed by patient attributes and ranges. */
+      private final Map<LookupTableKey, List<DistributedTransitionOption>> rows;
+
+      private LookupTable(List<String> attributes, List<String> transitionStates,
+          Map<LookupTableKey, List<DistributedTransitionOption>> rows) {
+        this.attributes = attributes;
+        this.transitionStates = new ArrayList<>(transitionStates);
+        this.rows = rows;
       }
     }
 
@@ -307,7 +330,7 @@ public abstract class Transition implements Serializable {
     /**
      * Loads the current lookuptable.
      */
-    private void loadLookupTable() {
+    private LookupTable loadLookupTable() {
 
       System.out.println("Loading Lookup Table: " + lookupTableName);
       // Hashmap for the new lookup table.
@@ -330,41 +353,37 @@ public abstract class Transition implements Serializable {
       }
       List<String> columnHeaders = new ArrayList<String>(lookupTable.get(0).keySet());
       // Parse the list of attributes.
-      this.attributes = new ArrayList<String>(columnHeaders.subList(0,
+      List<String> attributes = new ArrayList<String>(columnHeaders.subList(0,
           columnHeaders.size() - this.transitions.size()));
       // Parse the list of states to transition to.
       List<String> transitionStates = columnHeaders.subList((columnHeaders.size()
           - this.transitions.size()), columnHeaders.size());
+      validateTransitionStates(transitionStates);
 
       // Create keys and insert each row of CSV into lookup table map.
       for (Map<String, String> currentRow : lookupTable) {
-        // Extract attributes from current CSV row.
-        List<String> rowAttributes = new ArrayList<String>(currentRow.values());
-        rowAttributes = rowAttributes.subList(0, this.attributes.size());
-        // Create age range for lookup table key if age is an attribute.
+        List<String> rowAttributes = new ArrayList<String>();
         Range<Integer> ageRange = null;
         Range<Long> timeRange = null;
-        if (this.attributes.contains("age")) {
-          Integer ageIndex = this.attributes.indexOf("age");
-          // Remove and parse the age range.
-          String value = rowAttributes.remove(ageIndex.intValue());
-          if (!value.contains("-")
-              || value.substring(0, value.indexOf("-")).length() < 1
-              || value.substring(value.indexOf("-") + 1).length() < 1) {
-            throw new RuntimeException(
-                "LOOKUP TABLE '" + fileName
-                + "' ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
-                + value + "'");
+        for (String attribute : attributes) {
+          String value = currentRow.get(attribute);
+          if (attribute.equals("age")) {
+            if (!value.contains("-")
+                || value.substring(0, value.indexOf("-")).length() < 1
+                || value.substring(value.indexOf("-") + 1).length() < 1) {
+              throw new RuntimeException(
+                  "LOOKUP TABLE '" + fileName
+                  + "' ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
+                  + value + "'");
+            }
+            ageRange = Range.between(
+                Integer.parseInt(value.substring(0, value.indexOf("-"))),
+                Integer.parseInt(value.substring(value.indexOf("-") + 1)));
+          } else if (attribute.equals("time")) {
+            timeRange = Utilities.parseDateRange(value);
+          } else {
+            rowAttributes.add(value);
           }
-          ageRange = Range.between(
-              Integer.parseInt(value.substring(0, value.indexOf("-"))),
-              Integer.parseInt(value.substring(value.indexOf("-") + 1)));
-        }
-        if (this.attributes.contains("time")) {
-          Integer timeIndex = this.attributes.indexOf("time");
-          // Remove and parse the age range.
-          String value = rowAttributes.remove(timeIndex.intValue());
-          timeRange = Utilities.parseDateRange(value);
         }
         // Attributes key to inert into lookup table.
         LookupTableKey attributesLookupKey =
@@ -376,8 +395,21 @@ public abstract class Transition implements Serializable {
         newTable.put(attributesLookupKey, transitionProbabilities);
       }
 
-      // Put new table into Hash map of all lookup tables.
-      lookupTables.put(lookupTableName, newTable);
+      return new LookupTable(attributes, transitionStates, newTable);
+    }
+
+    private void validateTransitionStates(List<String> transitionStates) {
+      if (transitionStates.size() != transitions.size()) {
+        throw new RuntimeException("LOOKUP TABLE ERROR: Number of CSV transition columns "
+            + "does not match the JSON states in CSV '" + lookupTableName + "'");
+      }
+      for (String transitionName : transitionStates) {
+        if (transitions.stream().noneMatch(t -> t.transition.equals(transitionName))) {
+          throw new RuntimeException("LOOKUP TABLE ERROR: CSV column state name '"
+              + transitionName + "' does not match a JSON state to transition to in CSV table '"
+              + lookupTableName + "'");
+        }
+      }
     }
 
     /**
@@ -390,17 +422,10 @@ public abstract class Transition implements Serializable {
           = new ArrayList<DistributedTransitionOption>();
 
       for (String transitionName : transitionStates) {
-        if (currentRow.containsKey(transitionName)
-            && transitions.stream().anyMatch(t -> t.transition.equals(transitionName))) {
-          DistributedTransitionOption currentOption = new DistributedTransitionOption();
-          currentOption.numericDistribution = Double.parseDouble(currentRow.get(transitionName));
-          currentOption.transition = transitionName;
-          transitionProbabilities.add(currentOption);
-        } else {
-          throw new RuntimeException("LOOKUP TABLE ERROR: CSV column state name '"
-              + transitionName + "' does not match a JSON state to transition to in CSV '"
-              + lookupTableName + "'");
-        }
+        DistributedTransitionOption currentOption = new DistributedTransitionOption();
+        currentOption.numericDistribution = Double.parseDouble(currentRow.get(transitionName));
+        currentOption.transition = transitionName;
+        transitionProbabilities.add(currentOption);
       }
       return transitionProbabilities;
     }
@@ -410,7 +435,7 @@ public abstract class Transition implements Serializable {
       Integer age = null;
       // Extract Person's list of relevant attributes.
       ArrayList<String> personsAttributes = new ArrayList<String>();
-      for (String currentAttribute : this.attributes) {
+      for (String currentAttribute : lookupTable.attributes) {
         if (currentAttribute.equalsIgnoreCase("age")) {
           age = person.ageInYears(time);
         } else if (currentAttribute.equalsIgnoreCase("time")) {
@@ -428,10 +453,10 @@ public abstract class Transition implements Serializable {
       }
       // Create key from person's attributes to get distributions
       LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, age, time);
-      if (lookupTables.get(lookupTableName).containsKey(personsAttributesLookupKey)) {
+      if (lookupTable.rows.containsKey(personsAttributesLookupKey)) {
         // Person matches, use their attribute's list of distributedtransitionoptions
         return pickDistributedTransition(
-          lookupTables.get(lookupTableName).get(personsAttributesLookupKey), person);
+          lookupTable.rows.get(personsAttributesLookupKey), person);
       } else {
         // No attribute match, use default transition.
         return pickDistributedTransition(this.defaultTransitions, person);
