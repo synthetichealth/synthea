@@ -895,8 +895,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "6525002",
-          "display": "Dependent drug abuse (disorder)"
+          "code": "1254812006",
+          "display": "Substance dependence (disorder)"
         }
       ],
       "direct_transition": "Enter_Addiction_Treatment",
@@ -908,8 +908,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "6525002",
-          "display": "Dependent drug abuse (disorder)"
+          "code": "1254812006",
+          "display": "Substance dependence (disorder)"
         }
       ],
       "direct_transition": "Recovery_Management",
