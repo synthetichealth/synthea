@@ -46,7 +46,7 @@
           "transition": "ICU_ECG",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "savrr_ico_los",
+            "attribute": "savrr_icu_los",
             "operator": "<=",
             "value": 1
           }

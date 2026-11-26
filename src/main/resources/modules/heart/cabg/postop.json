@@ -164,7 +164,7 @@
         }
       ],
       "direct_transition": "Discharge",
-      "reason": "cagb_history"
+      "reason": "cabg_history"
     },
     "Admission to Ward": {
       "type": "Encounter",
