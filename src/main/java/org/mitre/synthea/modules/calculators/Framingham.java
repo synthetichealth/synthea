@@ -476,9 +476,9 @@ public class Framingham {
     throw new RuntimeException("unexpected value " + value + " for data " + Arrays.toString(data));
   }
 
-  private static final double[] diabetes_stroke = { 2, 3 };
-  private static final double[] chd_stroke_points = { 4, 2 };
-  private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
+  private static final int[] diabetes_stroke = { 2, 3 };
+  private static final int[] chd_stroke_points = { 4, 2 };
+  private static final int[] atrial_fibrillation_stroke_points = { 4, 6 };
 
   /**
    * Calculate 10 year stroke risk.
