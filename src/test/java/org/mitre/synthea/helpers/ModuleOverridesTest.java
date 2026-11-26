@@ -132,7 +132,16 @@ public class ModuleOverridesTest {
     String filePart = keyParts[0];
     assertStringEndsWith(filePart, ".json");
     String jsonPathPart = keyParts[1];
-    Path jsonPath = PathCompiler.compile(jsonPathPart);
+    Path jsonPath = null;
+    try {
+      jsonPath = PathCompiler.compile(jsonPathPart);
+    } catch (Exception e) {
+      String message = "JSON Path Error:\n" + jsonPathPart + "\n";
+      System.out.println(message);
+      System.err.println(message);
+      e.printStackTrace();
+      throw e;
+    }
     assertNotNull(jsonPath); // confirm the key is valid JSONPath
     assertTrue(isNumeric(value));
   }
