@@ -109,6 +109,35 @@ public class LifecycleModuleTest {
   }
 
   @Test
+  public void testCreatinineClearanceMatchesCkdStage() throws Exception {
+    java.lang.reflect.Method calculateVitalSigns = LifecycleModule.class.getDeclaredMethod(
+        "calculateVitalSigns", Person.class, long.class);
+    calculateVitalSigns.setAccessible(true);
+    long time = Utilities.convertTime("years", 50);
+
+    for (String gender : new String[] {"F", "M"}) {
+      // ckd -> clearance stored as EGFR: the normal range without CKD, then the GFR
+      // category of each CKD stage (90-120 for stage 1, below 15 for end-stage renal disease)
+      int[] normal = "F".equals(gender) ? new int[] {56, 161} : new int[] {77, 160};
+      int[][] expected = {normal, {90, 120}, {60, 90}, {30, 60}, {15, 30}, {0, 15}};
+      for (int ckd = 0; ckd < expected.length; ckd++) {
+        Person person = new Person(ckd);
+        person.attributes.put(Person.GENDER, gender);
+        person.attributes.put(Person.BIRTHDATE, 0L);
+        person.setVitalSign(VitalSign.WEIGHT, 75.0);
+        person.setVitalSign(VitalSign.BMI, 26.0);
+        person.attributes.put("ckd", ckd);
+        for (int i = 0; i < 100; i++) {
+          calculateVitalSigns.invoke(null, person, time);
+          double egfr = person.getVitalSign(VitalSign.EGFR, time);
+          Assert.assertTrue("ckd " + ckd + ", " + gender + ": EGFR " + egfr,
+              egfr >= expected[ckd][0] && egfr <= expected[ckd][1]);
+        }
+      }
+    }
+  }
+
+  @Test
   public void testPassportFormatIsAlwaysEightDigits() throws Exception {
     Pattern eightDigitPassport = Pattern.compile("^X\\d{8}X$");
     int sampleSize = 2000;
