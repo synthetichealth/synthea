@@ -9,6 +9,7 @@ import ca.uhn.fhir.context.RuntimePrimitiveDatatypeDefinition;
 import ca.uhn.fhir.context.RuntimeResourceBlockDefinition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -720,6 +721,10 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
           // the 3 above are the only options in the enum
       }
     }
+    
+    Collections.sort(whereEquals);
+    Collections.sort(whereUnequals);
+    Collections.sort(withoutWhere);
 
     List<String> ret = new ArrayList<String>();
     ret.addAll(whereEquals);

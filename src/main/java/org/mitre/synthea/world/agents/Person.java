@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -254,10 +255,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     /* initialized the onsetConditions field */
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
-    chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
+    chronicMedications = new ConcurrentSkipListMap<String, HealthRecord.Medication>();
     hasMultipleRecords = Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
-      records = new ConcurrentHashMap<String, HealthRecord>();
+      records = new ConcurrentSkipListMap<String, HealthRecord>();
     }
     this.initializeDefaultHealthRecords();
     coverage = new CoverageRecord(this);
