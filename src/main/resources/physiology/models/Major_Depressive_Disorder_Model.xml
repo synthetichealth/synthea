@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <!--
+    HPA-axis (hypothalamic-pituitary-adrenal) stress/depression model.
+
+    Re-encoded as an explicit ODE system using SBML rateRules. The prior version
+    marked every species boundaryCondition="true" (pinned) and emitted the
+    derivatives as product species, so nothing evolved. The equations below are
+    the ones documented in that prior version's comments, now actually wired up.
+
+    State variables (levels):
+      x1_internal, x1_external : CRH (corticotropin-releasing hormone) pools
+      x1_tot = x1_internal + x1_external : total CRH
+      x2 : ACTH (adrenocorticotropic hormone)
+      x3 : Cortisol
+      A  : adrenal gland activity
+      P  : pituitary gland activity
+      h  : hippocampal glucocorticoid-feedback term
+
+    Receptor feedback:
+      GR(x3) = (x3/kGR)^3 + 1      glucocorticoid receptor
+      step(x3) = sa+sb if x3>=T else sa   hippocampal threshold
+
+    Scenario driver:
+      D_t steps from D_base to D_stress at t_onset hours, modeling the onset of a
+      chronic stressor partway through a long mission (e.g. mariners/astronauts).
+
+    PHENOTYPE NOTE (intentional):
+      As encoded, a chronic stressor drives the inhibitory hippocampal feedback h
+      upward, which SUPPRESSES cortisol -> a *blunted / hypocortisolism* response.
+      This matches atypical depression / PTSD / burnout (HPA hypoactivity), which
+      is the intended long-mission fatigue phenotype.
+      To instead model *melancholic* depression (hypercortisolism / elevated
+      cortisol), route the stressor through the CRH drive u_t rather than through
+      h; i.e. make u_t (not just h) increase at t_onset. That is a small, local
+      change (add a time-stepped assignmentRule for u_t like the one for D_t); the
+      rest of the cascade already propagates it to cortisol.
+  -->
+  <model id="Major_Depressive_Disorder_Model" name="Major_Depressive_Disorder_Model">
+  <listOfParameters>
+    <!-- Rate constants (from the source model; per-day basis) -->
+    <parameter id="a1" value="244.8" constant="true"/>
+    <parameter id="a1_ext" value="23.04" constant="true"/>
+    <parameter id="a2" value="50.4" constant="true"/>
+    <parameter id="a3" value="12.384" constant="true"/>
+    <parameter id="a5" value="0.099" constant="true"/>
+    <parameter id="a6" value="0.099" constant="true"/>
+    <parameter id="a7" value="0.047619047619048" constant="true"/>
+
+    <!-- Receptor / threshold constants -->
+    <parameter id="kGR" value="4" constant="true"/>
+    <parameter id="T" value="1.5" constant="true"/>
+    <parameter id="sa" value="1" constant="true"/>
+    <parameter id="sb" value="3" constant="true"/>
+
+    <!-- Inputs -->
+    <parameter id="u_t" value="1" constant="true"/>
+    <parameter id="x1_dose" value="0" constant="true"/>
+
+    <!-- Scenario knobs: chronic stressor onset -->
+    <parameter id="D_base" value="1" constant="true"/>
+    <parameter id="D_stress" value="3" constant="true"/>
+    <parameter id="t_onset" value="168" constant="true"/>
+
+    <!-- State variables (evolve via rateRules) -->
+    <parameter id="x1_internal" value="1" constant="false"/>
+    <parameter id="x1_external" value="0" constant="false"/>
+    <parameter id="x2" value="1" constant="false"/>
+    <parameter id="x3" value="1" constant="false"/>
+    <parameter id="A" value="1" constant="false"/>
+    <parameter id="P" value="1" constant="false"/>
+    <parameter id="h" value="1" constant="false"/>
+
+    <!-- Derived quantities (assignmentRules) -->
+    <parameter id="x1_tot" value="1" constant="false"/>
+    <parameter id="GR" value="1" constant="false"/>
+    <parameter id="stepfn" value="1" constant="false"/>
+    <parameter id="D_t" value="1" constant="false"/>
+
+    <!-- Readable aliases for charting -->
+    <parameter id="Cortisol" value="1" constant="false"/>
+    <parameter id="ACTH" value="1" constant="false"/>
+    <parameter id="CRH" value="1" constant="false"/>
+  </listOfParameters>
+
+  <listOfRules>
+    <!-- total CRH -->
+    <assignmentRule variable="x1_tot">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply><plus/><ci>x1_internal</ci><ci>x1_external</ci></apply>
+      </math>
+    </assignmentRule>
+
+    <!-- glucocorticoid receptor feedback: (x3/kGR)^3 + 1 -->
+    <assignmentRule variable="GR">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <power/>
+            <apply><divide/><ci>x3</ci><ci>kGR</ci></apply>
+            <cn type="integer">3</cn>
+          </apply>
+          <cn type="integer">1</cn>
+        </apply>
+      </math>
+    </assignmentRule>
+
+    <!-- hippocampal threshold step: sa+sb if x3>=T else sa -->
+    <assignmentRule variable="stepfn">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply><plus/><ci>sa</ci><ci>sb</ci></apply>
+            <apply><geq/><ci>x3</ci><ci>T</ci></apply>
+          </piece>
+          <otherwise><ci>sa</ci></otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
+
+    <!-- chronic stressor onset: D_base until t_onset hours, then D_stress -->
+    <assignmentRule variable="D_t">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <ci>D_stress</ci>
+            <apply>
+              <geq/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time">t</csymbol>
+              <ci>t_onset</ci>
+            </apply>
+          </piece>
+          <otherwise><ci>D_base</ci></otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
+
+    <!-- readable aliases -->
+    <assignmentRule variable="Cortisol">
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><ci>x3</ci></math>
+    </assignmentRule>
+    <assignmentRule variable="ACTH">
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><ci>x2</ci></math>
+    </assignmentRule>
+    <assignmentRule variable="CRH">
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><ci>x1_tot</ci></math>
+    </assignmentRule>
+
+    <!-- dx1_internal/dt = a1*(u_t/(h*x3*GR) - x1_internal) -->
+    <rateRule variable="x1_internal">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a1</ci>
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci>u_t</ci>
+              <apply><times/><ci>h</ci><ci>x3</ci><ci>GR</ci></apply>
+            </apply>
+            <ci>x1_internal</ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dx1_external/dt = a1_ext*(x1_dose - x1_external) -->
+    <rateRule variable="x1_external">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a1_ext</ci>
+          <apply><minus/><ci>x1_dose</ci><ci>x1_external</ci></apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dx2/dt = a2*(x1_tot*P/GR - x2) -->
+    <rateRule variable="x2">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a2</ci>
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply><times/><ci>x1_tot</ci><ci>P</ci></apply>
+              <ci>GR</ci>
+            </apply>
+            <ci>x2</ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dx3/dt = a3*(x2*A - x3) -->
+    <rateRule variable="x3">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a3</ci>
+          <apply>
+            <minus/>
+            <apply><times/><ci>x2</ci><ci>A</ci></apply>
+            <ci>x3</ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dA/dt = a5*A*(x2 - 1) -->
+    <rateRule variable="A">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a5</ci>
+          <ci>A</ci>
+          <apply><minus/><ci>x2</ci><cn type="integer">1</cn></apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dP/dt = a6*P*(x1_tot - 1) -->
+    <rateRule variable="P">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a6</ci>
+          <ci>P</ci>
+          <apply><minus/><ci>x1_tot</ci><cn type="integer">1</cn></apply>
+        </apply>
+      </math>
+    </rateRule>
+
+    <!-- dh/dt = a7*(D_t/step(x3) - h) -->
+    <rateRule variable="h">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>a7</ci>
+          <apply>
+            <minus/>
+            <apply><divide/><ci>D_t</ci><ci>stepfn</ci></apply>
+            <ci>h</ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+  </listOfRules>
+  </model>
+</sbml>

@@ -172,4 +172,30 @@ public class PhysiologySimulatorTest {
     String[] args = {"i_dont_exist.yml"};
     PhysiologySimulator.main(args);
   }
+
+  /**
+   * The HPA-axis (cortisol / depression) model was re-encoded with rate rules and a
+   * time-stepped chronic stressor (D_t rises at t_onset = 168 h). This guards against a
+   * regression to the prior inert version, where every species was pinned as a boundary
+   * condition and the whole axis stayed flat. Cortisol should respond to the stressor and,
+   * as encoded, settle to a blunted (below-baseline) level.
+   */
+  @Test
+  public void testCortisolStressResponse() throws DerivativeException {
+    PhysiologySimulator physio = new PhysiologySimulator(
+        "Major_Depressive_Disorder_Model.xml", "runge_kutta", 0.01, 504);
+
+    MultiTable results = physio.run(new HashMap<String, Double>());
+
+    Column cortisol = results.getColumn("Cortisol");
+    assertTrue("Cortisol column should be present", cortisol != null);
+
+    double baseline = cortisol.getValue(0);
+    double stressed = cortisol.getValue(cortisol.getRowCount() - 1);
+
+    assertTrue("cortisol should respond to the stressor rather than remain flat",
+        Math.abs(stressed - baseline) > 0.1);
+    assertTrue("as encoded the chronic stressor blunts cortisol below baseline",
+        stressed < baseline);
+  }
 }
