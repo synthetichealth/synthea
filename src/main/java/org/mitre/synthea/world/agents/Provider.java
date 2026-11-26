@@ -28,6 +28,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.IProviderFinder;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearest;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearestMedicare;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderPreferOne;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -105,6 +106,22 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /** Provider selection behavior: Medicare provider. */
   public static final String MEDICARE = "medicare";
+  public static final String PREFER_ONE = "prefer_one";
+
+  // Provider source files
+  private static String HOSPITAL_FILE = Config.get("generate.providers.hospitals.default_file");
+  private static String IHS_HOSPITAL_FILE = Config.get("generate.providers.ihs.hospitals.default_file");
+  private static String VA_FILE = Config.get("generate.providers.veterans.default_file");
+  private static String PRIMARY_CARE_FILE = Config.get("generate.providers.primarycare.default_file");
+  private static String IHS_PC_FILE = Config.get("generate.providers.ihs.primarycare.default_file");
+  private static String URGENT_CARE_FILE = Config.get("generate.providers.urgentcare.default_file");
+  private static String HOME_HEALTH_FILE = Config.get("generate.providers.homehealth.default_file");
+  private static String HOSPICE_FILE = Config.get("generate.providers.hospice.default_file");
+  private static String NURSING_FILE = Config.get("generate.providers.nursing.default_file");
+
+  // NOTE that this should contain all of the used provider souce files. This is used for pulling provider location by NPI
+  private static String[] PROVIDER_SOURCE_FILES = {HOSPITAL_FILE, IHS_HOSPITAL_FILE, VA_FILE, PRIMARY_CARE_FILE, IHS_PC_FILE, URGENT_CARE_FILE, HOME_HEALTH_FILE, HOSPICE_FILE, NURSING_FILE};
+  
 
   /** Default behavior to use hospital when provider selection fails. */
   public static final Boolean USE_HOSPITAL_AS_DEFAULT =
@@ -250,6 +267,9 @@ public class Provider implements QuadTreeElement, Serializable {
         break;
       case MEDICARE:
         finder = new ProviderFinderNearestMedicare();
+        break;
+      case PREFER_ONE:
+        finder = new ProviderFinderPreferOne();
         break;
       case NEAREST:
       default:
@@ -505,31 +525,25 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.OUTPATIENT);
         servicesProvided.add(EncounterType.INPATIENT);
 
-        String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
+        loadProviders(location, HOSPITAL_FILE, ProviderType.HOSPITAL, servicesProvided,
             random, false);
 
-        String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
-        loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
+        loadProviders(location, IHS_HOSPITAL_FILE, ProviderType.IHS, servicesProvided,
             random, true);
 
         servicesProvided.add(EncounterType.WELLNESS);
-        String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, random,
+        loadProviders(location, VA_FILE, ProviderType.VETERAN, servicesProvided, random,
                 false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
-        String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(location, primaryCareFile, ProviderType.PRIMARY, servicesProvided,
+        loadProviders(location, PRIMARY_CARE_FILE, ProviderType.PRIMARY, servicesProvided,
             random, false);
-        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
-        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, random, true);
+        loadProviders(location, IHS_PC_FILE, ProviderType.IHS, servicesProvided, random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
-        String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(location, urgentcareFile, ProviderType.URGENT, servicesProvided,
+        loadProviders(location, URGENT_CARE_FILE, ProviderType.URGENT, servicesProvided,
             random, false);
 
         statesLoaded.add(location.state);
@@ -545,20 +559,17 @@ public class Provider implements QuadTreeElement, Serializable {
         Set<EncounterType> servicesProvided = new HashSet<EncounterType>();
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOME);
-        String homeHealthFile = Config.get("generate.providers.homehealth.default_file");
-        loadProviders(location, homeHealthFile, ProviderType.HOME_HEALTH, servicesProvided,
+        loadProviders(location, HOME_HEALTH_FILE, ProviderType.HOME_HEALTH, servicesProvided,
             random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOSPICE);
-        String hospiceFile = Config.get("generate.providers.hospice.default_file");
-        loadProviders(location, hospiceFile, ProviderType.HOSPICE, servicesProvided,
+        loadProviders(location, HOSPICE_FILE, ProviderType.HOSPICE, servicesProvided,
             random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.SNF);
-        String nursingFile = Config.get("generate.providers.nursing.default_file");
-        loadProviders(location, nursingFile, ProviderType.NURSING, servicesProvided,
+        loadProviders(location, NURSING_FILE, ProviderType.NURSING, servicesProvided,
             random, true);
       } catch (IOException e) {
         System.err.println("WARNING: unable to load optional providers in: " + location.state);
@@ -893,6 +904,32 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public static List<Provider> getProviderList() {
     return new ArrayList<Provider>(providerByUuid.values());
+  }
+
+  public static Location findProviderLocationByNPI(String npi) throws ExceptionInInitializerError {
+
+    for (String filename : PROVIDER_SOURCE_FILES) {
+
+      String resource;
+      try {
+        resource = Utilities.readResource(filename, true, true);
+        Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
+  
+        while (csv.hasNext()) {
+          Map<String,String> row = csv.next();
+          String currNpi = row.get("npi");
+
+          if (npi.equals(currNpi) && row.get("state") != null) {
+            return new Location(Location.getStateName(row.get("state")), row.get("city"));
+          }
+        }
+      } catch (IOException e) {
+        throw new ExceptionInInitializerError("ERROR: unable to find state for provider by NPI: '" + npi + "' configured but provider not found in loaded list. Using demographic location." + e.getMessage());
+      }
+
+    }
+
+    return null;
   }
 
   void merge(Provider other) {
