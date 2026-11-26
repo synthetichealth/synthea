@@ -34,6 +34,7 @@ metabolic:
       sodium: [136, 144] # mEq/L
       calcium: [8.5,10.2] # mg/dL
     # http://www.cdc.gov/diabetes/prevention/pdf/point-of-care-prediabetes-identification-algorithm_tag508.pdf
+    # only the minimum is used, as a floor; serum glucose is derived from HbA1c in LifecycleModule
     glucose: [64,100,125,200] # mg/dL [normal minimum,prediabetic,diabetic,max]
     # http://www.mayomedicallaboratories.com/test-catalog/Clinical+and+Interpretive/81260
     microalbumin_creatinine_ratio:
